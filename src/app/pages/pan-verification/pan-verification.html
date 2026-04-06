@@ -1,0 +1,105 @@
+<div class="pan-page">
+  <app-onboarding-header
+    [title]="'Account Creation'"
+    [currentStep]="2"
+    [merchantId]="'13574280'">
+  </app-onboarding-header>
+
+  <section class="main-section">
+    <div class="bg-glow left-glow"></div>
+    <div class="bg-glow right-glow"></div>
+
+    <div class="container">
+      <div class="form-layout">
+        <div class="form-card">
+          <div class="card-body-custom">
+            <h2>Share your Business PAN Card</h2>
+            <p class="subtitle">
+              PAN card details is required to verify your identity in accordance
+              with RBI guidelines, ensuring a secure payment experience.
+            </p>
+
+            <form [formGroup]="panForm" (ngSubmit)="onSubmit()" novalidate>
+              <div class="form-row">
+                <label for="panNumber">Business PAN Card Number <span>*</span></label>
+
+                <div class="field-wrap">
+                  <input
+                    id="panNumber"
+                    type="text"
+                    class="form-control custom-input"
+                    formControlName="panNumber"
+                    placeholder="Enter PAN Number"
+                    maxlength="10"
+                  />
+
+                  @if (f['panNumber'].touched && f['panNumber'].errors?.['required']) {
+                    <small class="error-text">PAN number is required.</small>
+                  }
+
+                  @if (f['panNumber'].touched && f['panNumber'].errors?.['invalidPan']) {
+                    <small class="error-text">Enter valid PAN. Example: ABCDE1234F</small>
+                  }
+                </div>
+              </div>
+
+              @if (isPanValid) {
+                <div class="animate-section">
+                  <div class="form-row">
+                    <label for="fullName">Name on PAN card <span>*</span></label>
+
+                    <div class="field-wrap">
+                      <input
+                        id="fullName"
+                        type="text"
+                        class="form-control custom-input"
+                        formControlName="fullName"
+                        placeholder="Enter full name"
+                      />
+
+                      @if (f['fullName'].touched && f['fullName'].errors?.['required']) {
+                        <small class="error-text">Name is required.</small>
+                      }
+
+                      @if (f['fullName'].touched && f['fullName'].errors?.['minlength']) {
+                        <small class="error-text">Enter valid full name.</small>
+                      }
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <label for="dob">Date of Birth / Date of Incorporation <span>*</span></label>
+
+                    <div class="field-wrap">
+                      <input
+                        id="dob"
+                        type="date"
+                        class="form-control custom-input"
+                        formControlName="dob"
+                      />
+
+                      @if (f['dob'].touched && f['dob'].errors?.['required']) {
+                        <small class="error-text">Date is required.</small>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <div class="footer-action">
+                
+                <button type="submit" class="proceed-btn" [disabled]="panForm.invalid">
+                  Confirm &amp; Proceed
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="help-bubble">
+          Please verify these details before going to the next step
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

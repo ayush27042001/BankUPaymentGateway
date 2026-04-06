@@ -1,0 +1,144 @@
+<div class="ckyc-page">
+    <app-onboarding-header
+    [title]="'Account Creation'"
+    [currentStep]="2"
+    [merchantId]="'13574280'">
+  </app-onboarding-header>
+  <section class="main-section">
+    <div class="container">
+      <div class="form-layout">
+        <div class="form-card">
+          <div class="card-body-custom">
+            <h2>Provide phone number to complete CKYC</h2>
+            <p class="subtitle">
+              BankU will auto-fetch your business details based on CKYC availability
+            </p>
+
+            <form [formGroup]="ckycForm" (ngSubmit)="onSubmit()" novalidate>
+              <div class="form-row">
+                <label for="mobileNumber">Mobile Number <span>*</span></label>
+
+                <div class="field-wrap">
+                  <div class="mobile-input-group">
+                    <span class="country-code">+91</span>
+
+                    <input
+                      id="mobileNumber"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="mobileNumber"
+                      placeholder="Enter mobile number"
+                      maxlength="10"
+                      inputmode="numeric"
+                      (input)="onMobileInput()"
+                    />
+                  </div>
+
+                  <small class="helper-text">
+                    Please enter the mobile number used during sign-up
+                  </small>
+
+                  @if (f['mobileNumber'].touched && f['mobileNumber'].errors?.['required']) {
+                    <small class="error-text">Mobile number is required.</small>
+                  }
+
+                  @if (f['mobileNumber'].touched && f['mobileNumber'].errors?.['invalidMobile']) {
+                    <small class="error-text">Enter a valid 10 digit mobile number.</small>
+                  }
+
+                  <div class="send-otp-wrap">
+                    <button
+                      type="button"
+                      class="otp-btn"
+                      (click)="sendOtp()"
+                      [disabled]="f['mobileNumber'].invalid">
+                      Send OTP
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              @if (otpVisible) {
+                <div class="animate-section">
+                  <div class="form-row">
+                    <label for="otp">Enter OTP <span>*</span></label>
+
+                    <div class="field-wrap">
+                      <input
+                        id="otp"
+                        type="text"
+                        class="form-control custom-input"
+                        formControlName="otp"
+                        placeholder="Enter 6 digit OTP"
+                        maxlength="6"
+                        inputmode="numeric"
+                        (input)="onOtpInput()"
+                      />
+
+                      @if (f['otp'].touched && f['otp'].errors?.['required']) {
+                        <small class="error-text">OTP is required.</small>
+                      }
+
+                      @if (f['otp'].touched && f['otp'].errors?.['pattern']) {
+                        <small class="error-text">Enter valid 6 digit OTP.</small>
+                      }
+
+                      <div class="otp-meta">
+                        @if (!canResendOtp) {
+                          <small class="timer-text">
+                            Resend OTP in {{ timer }}s
+                          </small>
+                        }
+
+                        @if (canResendOtp) {
+                          <button
+                            type="button"
+                            class="resend-btn"
+                            (click)="resendOtp()">
+                            Resend OTP
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <div class="consent-box">
+                <input
+                  id="consent"
+                  type="checkbox"
+                  formControlName="consent"
+                />
+                <label for="consent">
+                  By sharing CKYC identifier, you provide explicit consent to
+                  download the documents and information from CKYC Registry and
+                  to share with BankU
+                </label>
+              </div>
+
+              <div class="footer-action">
+                <button type="button" class="back-btn">Back</button>
+
+                <div class="action-group">
+                  <button type="button" class="skip-btn">Skip CKYC</button>
+
+                  <button
+                    type="submit"
+                    class="proceed-btn"
+                    [disabled]="ckycForm.invalid">
+                    Proceed with CKYC
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="help-bubble">
+          Completing your CKYC will fast track onboarding and account activation
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

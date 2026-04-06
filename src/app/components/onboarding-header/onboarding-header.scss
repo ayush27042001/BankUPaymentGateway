@@ -1,0 +1,171 @@
+:host {
+  display: block;
+}
+
+$brand-primary: #800180;
+$brand-secondary: #f39021;
+$white: #ffffff;
+
+.top-header {
+  background: linear-gradient(90deg, $brand-primary 0%, #5f015f 100%);
+  color: $white;
+  padding: 14px 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: $white;
+    color: $brand-primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    span {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+  }
+
+  .stepper-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+  }
+
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .step {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      color: $white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+
+      &.active {
+        background: $brand-secondary;
+      }
+    }
+
+    .line {
+      width: 48px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 999px;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    a {
+      color: $white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s ease;
+
+      &:hover {
+        color: $brand-secondary;
+      }
+    }
+  }
+}
+
+@media (max-width: 991.98px) {
+  .top-header {
+    .header-inner {
+      justify-content: center;
+      text-align: center;
+    }
+
+    .brand-wrap,
+    .stepper-wrap,
+    .header-actions {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .top-header {
+    padding: 12px 0;
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      font-size: 22px;
+    }
+
+    .brand-text h1 {
+      font-size: 1.25rem;
+    }
+
+    .brand-text span {
+      font-size: 0.85rem;
+    }
+
+    .stepper-wrap {
+      gap: 10px;
+      flex-direction: column;
+
+      p {
+        font-size: 1rem;
+      }
+    }
+
+    .header-actions {
+      gap: 12px;
+
+      a {
+        font-size: 0.92rem;
+      }
+    }
+  }
+}

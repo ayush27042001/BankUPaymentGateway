@@ -1,0 +1,31 @@
+<header class="top-header">
+  <div class="container-fluid">
+    <div class="header-inner">
+      <div class="brand-wrap">
+        <div class="brand-logo">B</div>
+
+        <div class="brand-text">
+          <h1>BankU</h1>
+          <span>MID : {{ merchantId }}</span>
+        </div>
+      </div>
+
+      <div class="stepper-wrap">
+        <div class="stepper">
+          <span class="step" [class.active]="currentStep >= 1">1</span>
+          <span class="line"></span>
+          <span class="step" [class.active]="currentStep >= 2">2</span>
+        </div>
+
+        <p>{{ title }}</p>
+      </div>
+
+      @if (showActions) {
+        <div class="header-actions">
+          <a href="javascript:void(0)">Go to Dashboard</a>
+          <a href="javascript:void(0)">Sign Out</a>
+        </div>
+      }
+    </div>
+  </div>
+</header>

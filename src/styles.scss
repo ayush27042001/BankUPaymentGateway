@@ -1,0 +1,34 @@
+/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/scss/bootstrap";
+/* =========================
+   BANKU THEME COLORS
+========================= */
+
+$primary: #800180;
+$secondary: #f39021;
+
+$primary-light: #a020a0;
+$secondary-light: #ffad4d;
+
+$bg-light: #f8f9fb;
+$text-dark: #1a1a1a;
+$text-muted: #6c757d;
+
+/* =========================
+   BOOTSTRAP OVERRIDE
+========================= */
+
+:root {
+  --bs-primary: #800180;
+  --bs-secondary: #f39021;
+}
+
+/* =========================
+   GLOBAL STYLES
+========================= */
+
+body {
+  background-color: $bg-light;
+  color: $text-dark;
+  font-family: "Inter", sans-serif;
+}

@@ -1,0 +1,54 @@
+<div class="onboarding-page">
+  <app-onboarding-header
+    [title]="'Account Creation'"
+    [currentStep]="1"
+    [merchantId]="'13574280'">
+  </app-onboarding-header>
+
+  <section class="main-section">
+    <div class="bg-glow left-glow"></div>
+    <div class="bg-glow right-glow"></div>
+
+    <div class="container">
+      <div class="form-layout">
+        <div class="form-card">
+          <div class="card-body-custom">
+            <h2>Please confirm your Business entity</h2>
+            <p class="subtitle">
+              We will require this to tailor your onboarding journey
+            </p>
+
+            <div class="entity-block">
+              <label class="entity-label">Select your business entity type</label>
+
+              <div class="entity-options">
+                <button
+                  type="button"
+                  class="entity-chip"
+                  [class.active]="selectedType === 'Individual'"
+                  (click)="selectType('Individual')">
+                  Individual
+                </button>
+
+                <button
+                  type="button"
+                  class="entity-chip"
+                  [class.active]="selectedType === 'Sole Proprietorship'"
+                  (click)="selectType('Sole Proprietorship')">
+                  Sole Proprietorship
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-action">
+            <button type="button" class="back-btn">Back</button>
+            <button type="button" class="proceed-btn" (click)="onConfirm()">
+              Confirm &amp; Proceed
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
