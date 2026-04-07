@@ -1,0 +1,273 @@
+<div class="connect-platform-page">
+  <app-onboarding-header
+    [title]="'Account Activation'"
+    [currentStep]="2"
+    [merchantId]="'13574280'">
+  </app-onboarding-header>
+
+  <section class="main-section">
+    <div class="page-shell">
+      <aside class="left-panel">
+        <button type="button" class="summary-link">
+          ← Back to summary
+        </button>
+
+        <nav class="step-nav">
+          <button type="button" class="nav-item active">
+            <span>Business Information</span>
+            <span class="arrow">›</span>
+          </button>
+
+          <button type="button" class="nav-item">
+            <span>KYC Checks</span>
+            <span class="arrow">›</span>
+          </button>
+
+          <button type="button" class="nav-item">
+            <span>Documents</span>
+          </button>
+
+          <button type="button" class="nav-item">
+            <span>Service Agreement</span>
+          </button>
+        </nav>
+      </aside>
+
+      <div class="content-panel">
+        <div class="content-card">
+          <div class="card-body-custom">
+            @if (currentStep === 1) {
+              <div class="step-label">STEP 1 OF 2</div>
+
+              <h2>Connect Mobile App or Website</h2>
+              <p class="subtitle">
+                We will verify your submitted URL
+              </p>
+
+              <form [formGroup]="platformForm" (ngSubmit)="goToStepTwo()" novalidate>
+                <div class="form-block">
+                  <label class="block-label">How do you wish to collect payments?</label>
+
+                  <div class="radio-group">
+                    <label class="radio-option">
+                      <input type="radio" formControlName="collectionMode" value="website-app" />
+                      <span>On my website/app</span>
+                    </label>
+
+                    <label class="radio-option">
+                      <input type="radio" formControlName="collectionMode" value="without-website-app" />
+                      <span>Without any website/app</span>
+                    </label>
+                  </div>
+                </div>
+
+                @if (platformForm.get('collectionMode')?.value === 'without-website-app') {
+                  <div class="info-copy">
+                    <p>
+                      You can collect payments with payment tools, this does not require any integration.
+                    </p>
+
+                    <div class="tool-links">
+                      <button type="button" class="tool-link">Payment Links</button>
+                      <button type="button" class="tool-link">Payment Invoices</button>
+                      <button type="button" class="tool-link">Payment Buttons</button>
+                    </div>
+                  </div>
+
+                  <div class="promo-card">
+                    <div class="promo-illustration">
+                      <img
+                        [src]="imageUrl"
+                        alt="Website Illustration"
+                        class="illustration-img"
+                      />
+                    </div>
+
+                    <div class="promo-content">
+                      <h3>Create your own custom website and integrate with PayU to accept payments seamlessly!</h3>
+
+                      <button type="button" class="outline-action-btn">
+                        Help me build my website
+                      </button>
+                    </div>
+                  </div>
+                }
+
+                @if (platformForm.get('collectionMode')?.value === 'website-app') {
+                  <div class="form-block">
+                    <label for="websiteUrl" class="block-label">
+                      Website / App URL <span>*</span>
+                    </label>
+
+                    <input
+                      id="websiteUrl"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="websiteUrl"
+                      placeholder="Enter website or app URL"
+                    />
+
+                    @if (f['websiteUrl'].touched && f['websiteUrl'].errors?.['required']) {
+                      <small class="error-text">Website or app URL is required.</small>
+                    }
+
+                    @if (f['websiteUrl'].touched && f['websiteUrl'].errors?.['invalidUrl']) {
+                      <small class="error-text">Enter a valid URL.</small>
+                    }
+                  </div>
+
+                  <div class="form-block">
+                    <label for="androidAppUrl" class="block-label">
+                      Android App URL
+                    </label>
+
+                    <input
+                      id="androidAppUrl"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="androidAppUrl"
+                      placeholder="Enter Android app URL"
+                    />
+
+                    @if (f['androidAppUrl'].touched && f['androidAppUrl'].errors?.['invalidUrl']) {
+                      <small class="error-text">Enter a valid Android app URL.</small>
+                    }
+                  </div>
+
+                  <div class="form-block">
+                    <label for="iosAppUrl" class="block-label">
+                      iOS App URL
+                    </label>
+
+                    <input
+                      id="iosAppUrl"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="iosAppUrl"
+                      placeholder="Enter iOS app URL"
+                    />
+
+                    @if (f['iosAppUrl'].touched && f['iosAppUrl'].errors?.['invalidUrl']) {
+                      <small class="error-text">Enter a valid iOS app URL.</small>
+                    }
+                  </div>
+                }
+
+                <div class="footer-action">
+                  <button type="button" class="back-btn" (click)="goBack()">
+                    ← Back
+                  </button>
+
+                  <button
+                    type="submit"
+                    class="proceed-btn"
+                    [disabled]="platformForm.invalid">
+                    Confirm &amp; Proceed →
+                  </button>
+                </div>
+              </form>
+            }
+
+            @if (currentStep === 2) {
+              <div class="step-label">STEP 2 OF 2</div>
+
+              <h2>Share bank account details</h2>
+              <p class="subtitle">
+                We need your bank account details to process transactions seamlessly into your account.
+              </p>
+
+              <form [formGroup]="bankForm" (ngSubmit)="submitBankDetails()" novalidate>
+                <div class="bank-form-grid">
+                  <div class="form-block">
+                    <label for="bankHolderName" class="block-label">
+                      Bank Holder Name <span>*</span>
+                    </label>
+
+                    <select
+                      id="bankHolderName"
+                      class="form-control custom-input select-input"
+                      formControlName="bankHolderName">
+                      <option value="">Enter Name</option>
+                      @for (name of holderNames; track name) {
+                        <option [value]="name">{{ name }}</option>
+                      }
+                    </select>
+
+                    @if (bankControls['bankHolderName'].touched && bankControls['bankHolderName'].errors?.['required']) {
+                      <small class="error-text">Bank holder name is required.</small>
+                    }
+                  </div>
+
+                  <div class="form-block">
+                    <label for="bankAccountNumber" class="block-label">
+                      Bank Account Number <span>*</span>
+                    </label>
+
+                    <input
+                      id="bankAccountNumber"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="bankAccountNumber"
+                      placeholder="Enter Account Number"
+                      inputmode="numeric"
+                      (input)="onAccountNumberInput()"
+                    />
+
+                    @if (bankControls['bankAccountNumber'].touched && bankControls['bankAccountNumber'].errors?.['required']) {
+                      <small class="error-text">Bank account number is required.</small>
+                    }
+
+                    @if (bankControls['bankAccountNumber'].touched && bankControls['bankAccountNumber'].errors?.['pattern']) {
+                      <small class="error-text">Enter a valid account number.</small>
+                    }
+                  </div>
+
+                  <div class="form-block ifsc-block">
+                    <label for="ifscCode" class="block-label">
+                      IFSC Code <span>*</span>
+                    </label>
+
+                    <input
+                      id="ifscCode"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="ifscCode"
+                      placeholder="Enter IFSC Code"
+                      maxlength="11"
+                      (input)="onIfscInput()"
+                    />
+
+                    @if (bankControls['ifscCode'].touched && bankControls['ifscCode'].errors?.['required']) {
+                      <small class="error-text">IFSC code is required.</small>
+                    }
+
+                    @if (bankControls['ifscCode'].touched && bankControls['ifscCode'].errors?.['invalidIfsc']) {
+                      <small class="error-text">Enter a valid IFSC code.</small>
+                    }
+
+                    <!-- <button type="button" class="helper-link">
+                      Can't find your IFSC Code?
+                    </button> -->
+                  </div>
+                </div>
+
+                <div class="footer-action">
+                  <button type="button" class="back-btn" (click)="goBack()">
+                    ← Back
+                  </button>
+
+                  <button
+                    type="submit"
+                    class="proceed-btn"
+                    [disabled]="bankForm.invalid">
+                    Confirm &amp; Proceed →
+                  </button>
+                </div>
+              </form>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -165,22 +165,23 @@ export class ShareBusinessDetailsComponent {
   }
 
   onSubmit(): void {
-    this.businessForm.markAllAsTouched();
+  this.businessForm.markAllAsTouched();
 
-    if (this.businessForm.invalid) {
-      return;
-    }
-
-    const payload = {
-      expectedSales: this.businessForm.get('expectedSales')?.value,
-      hasGstin: this.businessForm.get('hasGstin')?.value,
-      gstin: this.businessForm.get('gstin')?.value,
-    };
-
-    console.log('Business details payload:', payload);
-
-
+  if (this.businessForm.invalid) {
+    return;
   }
+
+  const payload = {
+    expectedSales: this.businessForm.get('expectedSales')?.value,
+    hasGstin: this.businessForm.get('hasGstin')?.value,
+    gstin: this.businessForm.get('gstin')?.value,
+  };
+
+  console.log('Business details payload:', payload);
+
+  // Navigate to next step
+  this.router.navigate(['/connect-platform']);
+}
 
   goBack(): void {
     this.router.navigate(['/business-category']);
