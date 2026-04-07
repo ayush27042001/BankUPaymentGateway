@@ -22,6 +22,8 @@ export class BusinessEntityComponent {
   onConfirm(): void {
     this.router.navigate(['/phone-ckyc']);
   }
-  
+  goBack(): void {
+    this.router.navigate(['']);
+  }
 
 }

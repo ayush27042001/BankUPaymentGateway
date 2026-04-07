@@ -1,1 +1,86 @@
-<p>business-category works!</p>
+<div class="business-category-page">
+  <app-onboarding-header
+    [title]="'Account Creation'"
+    [currentStep]="2"
+    [merchantId]="'13574280'">
+  </app-onboarding-header>
+
+  <section class="main-section">
+    <div class="container">
+      <div class="form-layout">
+        <div class="form-card">
+          <div class="card-body-custom">
+            <h2>What category does your business fall under?</h2>
+            <p class="subtitle">
+              This helps us better understand the nature and requirements of your business
+            </p>
+
+            <form [formGroup]="businessCategoryForm" (ngSubmit)="onProceed()">
+              <div class="category-search-wrap">
+                <div
+                  class="search-box"
+                  (mouseenter)="openDropdown()"
+                >
+                  <input
+                    type="text"
+                    class="search-input"
+                    formControlName="businessCategory"
+                    placeholder="Search Category and Sub-Category your business falls under"
+                    (focus)="openDropdown()"
+                    (input)="onSearchInput()"
+                  />
+
+                  <span class="search-icon">⌕</span>
+                </div>
+
+                @if (showDropdown) {
+                  <div class="category-dropdown">
+                    @for (group of filteredGroups; track group.title) {
+                      <div class="category-group">
+                        <div class="group-title">{{ group.title }}</div>
+
+                        <div class="group-items">
+                          @for (item of group.items; track item) {
+                            <button
+                              type="button"
+                              class="category-item"
+                              [class.active]="selectedCategory === item"
+                              (click)="selectCategory(item)">
+                              {{ item }}
+                            </button>
+                          }
+                        </div>
+                      </div>
+                    }
+
+                    @if (filteredGroups.length === 0) {
+                      <div class="no-result">No matching category found</div>
+                    }
+                  </div>
+                }
+              </div>
+
+              @if (f['businessCategory'].touched && f['businessCategory'].errors?.['required']) {
+                <small class="error-text">Please select a business category.</small>
+              }
+
+              <div class="footer-action">
+                <!-- <button type="button" class="back-btn">← Back</button> -->
+                  <button type="button" class="back-btn" (click)="goBack()">
+                  ← Back
+                </button>
+
+                <button
+                  type="submit"
+                  class="proceed-btn"
+                  [disabled]="businessCategoryForm.invalid">
+                  Confirm &amp; Proceed →
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
