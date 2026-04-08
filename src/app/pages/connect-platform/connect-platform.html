@@ -13,18 +13,52 @@
         </button>
 
         <nav class="step-nav">
-          <button type="button" class="nav-item active">
+          <button
+            type="button"
+            class="nav-item"
+            [class.active]="isSidebarActive('business')"
+            [class.completed]="isSidebarCompleted('business')"
+            (click)="goToBusinessSection()">
             <span>Business Information</span>
-            <span class="arrow">›</span>
+            <span class="nav-status">
+              @if (isSidebarCompleted('business')) {
+                <span class="status-check">✓</span>
+              } @else {
+                <span class="arrow">›</span>
+              }
+            </span>
           </button>
 
-          <button type="button" class="nav-item">
+          <button
+            type="button"
+            class="nav-item"
+            [class.active]="isSidebarActive('kyc')"
+            [class.completed]="isSidebarCompleted('kyc')"
+            (click)="goToKycSection()">
             <span>KYC Checks</span>
-            <span class="arrow">›</span>
+            <span class="nav-status">
+              @if (isSidebarCompleted('kyc')) {
+                <span class="status-check">✓</span>
+              } @else {
+                <span class="arrow">›</span>
+              }
+            </span>
           </button>
 
-          <button type="button" class="nav-item">
+          <button
+            type="button"
+            class="nav-item"
+            [class.active]="isSidebarActive('documents')"
+            [class.completed]="isSidebarCompleted('documents')"
+            (click)="goToDocumentsSection()">
             <span>Documents</span>
+            <span class="nav-status">
+              @if (isSidebarCompleted('documents')) {
+                <span class="status-check">✓</span>
+              } @else {
+                <span class="arrow">›</span>
+              }
+            </span>
           </button>
 
           <button type="button" class="nav-item">
@@ -36,15 +70,15 @@
       <div class="content-panel">
         <div class="content-card">
           <div class="card-body-custom">
-            @if (currentStep === 1) {
-              <div class="step-label">STEP 1 OF 2</div>
+            <div class="step-label">{{ getStepLabel() }}</div>
 
+            @if (isStep('platform')) {
               <h2>Connect Mobile App or Website</h2>
               <p class="subtitle">
-                We will verify your submitted URL
+                We will verify your submitted URL.
               </p>
 
-              <form [formGroup]="platformForm" (ngSubmit)="goToStepTwo()" novalidate>
+              <form [formGroup]="platformForm" (ngSubmit)="goToBankDetails()" novalidate>
                 <div class="form-block">
                   <label class="block-label">How do you wish to collect payments?</label>
 
@@ -84,7 +118,7 @@
                     </div>
 
                     <div class="promo-content">
-                      <h3>Create your own custom website and integrate with PayU to accept payments seamlessly!</h3>
+                      <h3>Create your own custom website and integrate to accept payments seamlessly.</h3>
 
                       <button type="button" class="outline-action-btn">
                         Help me build my website
@@ -168,9 +202,7 @@
               </form>
             }
 
-            @if (currentStep === 2) {
-              <div class="step-label">STEP 2 OF 2</div>
-
+            @if (isStep('bank-details')) {
               <h2>Share bank account details</h2>
               <p class="subtitle">
                 We need your bank account details to process transactions seamlessly into your account.
@@ -244,10 +276,6 @@
                     @if (bankControls['ifscCode'].touched && bankControls['ifscCode'].errors?.['invalidIfsc']) {
                       <small class="error-text">Enter a valid IFSC code.</small>
                     }
-
-                    <!-- <button type="button" class="helper-link">
-                      Can't find your IFSC Code?
-                    </button> -->
                   </div>
                 </div>
 
@@ -265,9 +293,510 @@
                 </div>
               </form>
             }
+
+            @if (isStep('signing-authority')) {
+              <h2>Signing Authority Details</h2>
+              <p class="subtitle">
+                Kindly provide the representative details for KYC verification. This contact will receive all key communications moving forward.
+              </p>
+
+              <form [formGroup]="signingAuthorityForm" (ngSubmit)="submitSigningAuthorityDetails()" novalidate>
+                <div class="bank-form-grid">
+                  <div class="form-block">
+                    <label for="signingAuthorityName" class="block-label">
+                      Signing Authority Name <span>*</span>
+                    </label>
+
+                    <input
+                      id="signingAuthorityName"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="signingAuthorityName"
+                      placeholder="Enter signing authority name"
+                    />
+
+                    @if (signingControls['signingAuthorityName'].touched && signingControls['signingAuthorityName'].errors?.['required']) {
+                      <small class="error-text">Signing authority name is required.</small>
+                    }
+                  </div>
+
+                  <div class="form-block">
+                    <label for="signingAuthorityEmail" class="block-label">
+                      Signing Authority Email ID <span>*</span>
+                    </label>
+
+                    <input
+                      id="signingAuthorityEmail"
+                      type="email"
+                      class="form-control custom-input"
+                      formControlName="signingAuthorityEmail"
+                      placeholder="Enter Signing Authority Email ID"
+                    />
+
+                    @if (signingControls['signingAuthorityEmail'].touched && signingControls['signingAuthorityEmail'].errors?.['required']) {
+                      <small class="error-text">Email ID is required.</small>
+                    }
+
+                    @if (signingControls['signingAuthorityEmail'].touched && signingControls['signingAuthorityEmail'].errors?.['email']) {
+                      <small class="error-text">Enter a valid email ID.</small>
+                    }
+                  </div>
+
+                  <div class="form-block">
+                    <label for="signingAuthorityPan" class="block-label">
+                      Signing Authority's PAN card number <span>*</span>
+                    </label>
+
+                    <input
+                      id="signingAuthorityPan"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="signingAuthorityPan"
+                      placeholder="Enter PAN number"
+                      maxlength="10"
+                      (input)="onPanInput()"
+                    />
+
+                    @if (signingControls['signingAuthorityPan'].touched && signingControls['signingAuthorityPan'].errors?.['required']) {
+                      <small class="error-text">PAN number is required.</small>
+                    }
+
+                    @if (signingControls['signingAuthorityPan'].touched && signingControls['signingAuthorityPan'].errors?.['pattern']) {
+                      <small class="error-text">Enter a valid PAN number.</small>
+                    }
+                  </div>
+                </div>
+
+                <div class="form-block">
+                  <label class="block-label">
+                    Politically Exposed Person (PEP) Status <span>*</span>
+                  </label>
+
+                  <div class="radio-group pep-radio-group">
+                    <label class="radio-option">
+                      <input type="radio" formControlName="pepStatus" value="i-am-pep" />
+                      <span>I am a PEP</span>
+                    </label>
+
+                    <label class="radio-option">
+                      <input type="radio" formControlName="pepStatus" value="related-to-pep" />
+                      <span>I am related to a PEP</span>
+                    </label>
+
+                    <label class="radio-option">
+                      <input type="radio" formControlName="pepStatus" value="not-applicable" />
+                      <span>Not Applicable</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="footer-action">
+                  <button type="button" class="back-btn" (click)="goBack()">
+                    ← Back
+                  </button>
+
+                  <button
+                    type="submit"
+                    class="proceed-btn"
+                    [disabled]="signingAuthorityForm.invalid">
+                    Confirm &amp; Proceed →
+                  </button>
+                </div>
+              </form>
+            }
+
+            @if (isStep('business-address')) {
+              <h2>Verify Business Address</h2>
+              <p class="subtitle">
+                Please confirm the address of your business.
+              </p>
+
+              <form [formGroup]="businessAddressForm" (ngSubmit)="submitBusinessAddressDetails()" novalidate>
+                <div class="bank-form-grid">
+                  <div class="form-block">
+                    <label for="address" class="block-label">
+                      Address <span>*</span>
+                    </label>
+
+                    <input
+                      id="address"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="address"
+                      placeholder="Enter business address"
+                    />
+
+                    @if (addressControls['address'].touched && addressControls['address'].errors?.['required']) {
+                      <small class="error-text">Address is required.</small>
+                    }
+                  </div>
+
+                  <div class="form-block">
+                    <label for="postalCode" class="block-label">
+                      Postal Code <span>*</span>
+                    </label>
+
+                    <input
+                      id="postalCode"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="postalCode"
+                      placeholder="Enter postal code"
+                      maxlength="6"
+                      inputmode="numeric"
+                    />
+
+                    @if (addressControls['postalCode'].touched && addressControls['postalCode'].errors?.['required']) {
+                      <small class="error-text">Postal code is required.</small>
+                    }
+
+                    @if (addressControls['postalCode'].touched && addressControls['postalCode'].errors?.['pattern']) {
+                      <small class="error-text">Enter a valid 6 digit postal code.</small>
+                    }
+                  </div>
+
+                  <div class="form-block">
+                    <label for="state" class="block-label">
+                      State <span>*</span>
+                    </label>
+
+                    <input
+                      id="state"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="state"
+                      placeholder="Enter state"
+                    />
+
+                    @if (addressControls['state'].touched && addressControls['state'].errors?.['required']) {
+                      <small class="error-text">State is required.</small>
+                    }
+                  </div>
+
+                  <div class="form-block">
+                    <label for="city" class="block-label">
+                      City <span>*</span>
+                    </label>
+
+                    <input
+                      id="city"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="city"
+                      placeholder="Enter city"
+                    />
+
+                    @if (addressControls['city'].touched && addressControls['city'].errors?.['required']) {
+                      <small class="error-text">City is required.</small>
+                    }
+                  </div>
+                </div>
+
+                <div class="form-block">
+                  <label class="block-label">
+                    Do you have a different business operating address? <span>*</span>
+                  </label>
+
+                  <div class="radio-group pep-radio-group">
+                    <label class="radio-option">
+                      <input type="radio" formControlName="hasDifferentAddress" value="yes" />
+                      <span>Yes</span>
+                    </label>
+
+                    <label class="radio-option">
+                      <input type="radio" formControlName="hasDifferentAddress" value="no" />
+                      <span>No, same as above</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="footer-action">
+                  <button type="button" class="back-btn" (click)="goBack()">
+                    ← Back
+                  </button>
+
+                  <button
+                    type="submit"
+                    class="proceed-btn"
+                    [disabled]="businessAddressForm.invalid">
+                    Confirm &amp; Proceed →
+                  </button>
+                </div>
+              </form>
+            }
+
+            @if (isStep('video-kyc')) {
+              <h2>Complete Video KYC</h2>
+              <p class="subtitle">
+                Verify your signing authority to comply with onboarding guidelines.
+              </p>
+
+              <div class="video-kyc-info-card">
+                <div class="video-kyc-badge">!</div>
+                <p>
+                  You can initiate Video KYC anytime between 10:00 AM to 06:30 PM. In case you are not ready for the Video KYC, you can schedule it for a later time, and you will be notified.
+                </p>
+              </div>
+
+              <div class="video-kyc-layout">
+                <div class="video-kyc-illustrations">
+                  <div class="video-kyc-icon-card">ID</div>
+                  <div class="video-kyc-dotted-line"></div>
+                  <div class="video-kyc-icon-card">KYC</div>
+                </div>
+
+                <div class="video-kyc-content">
+                  <div class="video-kyc-content-block">
+                    <h3>During and after the Video KYC</h3>
+                    <ul class="video-kyc-list">
+                      <li>Verify your Aadhaar with Digilocker</li>
+                      <li>Agent will appear on the Video call, who will verify your details</li>
+                      <li>Agent may ask a few questions related to your document</li>
+                    </ul>
+                  </div>
+
+                  <div class="video-kyc-content-block">
+                    <h3>Before you start the Video KYC, keep the following in mind</h3>
+                    <ul class="video-kyc-list">
+                      <li>Be ready with your PAN card</li>
+                      <li>Make sure your internet connection is good for the video call</li>
+                      <li>The call may last for 2 to 5 mins, so be at a quiet place</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="footer-action">
+                <button type="button" class="back-btn" (click)="goBack()">
+                  ← Back
+                </button>
+
+                <button
+                  type="button"
+                  class="proceed-btn"
+                  (click)="scheduleVideoKyc()">
+                  Upload KYC Documents →
+                </button>
+              </div>
+            }
+
+            @if (isStep('thank-you')) {
+              <div class="thank-you-screen">
+                <div class="thank-you-icon">✓</div>
+
+                <h2>Thank You!</h2>
+
+                <p class="subtitle thank-you-subtitle">
+                  Your KYC details and documents have been submitted successfully.
+                  Our team will review your application and update you soon.
+                </p>
+
+                <div class="thank-you-card">
+                  <h3>What happens next?</h3>
+                  <ul class="thank-you-list">
+                    <li>Your submitted documents will be verified.</li>
+                    <li>Your Video KYC request will be reviewed by the onboarding team.</li>
+                    <li>You will receive the next update after successful verification.</li>
+                  </ul>
+                </div>
+
+                <div class="footer-action thank-you-actions">
+                  <button
+                    type="button"
+                    class="proceed-btn"
+                    (click)="goToBusinessSection()">
+                    Back to Start
+                  </button>
+                </div>
+              </div>
+            }
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  @if (showBankConfirmModal) {
+    <div class="bank-modal-overlay" (click)="closeBankConfirmModal()">
+      <div class="bank-modal-card" (click)="$event.stopPropagation()">
+        <div class="bank-modal-content">
+          <h3>{{ matchedBankName }}</h3>
+
+          <p>
+            We will compare the name on your PAN with the name on this bank account as per RBI regulation.
+          </p>
+
+          <div class="account-line">
+            <span class="label">AC Number :</span>
+            <span class="value">{{ maskedAccountNumber }}</span>
+          </div>
+        </div>
+
+        <div class="bank-modal-actions">
+          <button
+            type="button"
+            class="reenter-btn"
+            (click)="reEnterBankDetails()">
+            Wrong Account? Re-enter Bank Details
+          </button>
+
+          <button
+            type="button"
+            class="confirm-bank-btn"
+            (click)="confirmAndConnectBank()">
+            Confirm &amp; Connect Bank
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showUploadDocumentsModal) {
+    <div class="upload-modal-overlay" (click)="closeUploadDocumentsModal()">
+      <div class="upload-modal-card" (click)="$event.stopPropagation()">
+        <div class="upload-modal-header">
+          <h3>Upload Documents</h3>
+
+          <button
+            type="button"
+            class="upload-modal-close"
+            (click)="closeUploadDocumentsModal()">
+            ×
+          </button>
+        </div>
+
+        <div class="upload-modal-body">
+          <form [formGroup]="uploadDocumentsForm" (ngSubmit)="submitKycDocuments()" novalidate>
+            <div class="upload-field">
+              <label class="upload-label">Aadhaar Card <span>(JPG / PNG / PDF Only)</span></label>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png,.pdf"
+                (change)="onFileSelected($event, 'aadhaarCard')" />
+              @if (selectedDocumentNames.aadhaarCard) {
+                <small class="file-name">{{ selectedDocumentNames.aadhaarCard }}</small>
+              }
+              @if (uploadControls['aadhaarCard'].touched && uploadControls['aadhaarCard'].errors?.['required']) {
+                <small class="error-text">Aadhaar card is required.</small>
+              }
+            </div>
+
+            <div class="upload-field">
+              <label class="upload-label">PAN Card <span>(JPG / PNG / PDF Only)</span></label>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png,.pdf"
+                (change)="onFileSelected($event, 'panCard')" />
+              @if (selectedDocumentNames.panCard) {
+                <small class="file-name">{{ selectedDocumentNames.panCard }}</small>
+              }
+              @if (uploadControls['panCard'].touched && uploadControls['panCard'].errors?.['required']) {
+                <small class="error-text">PAN card is required.</small>
+              }
+            </div>
+
+            <div class="upload-field">
+              <label class="upload-label">Photo</label>
+
+              <input
+                #cameraInput
+                type="file"
+                accept="image/*"
+                capture="environment"
+                class="hidden-file-input"
+                (change)="onFileSelected($event, 'photoFile')" />
+
+              <button
+                type="button"
+                class="camera-btn"
+                (click)="openCameraInput(cameraInput)">
+                Open Camera
+              </button>
+
+              @if (selectedDocumentNames.photoFile) {
+                <small class="file-name">{{ selectedDocumentNames.photoFile }}</small>
+              }
+              @if (uploadControls['photoFile'].touched && uploadControls['photoFile'].errors?.['required']) {
+                <small class="error-text">Photo is required.</small>
+              }
+            </div>
+
+            <div class="upload-field">
+              <label class="upload-label">Business Proof <span>(JPG / PNG / PDF Only)</span></label>
+
+              <select class="custom-input upload-select" formControlName="businessProofType">
+                <option value="">Select Proof Type</option>
+                <option value="gst-certificate">GST Certificate</option>
+                <option value="shop-license">Shop License</option>
+                <option value="electricity-bill">Electricity Bill</option>
+                <option value="rent-agreement">Rent Agreement</option>
+                <option value="other">Other</option>
+              </select>
+
+              @if (uploadControls['businessProofType'].touched && uploadControls['businessProofType'].errors?.['required']) {
+                <small class="error-text">Business proof type is required.</small>
+              }
+
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png,.pdf"
+                (change)="onFileSelected($event, 'businessProofFile')" />
+              @if (selectedDocumentNames.businessProofFile) {
+                <small class="file-name">{{ selectedDocumentNames.businessProofFile }}</small>
+              }
+              @if (uploadControls['businessProofFile'].touched && uploadControls['businessProofFile'].errors?.['required']) {
+                <small class="error-text">Business proof file is required.</small>
+              }
+            </div>
+
+            <div class="upload-field">
+              <label class="upload-label">Outlet/Shop GeoTag Photo (Front Side) <span>(JPG / PNG)</span></label>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                (change)="onFileSelected($event, 'shopFrontPhoto')" />
+              @if (selectedDocumentNames.shopFrontPhoto) {
+                <small class="file-name">{{ selectedDocumentNames.shopFrontPhoto }}</small>
+              }
+              @if (uploadControls['shopFrontPhoto'].touched && uploadControls['shopFrontPhoto'].errors?.['required']) {
+                <small class="error-text">Front side photo is required.</small>
+              }
+            </div>
+
+            <div class="upload-field">
+              <label class="upload-label">Outlet/Shop GeoTag Photo (Inside) <span>(JPG / PNG)</span></label>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                (change)="onFileSelected($event, 'shopInsidePhoto')" />
+              @if (selectedDocumentNames.shopInsidePhoto) {
+                <small class="file-name">{{ selectedDocumentNames.shopInsidePhoto }}</small>
+              }
+              @if (uploadControls['shopInsidePhoto'].touched && uploadControls['shopInsidePhoto'].errors?.['required']) {
+                <small class="error-text">Inside photo is required.</small>
+              }
+            </div>
+
+            <div class="upload-field">
+              <label class="upload-label">Application Form Upload</label>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png,.pdf"
+                (change)="onFileSelected($event, 'applicationFormFile')" />
+              @if (selectedDocumentNames.applicationFormFile) {
+                <small class="file-name">{{ selectedDocumentNames.applicationFormFile }}</small>
+              }
+              @if (uploadControls['applicationFormFile'].touched && uploadControls['applicationFormFile'].errors?.['required']) {
+                <small class="error-text">Application form is required.</small>
+              }
+            </div>
+
+            <button type="submit" class="submit-kyc-btn">
+              Submit KYC
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
 </div>
