@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-phone-ckyc',
@@ -24,9 +25,11 @@ export class PhoneCkycComponent implements OnDestroy {
   otpSent = false;
   timer = 30;
   canResendOtp = false;
+  showCkycPopup = false;
+
   private timerInterval: ReturnType<typeof setInterval> | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.ckycForm = this.fb.group({
       mobileNumber: ['', [Validators.required, this.mobileValidator]],
       otp: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
@@ -77,6 +80,7 @@ export class PhoneCkycComponent implements OnDestroy {
 
     this.ckycForm.get('otp')?.enable();
     this.ckycForm.get('otp')?.reset();
+    this.ckycForm.get('otp')?.markAsUntouched();
 
     this.startTimer();
   }
@@ -125,17 +129,35 @@ export class PhoneCkycComponent implements OnDestroy {
     this.canResendOtp = false;
     this.timer = 30;
     this.clearTimer();
+
     this.ckycForm.get('otp')?.reset();
     this.ckycForm.get('otp')?.disable();
   }
 
   onSubmit(): void {
+    this.ckycForm.markAllAsTouched();
+
     if (this.ckycForm.invalid) {
-      this.ckycForm.markAllAsTouched();
+      console.log('CKYC form is invalid', this.ckycForm.getRawValue());
       return;
     }
 
-    console.log('CKYC Form Submitted:', this.ckycForm.getRawValue());
+    // API success ke baad popup open karna hai.
+    // Abhi demo ke liye direct popup open kar rahe hain.
+    this.showCkycPopup = true;
+  }
+
+  goToNextStep(): void {
+    this.showCkycPopup = false;
+    this.router.navigate(['/business-category']);
+  }
+  goBack(): void {
+    this.router.navigate(['/business-entity']);
+  }
+
+
+  closePopup(): void {
+    this.showCkycPopup = false;
   }
 
   ngOnDestroy(): void {

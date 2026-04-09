@@ -1,9 +1,10 @@
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
 
-interface CategoryGroup {
+interface BusinessCategoryGroup {
   title: string;
   items: string[];
 }
@@ -11,16 +12,17 @@ interface CategoryGroup {
 @Component({
   selector: 'app-business-category',
   standalone: true,
-  imports: [CommonModule, FormsModule, OnboardingHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, OnboardingHeaderComponent],
   templateUrl: './business-category.html',
   styleUrl: './business-category.scss',
 })
 export class BusinessCategoryComponent {
-  searchText = '';
-  selectedCategory = '';
-  showDropdown = false;
+  businessCategoryForm: FormGroup;
 
-  categoryGroups: CategoryGroup[] = [
+  showDropdown = false;
+  selectedCategory = '';
+
+  categoryGroups: BusinessCategoryGroup[] = [
     {
       title: 'ARTS, GIFTS & STATIONERY',
       items: [
@@ -37,83 +39,98 @@ export class BusinessCategoryComponent {
     {
       title: 'FASHION & APPAREL',
       items: [
-        'Women Clothing Store',
-        'Men Clothing Store',
-        'Kids Wear Store',
-        'Boutique and Designer Store',
-        'Footwear Store',
-        'Accessories Store',
+        'Women Clothing Stores',
+        'Men Clothing Stores',
+        'Kids Wear Stores',
+        'Footwear Stores',
+        'Fashion Accessories',
+        'Boutiques',
       ],
     },
     {
       title: 'FOOD & GROCERY',
       items: [
-        'General Grocery Store',
-        'Bakery and Confectionery',
-        'Sweet Shop',
-        'Restaurant and Cafe',
-        'Organic Food Store',
-        'Dairy Products Store',
+        'Grocery Stores',
+        'Bakery Shops',
+        'Sweet Shops',
+        'Dairy Products',
+        'Organic Food Stores',
       ],
     },
   ];
 
-  get filteredGroups(): CategoryGroup[] {
-    const keyword = this.searchText.trim().toLowerCase();
+  filteredGroups: BusinessCategoryGroup[] = [];
 
-    if (!keyword) {
-      return this.categoryGroups;
-    }
+  constructor(private fb: FormBuilder, private router: Router) {
+    this.businessCategoryForm = this.fb.group({
+      businessCategory: ['', Validators.required],
+    });
 
-    return this.categoryGroups
-      .map((group) => ({
-        ...group,
-        items: group.items.filter((item) =>
-          item.toLowerCase().includes(keyword) ||
-          group.title.toLowerCase().includes(keyword)
-        ),
-      }))
-      .filter((group) => group.items.length > 0);
+    this.filteredGroups = this.categoryGroups;
+  }
+
+  get f() {
+    return this.businessCategoryForm.controls;
   }
 
   openDropdown(): void {
     this.showDropdown = true;
   }
 
-  onSearchInput(): void {
-    this.showDropdown = true;
-    this.selectedCategory = '';
+  closeDropdown(): void {
+    setTimeout(() => {
+      this.showDropdown = false;
+    }, 150);
   }
 
-  selectCategory(item: string): void {
-    this.searchText = item;
-    this.selectedCategory = item;
+  onSearchInput(): void {
+    const value = (this.businessCategoryForm.get('businessCategory')?.value || '')
+      .toString()
+      .trim()
+      .toLowerCase();
+
+    this.showDropdown = true;
+
+    if (!value) {
+      this.filteredGroups = this.categoryGroups;
+      return;
+    }
+
+    this.filteredGroups = this.categoryGroups
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) => item.toLowerCase().includes(value)),
+      }))
+      .filter((group) => group.items.length > 0);
+  }
+
+  selectCategory(category: string): void {
+    this.selectedCategory = category;
+    this.businessCategoryForm.patchValue({
+      businessCategory: category,
+    });
+    this.businessCategoryForm.get('businessCategory')?.markAsTouched();
     this.showDropdown = false;
   }
 
-  clearSelection(): void {
-    this.searchText = '';
-    this.selectedCategory = '';
-    this.showDropdown = true;
+  onProceed(): void {
+  this.businessCategoryForm.markAllAsTouched();
+
+  if (this.businessCategoryForm.invalid) {
+    return;
   }
 
-  onBack(): void {
-    console.log('Back clicked');
-  }
-
-  onConfirm(): void {
-    if (!this.selectedCategory) return;
-
-    console.log('Selected Category:', this.selectedCategory);
-    // yahan next route / API call laga dena
+  // Navigate to next page
+  this.router.navigate(['/share-business-details']);
+}
+goBack(): void {
+    this.router.navigate(['/phone-ckyc']);
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    const clickedInside = target.closest('.search-dropdown-wrap');
-
-    if (!clickedInside) {
+    if (!target.closest('.category-search-wrap')) {
       this.showDropdown = false;
     }
   }

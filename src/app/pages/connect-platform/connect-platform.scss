@@ -1,0 +1,994 @@
+:host {
+  display: block;
+}
+
+$brand-primary: #81007e;
+$brand-secondary: #f7941d;
+$brand-secondary-dark: #db7f10;
+$white: #ffffff;
+$text-dark: #243237;
+$text-muted: #7b8a90;
+$border-color: #e7ecef;
+$page-bg: #fafcfc;
+$sidebar-hover: rgba(129, 0, 126, 0.05);
+$sidebar-active: rgba(129, 0, 126, 0.08);
+$success-bg: rgba(247, 148, 29, 0.14);
+
+.connect-platform-page {
+  min-height: 100vh;
+  background: $page-bg;
+}
+
+.main-section {
+  padding: 0;
+}
+
+.page-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: calc(100vh - 72px);
+}
+
+.left-panel {
+  background: $white;
+  border-right: 1px solid $border-color;
+  padding: 26px 0;
+}
+
+.summary-link {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: $brand-primary;
+  font-weight: 700;
+  text-align: left;
+  padding: 0 24px 24px;
+  border-bottom: 1px solid $border-color;
+  cursor: pointer;
+}
+
+.step-nav {
+  display: flex;
+  flex-direction: column;
+  padding-top: 18px;
+}
+
+.nav-item {
+  width: 100%;
+  min-height: 58px;
+  border: none;
+  background: transparent;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #4d5b61;
+  font-weight: 600;
+  text-align: left;
+  transition: 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: $sidebar-hover;
+  }
+
+  &.active {
+    color: $text-dark;
+    background: $sidebar-active;
+  }
+
+  &.completed {
+    color: $text-dark;
+  }
+}
+
+.nav-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+}
+
+.arrow {
+  color: #99a7ad;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.status-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: $success-bg;
+  color: $brand-primary;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.content-panel {
+  padding: 40px 24px;
+}
+
+.content-card {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  background: $white;
+  border-radius: 20px;
+  border: 1px solid rgba(129, 0, 126, 0.08);
+  box-shadow: 0 14px 40px rgba(129, 0, 126, 0.06);
+  overflow: hidden;
+}
+
+.card-body-custom {
+  padding: 32px;
+}
+
+.step-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: $brand-primary;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: $text-dark;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: $text-muted;
+  margin-bottom: 28px;
+  max-width: 760px;
+}
+
+.form-block {
+  margin-bottom: 26px;
+}
+
+.block-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #44535a;
+  margin-bottom: 12px;
+
+  span {
+    color: $brand-secondary;
+  }
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+}
+
+.radio-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #4d5b61;
+  font-weight: 500;
+  cursor: pointer;
+
+  input {
+    accent-color: $brand-secondary;
+  }
+}
+
+.pep-radio-group {
+  gap: 14px 28px;
+}
+
+.info-copy {
+  margin-bottom: 22px;
+
+  p {
+    margin: 0 0 12px;
+    color: #505c61;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+}
+
+.tool-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+}
+
+.tool-link {
+  border: none;
+  background: transparent;
+  color: $brand-primary;
+  font-weight: 700;
+  padding: 0;
+  cursor: pointer;
+}
+
+.promo-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid rgba(129, 0, 126, 0.08);
+  border-radius: 18px;
+  background: rgba(129, 0, 126, 0.03);
+  margin-bottom: 26px;
+}
+
+.promo-illustration {
+  flex: 0 0 130px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.illustration-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.promo-content {
+  flex: 1;
+
+  h3 {
+    margin: 0 0 16px;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: $text-dark;
+  }
+}
+
+.outline-action-btn {
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: 1px solid $brand-primary;
+  background: transparent;
+  color: $brand-primary;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.custom-input {
+  width: 100%;
+  height: 52px;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-size: 1rem;
+  color: $text-dark;
+  background: $white;
+
+  &:focus {
+    border-color: $brand-secondary;
+    box-shadow: 0 0 0 0.18rem rgba(247, 148, 29, 0.18);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #9aa7ad;
+  }
+}
+
+.error-text {
+  display: block;
+  margin-top: 8px;
+  color: #d9781a;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.footer-action {
+  border-top: 1px solid rgba(129, 0, 126, 0.08);
+  padding-top: 24px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.back-btn {
+  border: none;
+  background: transparent;
+  color: $brand-primary;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.proceed-btn {
+  min-width: 220px;
+  height: 48px;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: 0.3s ease;
+  border: none;
+  background: $brand-secondary;
+  color: $white;
+  padding: 0 20px;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: $brand-secondary-dark;
+  }
+
+  &:disabled {
+    background: rgba(247, 148, 29, 0.4);
+    cursor: not-allowed;
+  }
+}
+
+.bank-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 18px;
+}
+
+.ifsc-block {
+  grid-column: 1 / 2;
+}
+
+.select-input {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #8d8d8d 50%),
+    linear-gradient(135deg, #8d8d8d 50%, transparent 50%);
+  background-position:
+    calc(100% - 22px) calc(50% - 3px),
+    calc(100% - 16px) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 42px;
+}
+
+/* Video KYC */
+.video-kyc-info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 18px;
+  border-radius: 14px;
+  border: 1px solid #d7e5f6;
+  background: #eef5ff;
+  margin-bottom: 28px;
+
+  p {
+    margin: 0;
+    color: #50616b;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+}
+
+.video-kyc-badge {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2f74db;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.video-kyc-layout {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.video-kyc-illustrations {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.video-kyc-icon-card {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  background: rgba(247, 148, 29, 0.12);
+  color: $brand-primary;
+  border: 1px solid rgba(247, 148, 29, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.video-kyc-dotted-line {
+  width: 2px;
+  height: 72px;
+  border-left: 2px dashed rgba(129, 0, 126, 0.2);
+  margin: 12px 0;
+}
+
+.video-kyc-content-block {
+  margin-bottom: 28px;
+
+  h3 {
+    margin: 0 0 12px;
+    font-size: 1.15rem;
+    color: $text-dark;
+  }
+}
+
+.video-kyc-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #46575d;
+
+  li {
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+}
+
+/* Bank modal */
+.bank-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 41, 55, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.bank-modal-card {
+  width: 100%;
+  max-width: 660px;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+  animation: modalFadeUp 0.25s ease;
+}
+
+.bank-modal-content {
+  padding: 28px 28px 20px;
+
+  h3 {
+    margin: 0 0 10px;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  p {
+    margin: 0 0 20px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #6b7280;
+  }
+}
+
+.account-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #374151;
+
+  .label {
+    color: #374151;
+  }
+
+  .value {
+    color: #6b7280;
+    letter-spacing: 0.5px;
+  }
+}
+
+.bank-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  padding: 20px 28px 24px;
+  background: #fff8f0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.reenter-btn,
+.confirm-bank-btn {
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reenter-btn {
+  background: #ffffff;
+  border: 1px solid $brand-primary;
+  color: $brand-primary;
+
+  &:hover {
+    background: rgba(129, 0, 126, 0.04);
+  }
+}
+
+.confirm-bank-btn {
+  background: $brand-primary;
+  border: 1px solid $brand-primary;
+  color: #ffffff;
+
+  &:hover {
+    background: #6d006b;
+    border-color: #6d006b;
+  }
+}
+
+/* Upload documents modal */
+.upload-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(20, 24, 31, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.upload-modal-card {
+  width: 100%;
+  max-width: 560px;
+  max-height: 92vh;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.upload-modal-header {
+  background: $brand-primary;
+  color: #ffffff;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  h3 {
+    margin: 0;
+    font-size: 1.9rem;
+    font-weight: 700;
+  }
+}
+
+.upload-modal-close {
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.upload-modal-body {
+  padding: 18px 16px 20px;
+  overflow-y: auto;
+}
+
+.upload-field {
+  margin-bottom: 18px;
+
+  input[type='file'] {
+    width: 100%;
+    border: 1px solid #d9dfe4;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: #ffffff;
+  }
+}
+
+.upload-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #364349;
+
+  span {
+    font-weight: 600;
+    color: #7d858c;
+    font-size: 0.95rem;
+  }
+}
+
+.upload-select {
+  margin-bottom: 12px;
+}
+
+.camera-btn {
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 8px;
+  border: none;
+  background: $brand-secondary;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: $brand-secondary-dark;
+  }
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.file-name {
+  display: block;
+  margin-top: 6px;
+  color: #5d6970;
+  font-size: 0.88rem;
+}
+
+.submit-kyc-btn {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 10px;
+  background: $brand-primary;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 8px;
+
+  &:hover {
+    background: #6d006b;
+  }
+}
+
+/* Thank you screen */
+.thank-you-screen {
+  text-align: center;
+  padding: 28px 12px 8px;
+}
+
+.thank-you-icon {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  background: linear-gradient(135deg, #81007e, #a0009c);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: 800;
+  box-shadow: 0 14px 28px rgba(129, 0, 126, 0.22);
+}
+
+.thank-you-subtitle {
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.thank-you-card {
+  max-width: 720px;
+  margin: 26px auto 0;
+  text-align: left;
+  background: #fffaf4;
+  border: 1px solid rgba(129, 0, 126, 0.1);
+  border-radius: 18px;
+  padding: 22px 20px;
+
+  h3 {
+    margin: 0 0 12px;
+    font-size: 1.15rem;
+    color: #243237;
+  }
+}
+
+.thank-you-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #4f5f66;
+
+  li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+}
+
+.thank-you-actions {
+  justify-content: center;
+}
+
+@keyframes modalFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Large tablet */
+@media (max-width: 1199.98px) {
+  .page-shell {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .content-panel {
+    padding: 32px 18px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 991.98px) {
+  .page-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .left-panel {
+    border-right: none;
+    border-bottom: 1px solid rgba(129, 0, 126, 0.08);
+    padding: 18px 0 10px;
+  }
+
+  .summary-link {
+    padding: 0 16px 18px;
+  }
+
+  .step-nav {
+    padding: 12px 12px 0;
+    gap: 10px;
+  }
+
+  .nav-item {
+    min-height: 52px;
+    border: 1px solid rgba(129, 0, 126, 0.08);
+    border-radius: 12px;
+    background: $white;
+  }
+
+  .content-panel {
+    padding: 20px 16px 32px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767.98px) {
+  .card-body-custom {
+    padding: 22px 16px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 1.35;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 22px;
+  }
+
+  .radio-group {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .promo-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 16px;
+  }
+
+  .promo-illustration {
+    flex: none;
+  }
+
+  .promo-content h3 {
+    font-size: 1.05rem;
+  }
+
+  .outline-action-btn {
+    width: 100%;
+  }
+
+  .custom-input {
+    height: 48px;
+    font-size: 0.95rem;
+  }
+
+  .footer-action {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .proceed-btn,
+  .back-btn {
+    width: 100%;
+  }
+
+  .back-btn {
+    height: 48px;
+    border: 1px solid rgba(129, 0, 126, 0.18);
+    border-radius: 12px;
+    background: $white;
+  }
+
+  .bank-form-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .ifsc-block {
+    grid-column: auto;
+  }
+
+  .video-kyc-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .video-kyc-illustrations {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .video-kyc-dotted-line {
+    width: 60px;
+    height: 2px;
+    border-left: none;
+    border-top: 2px dashed rgba(129, 0, 126, 0.2);
+    margin: 0;
+  }
+
+  .bank-modal-content {
+    padding: 22px 18px 18px;
+
+    h3 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 15px;
+    }
+  }
+
+  .account-line {
+    font-size: 17px;
+  }
+
+  .bank-modal-actions {
+    flex-direction: column;
+    padding: 18px;
+  }
+
+  .reenter-btn,
+  .confirm-bank-btn {
+    width: 100%;
+  }
+
+  .upload-modal-overlay {
+    padding: 12px;
+  }
+
+  .upload-modal-card {
+    max-width: 100%;
+    max-height: 94vh;
+    border-radius: 14px;
+  }
+
+  .upload-modal-header {
+    padding: 16px 18px;
+
+    h3 {
+      font-size: 1.45rem;
+    }
+  }
+
+  .upload-modal-body {
+    padding: 16px 14px 18px;
+  }
+
+  .upload-label {
+    font-size: 0.98rem;
+  }
+
+  .camera-btn,
+  .submit-kyc-btn {
+    width: 100%;
+  }
+
+  .thank-you-screen {
+    padding-top: 20px;
+  }
+
+  .thank-you-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 2rem;
+  }
+
+  .thank-you-card {
+    padding: 18px 16px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 575.98px) {
+  .content-panel {
+    padding: 16px 12px 24px;
+  }
+
+  .card-body-custom {
+    padding: 18px 14px;
+  }
+
+  .step-label {
+    font-size: 0.78rem;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+  }
+
+  .tool-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .video-kyc-info-card {
+    padding: 14px;
+  }
+
+  .video-kyc-icon-card {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+  }
+
+  .bank-modal-overlay {
+    padding: 14px;
+  }
+
+  .bank-modal-card {
+    border-radius: 12px;
+  }
+
+  .bank-modal-content h3 {
+    font-size: 20px;
+  }
+
+  .account-line {
+    font-size: 15px;
+  }
+}

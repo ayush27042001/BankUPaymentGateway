@@ -1,0 +1,112 @@
+<div class="business-details-page">
+  <app-onboarding-header
+    [title]="'Account Creation'"
+    [currentStep]="2"
+    [merchantId]="'13574280'">
+  </app-onboarding-header>
+
+  <section class="main-section">
+    <div class="container">
+      <div class="form-layout">
+        <div class="form-card">
+          <div class="card-body-custom">
+            <h2>Share your business details</h2>
+            <p class="subtitle">
+              This will help us verify your details &amp; ease your onboarding process by fetching relevant information
+            </p>
+
+            <form [formGroup]="businessForm" (ngSubmit)="onSubmit()" novalidate>
+              <div class="form-row">
+                <label for="expectedSales">
+                  Expected Sales per month <span>*</span>
+                </label>
+
+                <div class="field-wrap">
+                  <div class="amount-input-group">
+                    <span class="currency-symbol">₹</span>
+
+                    <input
+                      id="expectedSales"
+                      type="text"
+                      class="form-control custom-input"
+                      formControlName="expectedSales"
+                      placeholder="Enter expected monthly sales"
+                      inputmode="numeric"
+                      (input)="onExpectedSalesInput()"
+                    />
+                  </div>
+
+                  @if (salesInWords) {
+                    <small class="helper-text">{{ salesInWords }}</small>
+                  }
+
+                  @if (f['expectedSales'].touched && f['expectedSales'].errors?.['required']) {
+                    <small class="error-text">Expected sales per month is required.</small>
+                  }
+
+                  @if (f['expectedSales'].touched && f['expectedSales'].errors?.['invalidAmount']) {
+                    <small class="error-text">Please enter a valid numeric amount.</small>
+                  }
+                </div>
+              </div>
+
+              <div class="form-row gstin-toggle-row">
+                <label for="hasGstin">Do you have a GSTIN number?</label>
+
+                <div class="field-wrap">
+                  <label class="switch">
+                    <input
+                      id="hasGstin"
+                      type="checkbox"
+                      formControlName="hasGstin"
+                    />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="gstin">GSTIN</label>
+
+                <div class="field-wrap">
+                  <input
+                    id="gstin"
+                    type="text"
+                    class="form-control custom-input"
+                    formControlName="gstin"
+                    placeholder="Enter your GSTIN"
+                    maxlength="15"
+                    (input)="onGstinInput()"
+                  />
+
+                  @if (f['hasGstin'].value && f['gstin'].touched && f['gstin'].errors?.['required']) {
+                    <small class="error-text">GSTIN is required.</small>
+                  }
+
+                  @if (f['hasGstin'].value && f['gstin'].touched && f['gstin'].errors?.['invalidGstin']) {
+                    <small class="error-text">Enter a valid GSTIN.</small>
+                  }
+                </div>
+              </div>
+
+              <div class="footer-action">
+                <button type="button" class="back-btn" (click)="goBack()">
+                  ← Back
+                </button>
+
+                <button
+                  type="submit"
+                  class="proceed-btn"
+                  [disabled]="businessForm.invalid">
+                  Confirm &amp; Proceed →
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        
+      </div>
+    </div>
+  </section>
+</div>

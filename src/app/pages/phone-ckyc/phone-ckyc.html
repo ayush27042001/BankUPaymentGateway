@@ -1,9 +1,10 @@
 <div class="ckyc-page">
-    <app-onboarding-header
+  <app-onboarding-header
     [title]="'Account Creation'"
     [currentStep]="2"
     [merchantId]="'13574280'">
   </app-onboarding-header>
+
   <section class="main-section">
     <div class="container">
       <div class="form-layout">
@@ -118,16 +119,19 @@
               </div>
 
               <div class="footer-action">
-                <button type="button" class="back-btn">Back</button>
+                <!-- <button type="button" class="back-btn">Back</button> -->
+                   <button type="button" class="back-btn" (click)="goBack()">
+                  ← Back
+                </button>
 
                 <div class="action-group">
-                  <button type="button" class="skip-btn">Skip CKYC</button>
+                  <button type="button" class="skip-btn">Skip CKYC </button>
 
                   <button
                     type="submit"
                     class="proceed-btn"
                     [disabled]="ckycForm.invalid">
-                    Proceed with CKYC
+                    Proceed with CKYC →
                   </button>
                 </div>
               </div>
@@ -135,10 +139,33 @@
           </div>
         </div>
 
-        <div class="help-bubble">
-          Completing your CKYC will fast track onboarding and account activation
-        </div>
+        
       </div>
     </div>
   </section>
+
+  <!-- CKYC Success Modal -->
+  @if (showCkycPopup) {
+    <div class="ckyc-modal">
+      <div class="modal-box">
+        <div class="modal-content">
+          <div class="icon-wrap">
+            <div class="icon-circle">✓</div>
+          </div>
+
+          <h3>CKYC details fetched!</h3>
+          <p>
+            We will use these details to autofill your information which will
+            fasten activation process
+          </p>
+
+          <div class="modal-action">
+            <button type="button" class="continue-btn" (click)="goToNextStep()">
+              Continue
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>
