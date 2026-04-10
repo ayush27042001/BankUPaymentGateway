@@ -49,13 +49,20 @@
                     <label for="fullName">Name on PAN card <span>*</span></label>
 
                     <div class="field-wrap">
-                      <input
-                        id="fullName"
-                        type="text"
-                        class="form-control custom-input"
-                        formControlName="fullName"
-                        placeholder="Enter full name"
-                      />
+                      <!-- Editable input wrapper with hover pencil icon -->
+                      <div class="editable-input-wrap">
+                        <input
+                          id="fullName"
+                          type="text"
+                          class="form-control custom-input editable-input-control"
+                          formControlName="fullName"
+                          placeholder="Enter full name"
+                        />
+
+                        <span class="edit-icon" aria-hidden="true">
+                          ✎
+                        </span>
+                      </div>
 
                       @if (f['fullName'].touched && f['fullName'].errors?.['required']) {
                         <small class="error-text">Name is required.</small>
@@ -87,7 +94,6 @@
               }
 
               <div class="footer-action">
-                
                 <button type="submit" class="proceed-btn" [disabled]="panForm.invalid">
                   Confirm &amp; Proceed
                 </button>
@@ -95,8 +101,6 @@
             </form>
           </div>
         </div>
-
-      
       </div>
     </div>
   </section>

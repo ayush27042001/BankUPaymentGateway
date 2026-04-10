@@ -2,6 +2,7 @@
   display: block;
 }
 
+/* Theme variables */
 $brand-primary: #800180;
 $brand-secondary: #f39021;
 $white: #ffffff;
@@ -16,7 +17,7 @@ $page-bg: #fafafa;
   overflow-x: hidden;
 }
 
-/* HEADER (aligned with global header) */
+/* Header section */
 .top-header {
   background: linear-gradient(90deg, $brand-primary 0%, #5f015f 100%);
   color: $white;
@@ -125,11 +126,36 @@ $page-bg: #fafafa;
   }
 }
 
-/* MAIN */
+/* Background section */
 .main-section {
+  position: relative;
   padding: 40px 0;
+  overflow: hidden;
 }
 
+.bg-glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.left-glow {
+  left: 10%;
+  top: 20%;
+  background: rgba(128, 1, 128, 0.18);
+}
+
+.right-glow {
+  right: 10%;
+  bottom: 10%;
+  background: rgba(243, 144, 33, 0.18);
+}
+
+/* Card layout */
 .form-layout {
   display: flex;
   justify-content: center;
@@ -144,9 +170,9 @@ $page-bg: #fafafa;
   border-radius: 20px;
   border: 1px solid rgba(128, 1, 128, 0.08);
   box-shadow: 0 18px 50px rgba(128, 1, 128, 0.08);
+  overflow: hidden;
 }
 
-/* BODY */
 .card-body-custom {
   padding: 32px;
 
@@ -155,6 +181,7 @@ $page-bg: #fafafa;
     font-weight: 700;
     margin-bottom: 12px;
     color: $text-dark;
+    line-height: 1.25;
   }
 
   .subtitle {
@@ -165,7 +192,7 @@ $page-bg: #fafafa;
   }
 }
 
-/* FORM */
+/* Form rows */
 .form-row {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -176,6 +203,7 @@ $page-bg: #fafafa;
   label {
     font-size: 1rem;
     font-weight: 600;
+    color: $text-dark;
 
     span {
       color: $brand-secondary;
@@ -183,32 +211,99 @@ $page-bg: #fafafa;
   }
 }
 
+.field-wrap {
+  width: 100%;
+}
+
+/* Standard input */
 .custom-input {
   height: 52px;
   border: 1px solid $border-color;
   border-radius: 12px;
   padding: 0 16px;
   width: 100%;
+  font-size: 1rem;
+  color: $text-dark;
+  background: $white;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 
   &:focus {
     border-color: $brand-primary;
     box-shadow: 0 0 0 0.18rem rgba(128, 1, 128, 0.12);
+    outline: none;
   }
 }
 
+/* Editable input wrapper for hover pencil icon */
+.editable-input-wrap {
+  position: relative;
+  width: 100%;
+
+  .editable-input-control {
+    padding-right: 48px; /* Space reserved for the icon */
+    cursor: text;
+  }
+
+  .edit-icon {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+    pointer-events: none;
+  }
+
+  &:hover .edit-icon,
+  &:focus-within .edit-icon {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Validation text */
 .error-text {
+  display: inline-block;
   margin-top: 8px;
   color: $brand-secondary;
   font-size: 0.88rem;
 }
 
-/* FOOTER */
+/* Section animation */
+.animate-section {
+  animation: fadeSlide 0.3s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Footer action */
 .footer-action {
   border-top: 1px solid #f1f1f1;
   margin-top: 34px;
   padding-top: 24px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
 }
 
@@ -222,15 +317,22 @@ $page-bg: #fafafa;
 .proceed-btn {
   min-width: 210px;
   height: 50px;
+  border: none;
   border-radius: 12px;
   background: $brand-secondary;
   color: $white;
   font-weight: 700;
+  transition: background 0.25s ease, opacity 0.25s ease;
+
+  &:hover:not(:disabled) {
+    background: #d97c15;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
 }
-
-
-
-/* ================= RESPONSIVE ================= */
 
 /* Tablet */
 @media (max-width: 991.98px) {
@@ -246,11 +348,10 @@ $page-bg: #fafafa;
     justify-content: center;
   }
 
-  .help-bubble {
-    position: static;
-    transform: none;
-    margin-top: 20px;
-    max-width: 100%;
+  .bg-glow {
+    width: 220px;
+    height: 220px;
+    filter: blur(70px);
   }
 }
 
@@ -281,6 +382,19 @@ $page-bg: #fafafa;
     height: 48px;
   }
 
+  .editable-input-wrap {
+    .editable-input-control {
+      padding-right: 44px;
+    }
+
+    .edit-icon {
+      right: 12px;
+      width: 26px;
+      height: 26px;
+      font-size: 13px;
+    }
+  }
+
   .footer-action {
     flex-direction: column-reverse;
   }
@@ -291,7 +405,7 @@ $page-bg: #fafafa;
   }
 }
 
-/* Small Mobile */
+/* Small mobile */
 @media (max-width: 575.98px) {
   .card-body-custom {
     padding: 18px 12px;
@@ -307,5 +421,11 @@ $page-bg: #fafafa;
 
   .custom-input {
     font-size: 0.9rem;
+  }
+
+  .editable-input-wrap {
+    .edit-icon {
+      right: 10px;
+    }
   }
 }
