@@ -13,8 +13,10 @@ $page-bg: #fafafa;
 .ckyc-page {
   min-height: 100vh;
   background: $page-bg;
+  overflow-x: hidden;
 }
 
+/* MAIN */
 .main-section {
   position: relative;
   overflow: hidden;
@@ -22,11 +24,11 @@ $page-bg: #fafafa;
 }
 
 .form-layout {
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 72vh;
+  width: 100%;
 }
 
 .form-card {
@@ -39,6 +41,7 @@ $page-bg: #fafafa;
   overflow: hidden;
 }
 
+/* BODY */
 .card-body-custom {
   padding: 32px;
   min-height: 500px;
@@ -48,26 +51,27 @@ $page-bg: #fafafa;
     font-weight: 700;
     margin-bottom: 8px;
     color: $text-dark;
+    line-height: 1.25;
   }
 
   .subtitle {
     font-size: 1rem;
     color: $text-muted;
     margin-bottom: 24px;
+    line-height: 1.6;
   }
 }
 
+/* FORM */
 .form-row {
   display: grid;
   grid-template-columns: 220px 1fr;
   gap: 18px;
-  align-items: start;
   margin-bottom: 24px;
 
   label {
     font-size: 1rem;
     font-weight: 600;
-    color: #505050;
 
     span {
       color: $brand-secondary;
@@ -79,6 +83,7 @@ $page-bg: #fafafa;
   width: 100%;
 }
 
+/* MOBILE INPUT */
 .mobile-input-group {
   display: flex;
   align-items: center;
@@ -99,7 +104,6 @@ $page-bg: #fafafa;
     align-items: center;
     justify-content: center;
     background: rgba(128, 1, 128, 0.05);
-    color: $brand-primary;
     font-weight: 700;
     border-right: 1px solid $border-color;
   }
@@ -121,7 +125,6 @@ $page-bg: #fafafa;
   border: 1px solid $border-color;
   border-radius: 12px;
   padding: 0 16px;
-  font-size: 1rem;
 
   &:focus {
     border-color: $brand-primary;
@@ -130,25 +133,20 @@ $page-bg: #fafafa;
   }
 }
 
+/* TEXTS */
 .helper-text {
-  display: block;
   margin-top: 8px;
-  color: $text-muted;
   font-size: 0.88rem;
+  color: $text-muted;
 }
 
 .error-text {
-  display: block;
   margin-top: 8px;
-  color: $brand-secondary;
   font-size: 0.88rem;
-  font-weight: 500;
+  color: $brand-secondary;
 }
 
-.send-otp-wrap {
-  margin-top: 14px;
-}
-
+/* BUTTONS */
 .otp-btn,
 .proceed-btn,
 .skip-btn {
@@ -160,10 +158,9 @@ $page-bg: #fafafa;
 
 .otp-btn,
 .proceed-btn {
-  border: none;
   background: $brand-secondary;
   color: $white;
-  padding: 0 20px;
+  border: none;
 
   &:hover:not(:disabled) {
     background: #d97c15;
@@ -171,7 +168,6 @@ $page-bg: #fafafa;
 
   &:disabled {
     background: rgba(243, 144, 33, 0.45);
-    cursor: not-allowed;
   }
 }
 
@@ -179,98 +175,72 @@ $page-bg: #fafafa;
   border: 1px solid $brand-primary;
   background: transparent;
   color: $brand-primary;
-  padding: 0 20px;
+}
 
-  &:hover {
-    background: rgba(128, 1, 128, 0.05);
-  }
+/* OTP */
+.send-otp-wrap {
+  margin-top: 14px;
 }
 
 .otp-meta {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  gap: 12px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .timer-text {
   color: $brand-primary;
-  font-size: 0.9rem;
   font-weight: 600;
 }
 
 .resend-btn {
-  border: none;
   background: transparent;
+  border: none;
   color: $brand-secondary;
   font-weight: 700;
-  padding: 0;
 }
 
-.animate-section {
-  animation: fadeSlide 0.35s ease;
-}
-
+/* CONSENT */
 .consent-box {
   display: flex;
-  align-items: flex-start;
   gap: 12px;
   background: rgba(128, 1, 128, 0.04);
-  border-top: 1px solid rgba(128, 1, 128, 0.08);
-  border-bottom: 1px solid rgba(128, 1, 128, 0.08);
   padding: 18px 20px;
   margin-top: 28px;
 
   input {
     margin-top: 4px;
-    accent-color: $brand-primary;
   }
 
   label {
-    margin: 0;
-    color: #444;
     line-height: 1.6;
     font-weight: 500;
   }
 }
 
+/* FOOTER */
 .footer-action {
-  padding: 24px 0 0;
+  padding-top: 24px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   gap: 16px;
-}
-
-.back-btn {
-  border: none;
-  background: transparent;
-  color: $brand-primary;
-  font-weight: 700;
 }
 
 .action-group {
   display: flex;
-  align-items: center;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.help-bubble {
-  position: absolute;
-  right: -40px;
-  top: 30%;
-  max-width: 250px;
-  background: $white;
-  border: 1px solid rgba(243, 144, 33, 0.16);
-  border-radius: 14px;
-  padding: 16px 18px;
-  color: #666;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+.back-btn {
+  background: transparent;
+  border: none;
+  color: $brand-primary;
+  font-weight: 700;
 }
 
+/* MODAL */
 .ckyc-modal {
   position: fixed;
   inset: 0;
@@ -279,26 +249,18 @@ $page-bg: #fafafa;
   justify-content: center;
   align-items: center;
   padding: 20px;
-  z-index: 9999;
 }
 
 .modal-box {
   width: 100%;
   max-width: 620px;
-  background: #ffffff;
+  background: $white;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-  animation: modalPop 0.25s ease;
 }
 
 .modal-content {
-  padding: 32px 28px 24px;
-  text-align: left;
-}
-
-.icon-wrap {
-  margin-bottom: 18px;
+  padding: 32px 28px;
 }
 
 .icon-circle {
@@ -306,126 +268,69 @@ $page-bg: #fafafa;
   height: 64px;
   border-radius: 50%;
   background: #39b54a;
-  color: #ffffff;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
-  font-weight: 700;
-}
-
-.modal-content h3 {
-  margin: 0 0 10px;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #202020;
-}
-
-.modal-content p {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #666666;
-  max-width: 500px;
 }
 
 .modal-action {
+  margin-top: 24px;
   display: flex;
   justify-content: flex-end;
-  margin-top: 28px;
-  padding-top: 18px;
-  border-top: 1px solid #e8e8e8;
 }
 
 .continue-btn {
-  min-width: 120px;
   height: 44px;
-  border: none;
   border-radius: 8px;
   background: #00a88e;
-  color: #ffffff;
-  font-weight: 700;
-  padding: 0 18px;
-  cursor: pointer;
-  transition: 0.25s ease;
-
-  &:hover {
-    background: #00917b;
-  }
+  color: #fff;
 }
 
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* ================= RESPONSIVE ================= */
 
-@keyframes modalPop {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
+/* Tablet */
 @media (max-width: 991.98px) {
-  .help-bubble {
-    position: static;
+  .form-card {
     max-width: 100%;
-    margin-top: 18px;
   }
 }
 
+/* Mobile */
 @media (max-width: 767.98px) {
   .main-section {
     padding: 24px 0 40px;
   }
 
   .card-body-custom {
-    padding: 22px 16px;
+    padding: 20px 14px;
     min-height: auto;
 
     h2 {
-      font-size: 1.45rem;
-      line-height: 1.35;
-    }
-
-    .subtitle {
-      font-size: 0.95rem;
+      font-size: 1.4rem;
     }
   }
 
   .form-row {
     grid-template-columns: 1fr;
     gap: 10px;
-    margin-bottom: 20px;
   }
 
-  .mobile-input-group .country-code,
-  .custom-input {
+  .custom-input,
+  .mobile-input-group .country-code {
     height: 48px;
   }
 
   .consent-box {
-    padding: 16px;
+    flex-direction: column;
   }
 
   .footer-action {
     flex-direction: column-reverse;
-    align-items: stretch;
   }
 
   .action-group {
     flex-direction: column;
-    align-items: stretch;
   }
 
   .otp-btn,
@@ -435,25 +340,8 @@ $page-bg: #fafafa;
     width: 100%;
   }
 
-  .back-btn {
-    height: 48px;
-    border: 1px solid rgba(128, 1, 128, 0.2);
-    border-radius: 12px;
-    background: $white;
-  }
-
   .modal-content {
-    padding: 24px 18px 20px;
-  }
-
-  .modal-content h3 {
-    font-size: 1.35rem;
-  }
-
-  .icon-circle {
-    width: 56px;
-    height: 56px;
-    font-size: 26px;
+    padding: 20px;
   }
 
   .modal-action {
@@ -462,5 +350,16 @@ $page-bg: #fafafa;
 
   .continue-btn {
     width: 100%;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 575.98px) {
+  .card-body-custom h2 {
+    font-size: 1.25rem;
+  }
+
+  .custom-input {
+    font-size: 0.9rem;
   }
 }

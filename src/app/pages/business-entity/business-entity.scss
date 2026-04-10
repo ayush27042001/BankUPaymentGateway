@@ -12,6 +12,7 @@ $page-bg: #fafafa;
 .onboarding-page {
   min-height: 100vh;
   background: $page-bg;
+  overflow-x: hidden;
 }
 
 .main-section {
@@ -29,6 +30,7 @@ $page-bg: #fafafa;
   filter: blur(90px);
   opacity: 0.14;
   z-index: 0;
+  pointer-events: none;
 }
 
 .left-glow {
@@ -50,6 +52,7 @@ $page-bg: #fafafa;
   justify-content: center;
   align-items: center;
   min-height: 72vh;
+  width: 100%;
 }
 
 .form-card {
@@ -71,12 +74,15 @@ $page-bg: #fafafa;
     font-weight: 700;
     margin-bottom: 8px;
     color: $text-dark;
+    line-height: 1.25;
+    word-break: break-word;
   }
 
   .subtitle {
     font-size: 1rem;
     color: $text-muted;
     margin-bottom: 24px;
+    line-height: 1.6;
   }
 }
 
@@ -103,7 +109,8 @@ $page-bg: #fafafa;
   background: #fff;
   color: $brand-primary;
   font-weight: 600;
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
+  cursor: pointer;
 
   &:hover {
     border-color: $brand-secondary;
@@ -127,10 +134,16 @@ $page-bg: #fafafa;
 }
 
 .back-btn {
+  min-height: 50px;
   border: none;
   background: transparent;
   color: $brand-primary;
   font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: darken($brand-primary, 8%);
+  }
 }
 
 .proceed-btn {
@@ -141,22 +154,117 @@ $page-bg: #fafafa;
   background: $brand-secondary;
   color: $white;
   font-weight: 700;
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
 
   &:hover {
     background: #d97c15;
   }
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.header-actions .action-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.header-actions .action-link i {
+  font-size: 16px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-actions .action-link .link-text {
+  display: inline-block;
+  margin-left: 8px;
+  line-height: 1;
+}
+
+.header-actions .action-link:hover {
+  color: #f7941d;
+}
+
+/* Large tablets and below */
 @media (max-width: 991.98px) {
   .main-section {
     padding: 32px 0 48px;
   }
+
+  .form-card {
+    max-width: 100%;
+  }
+
+  .card-body-custom {
+    padding: 28px 24px;
+    min-height: auto;
+
+    h2 {
+      font-size: 1.75rem;
+    }
+  }
+
+  .footer-action {
+    padding: 20px 24px;
+  }
+
+  .header-actions {
+    gap: 14px;
+  }
+
+  .header-actions .action-link {
+    font-size: 13.5px;
+    padding: 6px 8px;
+  }
 }
 
+/* Tablets */
 @media (max-width: 767.98px) {
   .main-section {
     padding: 24px 0 40px;
+    min-height: auto;
+  }
+
+  .bg-glow {
+    width: 220px;
+    height: 220px;
+    filter: blur(70px);
+    opacity: 0.12;
+  }
+
+  .left-glow {
+    left: -40px;
+    top: 18%;
+  }
+
+  .right-glow {
+    right: -40px;
+    top: 48%;
+  }
+
+  .form-layout {
+    min-height: auto;
+    align-items: flex-start;
+  }
+
+  .form-card {
+    border-radius: 16px;
   }
 
   .card-body-custom {
@@ -170,7 +278,22 @@ $page-bg: #fafafa;
 
     .subtitle {
       font-size: 0.95rem;
+      margin-bottom: 20px;
     }
+  }
+
+  .entity-label {
+    font-size: 0.95rem;
+  }
+
+  .entity-options {
+    gap: 10px;
+  }
+
+  .entity-chip {
+    min-height: 40px;
+    padding: 8px 14px;
+    font-size: 0.92rem;
   }
 
   .footer-action {
@@ -190,5 +313,81 @@ $page-bg: #fafafa;
   .back-btn {
     border: 1px solid rgba(128, 1, 128, 0.2);
     background: #fff;
+  }
+
+  .header-actions {
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .header-actions .action-link {
+    font-size: 13px;
+    padding: 5px 8px;
+  }
+
+  .header-actions .action-link i {
+    font-size: 15px;
+  }
+
+  .header-actions .action-link .link-text {
+    margin-left: 6px;
+  }
+}
+
+/* Small mobiles */
+@media (max-width: 575.98px) {
+  .main-section {
+    padding: 18px 0 30px;
+  }
+
+  .form-card {
+    border-radius: 14px;
+  }
+
+  .card-body-custom {
+    padding: 18px 14px;
+
+    h2 {
+      font-size: 1.28rem;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+    }
+  }
+
+  .entity-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .entity-chip {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .footer-action {
+    padding: 16px 14px;
+    gap: 12px;
+  }
+
+  .proceed-btn,
+  .back-btn {
+    height: 46px;
+    font-size: 0.95rem;
+  }
+
+  .header-actions {
+    gap: 10px;
+  }
+
+  .header-actions .action-link {
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+
+  .header-actions .action-link .link-text {
+    margin-left: 5px;
   }
 }

@@ -13,8 +13,10 @@ $page-bg: #fafafa;
 .pan-page {
   min-height: 100vh;
   background: $page-bg;
+  overflow-x: hidden;
 }
 
+/* HEADER (aligned with global header) */
 .top-header {
   background: linear-gradient(90deg, $brand-primary 0%, #5f015f 100%);
   color: $white;
@@ -52,6 +54,7 @@ $page-bg: #fafafa;
       margin: 0;
       font-size: 1.5rem;
       font-weight: 700;
+      line-height: 1.2;
     }
 
     span {
@@ -64,6 +67,7 @@ $page-bg: #fafafa;
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
 
     p {
       margin: 0;
@@ -76,6 +80,7 @@ $page-bg: #fafafa;
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
 
     .step {
       width: 24px;
@@ -106,6 +111,9 @@ $page-bg: #fafafa;
     flex-wrap: wrap;
 
     a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       color: $white;
       text-decoration: none;
       font-weight: 600;
@@ -117,12 +125,12 @@ $page-bg: #fafafa;
   }
 }
 
+/* MAIN */
 .main-section {
   padding: 40px 0;
 }
 
 .form-layout {
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -138,6 +146,7 @@ $page-bg: #fafafa;
   box-shadow: 0 18px 50px rgba(128, 1, 128, 0.08);
 }
 
+/* BODY */
 .card-body-custom {
   padding: 32px;
 
@@ -156,6 +165,7 @@ $page-bg: #fafafa;
   }
 }
 
+/* FORM */
 .form-row {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -166,7 +176,6 @@ $page-bg: #fafafa;
   label {
     font-size: 1rem;
     font-weight: 600;
-    color: #505050;
 
     span {
       color: $brand-secondary;
@@ -179,6 +188,7 @@ $page-bg: #fafafa;
   border: 1px solid $border-color;
   border-radius: 12px;
   padding: 0 16px;
+  width: 100%;
 
   &:focus {
     border-color: $brand-primary;
@@ -187,73 +197,42 @@ $page-bg: #fafafa;
 }
 
 .error-text {
-  display: inline-block;
   margin-top: 8px;
   color: $brand-secondary;
   font-size: 0.88rem;
-  font-weight: 500;
 }
 
-.animate-section {
-  animation: fadeSlide 0.35s ease;
-}
-
+/* FOOTER */
 .footer-action {
   border-top: 1px solid #f1f1f1;
   margin-top: 34px;
   padding-top: 24px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 12px;
 }
-.back-btn{
-    border: none;
-    background: transparent;
-    color: $brand-primary;
-    font-weight: 600;
+
+.back-btn {
+  border: none;
+  background: transparent;
+  color: $brand-primary;
+  font-weight: 600;
 }
+
 .proceed-btn {
   min-width: 210px;
   height: 50px;
-  border: none;
   border-radius: 12px;
   background: $brand-secondary;
   color: $white;
   font-weight: 700;
-
-  &:hover:not(:disabled) {
-    background: #d97c15;
-  }
-
-  &:disabled {
-    background: rgba(243, 144, 33, 0.45);
-    cursor: not-allowed;
-  }
 }
 
-.help-bubble {
-  position: absolute;
-  right: -40px;
-  top: 50%;
-  transform: translateY(-50%);
-  max-width: 250px;
-  background: $white;
-  border-radius: 14px;
-  padding: 16px 18px;
-  color: #666;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
-}
 
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
+/* ================= RESPONSIVE ================= */
+
+/* Tablet */
 @media (max-width: 991.98px) {
   .top-header .header-inner {
     justify-content: center;
@@ -263,59 +242,70 @@ $page-bg: #fafafa;
   .brand-wrap,
   .stepper-wrap,
   .header-actions {
-    justify-content: center;
     width: 100%;
+    justify-content: center;
   }
 
   .help-bubble {
     position: static;
     transform: none;
+    margin-top: 20px;
     max-width: 100%;
-    margin-top: 18px;
   }
 }
 
+/* Mobile */
 @media (max-width: 767.98px) {
   .main-section {
     padding: 24px 0 40px;
   }
 
   .card-body-custom {
-    padding: 22px 16px 20px;
+    padding: 20px 14px;
 
     h2 {
-      font-size: 1.45rem;
-      line-height: 1.35;
+      font-size: 1.4rem;
     }
 
     .subtitle {
       font-size: 0.95rem;
-      margin-bottom: 24px;
     }
   }
 
   .form-row {
     grid-template-columns: 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 8px;
   }
 
   .custom-input {
     height: 48px;
-    font-size: 0.95rem;
   }
 
   .footer-action {
-    justify-content: stretch;
+    flex-direction: column-reverse;
   }
 
-  .proceed-btn {
+  .proceed-btn,
+  .back-btn {
     width: 100%;
-    min-width: 100%;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 575.98px) {
+  .card-body-custom {
+    padding: 18px 12px;
+
+    h2 {
+      font-size: 1.25rem;
+    }
   }
 
-  .help-bubble {
+  .form-row label {
+    font-size: 0.95rem;
+  }
+
+  .custom-input {
     font-size: 0.9rem;
-    padding: 14px;
   }
 }
