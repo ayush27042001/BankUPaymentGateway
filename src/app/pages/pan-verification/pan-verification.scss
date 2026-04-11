@@ -127,7 +127,31 @@ $page-bg: #fafafa;
 
 /* MAIN */
 .main-section {
+  position: relative;
   padding: 40px 0;
+  overflow: hidden;
+}
+
+.bg-glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.left-glow {
+  left: 10%;
+  top: 20%;
+  background: rgba(128, 1, 128, 0.18);
+}
+
+.right-glow {
+  right: 10%;
+  bottom: 10%;
+  background: rgba(243, 144, 33, 0.18);
 }
 
 .form-layout {
@@ -135,6 +159,7 @@ $page-bg: #fafafa;
   justify-content: center;
   align-items: center;
   min-height: 75vh;
+   overflow: hidden;
 }
 
 .form-card {
@@ -149,6 +174,7 @@ $page-bg: #fafafa;
 /* BODY */
 .card-body-custom {
   padding: 32px;
+  line-height: 1.25;
 
   h2 {
     font-size: 2rem;
@@ -176,11 +202,16 @@ $page-bg: #fafafa;
   label {
     font-size: 1rem;
     font-weight: 600;
+    color: $text-dark;
 
     span {
       color: $brand-secondary;
     }
   }
+}
+
+.field-wrap {
+  width: 100%;
 }
 
 .custom-input {
@@ -189,26 +220,88 @@ $page-bg: #fafafa;
   border-radius: 12px;
   padding: 0 16px;
   width: 100%;
+  font-size: 1rem;
+  color: $text-dark;
+  background: $white;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 
   &:focus {
     border-color: $brand-primary;
     box-shadow: 0 0 0 0.18rem rgba(128, 1, 128, 0.12);
+     outline: none;
+  }
+}
+
+.editable-input-wrap {
+  position: relative;
+  width: 100%;
+
+  .editable-input-control {
+    padding-right: 48px; /* Space reserved for the icon */
+    cursor: text;
+  }
+
+  .edit-icon {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+    pointer-events: none;
+  }
+
+  &:hover .edit-icon,
+  &:focus-within .edit-icon {
+    opacity: 1;
+    visibility: visible;
+
   }
 }
 
 .error-text {
+  display: inline-block; 
   margin-top: 8px;
   color: $brand-secondary;
   font-size: 0.88rem;
 }
 
-/* FOOTER */
+/* Section animation */
+.animate-section {
+  animation: fadeSlide 0.3s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Footer action */
+
 .footer-action {
   border-top: 1px solid #f1f1f1;
   margin-top: 34px;
   padding-top: 24px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
 }
 
@@ -223,9 +316,19 @@ $page-bg: #fafafa;
   min-width: 210px;
   height: 50px;
   border-radius: 12px;
+  border: none;
   background: $brand-secondary;
   color: $white;
   font-weight: 700;
+ transition: background 0.25s ease, opacity 0.25s ease;
+
+  &:hover:not(:disabled) {
+    background: #d97c15;
+  }
+    &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
 }
 
 
@@ -246,11 +349,10 @@ $page-bg: #fafafa;
     justify-content: center;
   }
 
-  .help-bubble {
-    position: static;
-    transform: none;
-    margin-top: 20px;
-    max-width: 100%;
+  .bg-glow {
+    width: 220px;
+    height: 220px;
+    filter: blur(70px);
   }
 }
 
@@ -281,6 +383,19 @@ $page-bg: #fafafa;
     height: 48px;
   }
 
+  .editable-input-wrap {
+    .editable-input-control {
+      padding-right: 44px;
+    }
+
+    .edit-icon {
+      right: 12px;
+      width: 26px;
+      height: 26px;
+      font-size: 13px;
+    }
+  }
+
   .footer-action {
     flex-direction: column-reverse;
   }
@@ -307,5 +422,11 @@ $page-bg: #fafafa;
 
   .custom-input {
     font-size: 0.9rem;
+  }
+
+  .editable-input-wrap {
+    .edit-icon {
+      right: 10px;
+    }
   }
 }
