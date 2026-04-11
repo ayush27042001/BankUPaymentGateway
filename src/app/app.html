@@ -1,6 +1,20 @@
 <router-outlet></router-outlet>
 
-<a routerLink="/chat-support" class="floating-chat-btn" aria-label="Open chat support">
+<button
+  type="button"
+  class="floating-chat-btn"
+  aria-label="Open chat support"
+  (click)="toggleChat()">
   <i class="bi bi-chat-dots-fill"></i>
   <span>Chat Support</span>
-</a>
+</button>
+
+<div
+  class="chat-overlay"
+  *ngIf="isChatOpen"
+  (click)="closeChat()">
+</div>
+
+<div class="chat-popup" *ngIf="isChatOpen">
+  <app-chat-support (closeChat)="closeChat()"></app-chat-support>
+</div>
