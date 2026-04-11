@@ -1,0 +1,88 @@
+<div class="chatbot-widget">
+  <div class="chatbot-header">
+    <div class="header-left">
+      <div class="chatbot-title">BankU Support</div>
+      <div class="chatbot-subtitle">Payment Gateway Assistant</div>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="icon-btn reset-btn"
+        aria-label="Reset chat"
+        (click)="resetChat()">
+        ↺
+      </button>
+
+      <button
+        type="button"
+        class="icon-btn close-btn"
+        aria-label="Close chat"
+        (click)="closeChat.emit()">
+        ×
+      </button>
+    </div>
+  </div>
+
+  <div class="chatbot-body">
+    <div
+      class="message-row"
+      *ngFor="let msg of messages"
+      [class.user-row]="msg.sender === 'user'">
+
+      <div
+        class="message-bubble"
+        [class.user-bubble]="msg.sender === 'user'"
+        [class.support-bubble]="msg.sender === 'support'">
+
+        <p>{{ msg.text }}</p>
+        <small>{{ msg.time }}</small>
+      </div>
+    </div>
+
+    <div class="typing-row" *ngIf="isReplying">
+      <div class="typing-bubble">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-section">
+    <div class="section-top">
+      <span class="section-title">Quick Help</span>
+
+      <button
+        type="button"
+        class="toggle-link"
+        (click)="toggleQuestions()">
+        {{ showAllQuestions ? 'Show Less' : 'More Questions' }}
+      </button>
+    </div>
+
+    <div class="faq-grid">
+      <button
+        type="button"
+        class="faq-chip"
+        *ngFor="let item of visibleFaqList; trackBy: trackByFaqId"
+        [class.active]="activeFaqId === item.id"
+        [disabled]="isReplying"
+        (click)="selectFaq(item)">
+        {{ item.label }}
+      </button>
+    </div>
+  </div>
+
+  <div class="support-actions">
+    <a class="support-btn call-btn" [href]="'tel:' + supportPhoneRaw">
+      <span>📞</span>
+      <span>Call Support</span>
+    </a>
+
+    <a class="support-btn whatsapp-btn" [href]="getWhatsappLink()" target="_blank">
+      <span>💬</span>
+      <span>WhatsApp</span>
+    </a>
+  </div>
+</div>

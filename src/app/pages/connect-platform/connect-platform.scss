@@ -991,4 +991,39 @@ h2 {
   .account-line {
     font-size: 15px;
   }
+  :host ::ng-deep .custom-ng-select .ng-select-container {
+  height: 52px;
+  border-radius: 12px;
+  border: 1px solid #e7ecef;
+  padding: 0 12px;
+  font-size: 1rem;
+}
+
+:host ::ng-deep .custom-ng-select.ng-select-focused .ng-select-container {
+  border-color: #f7941d;
+  box-shadow: 0 0 0 0.18rem rgba(247, 148, 29, 0.18);
+}
+
+:host ::ng-deep .custom-ng-select .ng-placeholder {
+  color: #9aa7ad;
+}
+
+:host ::ng-deep .custom-ng-select .ng-arrow {
+  border-color: #81007e transparent transparent;
+}
+
+:host ::ng-deep .custom-ng-select .ng-dropdown-panel {
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+:host ::ng-deep .custom-ng-select .ng-option.ng-option-marked {
+  background: rgba(129, 0, 126, 0.08);
+  color: #81007e;
+}
+
+:host ::ng-deep .custom-ng-select .ng-option.ng-option-selected {
+  background: #81007e;
+  color: white;
+}
 }

@@ -1,10 +1,24 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ChatSupportComponent } from './pages/chat-support/chat-support';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, ChatSupportComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss',
+  styleUrl: './app.scss'
 })
-export class App {}
+export class AppComponent {
+  isChatOpen = false;
+
+  toggleChat(): void {
+    this.isChatOpen = !this.isChatOpen;
+    console.log('Chat toggled:', this.isChatOpen);
+  }
+
+  closeChat(): void {
+    this.isChatOpen = false;
+  }
+}

@@ -210,25 +210,26 @@
 
               <form [formGroup]="bankForm" (ngSubmit)="submitBankDetails()" novalidate>
                 <div class="bank-form-grid">
-                  <div class="form-block">
-                    <label for="bankHolderName" class="block-label">
-                      Bank Holder Name <span>*</span>
-                    </label>
+                 <div class="form-block">
+  <label for="bankHolderName" class="block-label">
+    Bank Holder Name <span>*</span>
+  </label>
 
-                    <select
-                      id="bankHolderName"
-                      class="form-control custom-input select-input"
-                      formControlName="bankHolderName">
-                      <option value="">Enter Name</option>
-                      @for (name of holderNames; track name) {
-                        <option [value]="name">{{ name }}</option>
-                      }
-                    </select>
+  <ng-select
+  id="bankHolderName"
+  class="custom-ng-select"
+  [items]="holderNames"
+  [searchable]="true"
+  [clearable]="false"
+  [addTag]="true"
+  [placeholder]="'Select or enter holder name'"
+  formControlName="bankHolderName">
+</ng-select>
 
-                    @if (bankControls['bankHolderName'].touched && bankControls['bankHolderName'].errors?.['required']) {
-                      <small class="error-text">Bank holder name is required.</small>
-                    }
-                  </div>
+  @if (bankControls['bankHolderName'].touched && bankControls['bankHolderName'].errors?.['required']) {
+    <small class="error-text">Bank holder name is required.</small>
+  }
+</div>
 
                   <div class="form-block">
                     <label for="bankAccountNumber" class="block-label">

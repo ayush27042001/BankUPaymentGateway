@@ -48,14 +48,19 @@
                   <div class="form-row">
                     <label for="fullName">Name on PAN card <span>*</span></label>
 
-                    <div class="field-wrap">
-                      <input
-                        id="fullName"
-                        type="text"
-                        class="form-control custom-input"
-                        formControlName="fullName"
-                        placeholder="Enter full name"
-                      />
+                       <div class="editable-input-wrap">
+                        <input
+                          id="fullName"
+                          type="text"
+                          class="form-control custom-input editable-input-control"
+                          formControlName="fullName"
+                          placeholder="Enter full name"
+                        />
+
+                        <span class="edit-icon" aria-hidden="true">
+                          ✎
+                        </span>
+                      </div>
 
                       @if (f['fullName'].touched && f['fullName'].errors?.['required']) {
                         <small class="error-text">Name is required.</small>
@@ -67,23 +72,32 @@
                     </div>
                   </div>
 
-                  <div class="form-row">
-                    <label for="dob">Date of Birth / Date of Incorporation <span>*</span></label>
+                <div class="form-row">
+  <label for="dob">Date of Birth / Date of Incorporation <span>*</span></label>
 
-                    <div class="field-wrap">
-                      <input
-                        id="dob"
-                        type="date"
-                        class="form-control custom-input"
-                        formControlName="dob"
-                      />
+  <div class="field-wrap">
+    <input
+      id="dob"
+      type="date"
+      class="form-control custom-input"
+      formControlName="dob"
+      [max]="maxDobDate"
+    />
 
-                      @if (f['dob'].touched && f['dob'].errors?.['required']) {
-                        <small class="error-text">Date is required.</small>
-                      }
-                    </div>
-                  </div>
-                </div>
+    @if (f['dob'].touched && f['dob'].errors?.['required']) {
+      <small class="error-text">Date is required.</small>
+    }
+
+    @if (f['dob'].touched && f['dob'].errors?.['underAge']) {
+      <small class="error-text">Age must be at least 18 years.</small>
+    }
+
+    @if (f['dob'].touched && f['dob'].errors?.['invalidDate']) {
+      <small class="error-text">Please enter a valid date.</small>
+    }
+  </div>
+</div>
+               
               }
 
               <div class="footer-action">
