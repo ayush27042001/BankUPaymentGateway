@@ -15,7 +15,7 @@
               BankU will auto-fetch your business details based on CKYC availability
             </p>
 
-            <form [formGroup]="ckycForm" (ngSubmit)="onSubmit()" novalidate>
+            <form [formGroup]="ckycForm" novalidate>
               <div class="form-row">
                 <label for="mobileNumber">Mobile Number <span>*</span></label>
 
@@ -46,35 +46,30 @@
                   @if (f['mobileNumber'].touched && f['mobileNumber'].errors?.['invalidMobile']) {
                     <small class="error-text">Enter a valid 10 digit mobile number.</small>
                   }
-
-                  <div class="send-otp-wrap">
-                    <button
-                      type="button"
-                      class="otp-btn"
-                      (click)="sendOtp()"
-                      [disabled]="f['mobileNumber'].invalid">
-                      Send OTP
-                    </button>
-                  </div>
                 </div>
               </div>
 
               @if (otpVisible) {
-                <div class="animate-section">
+                <div class="animate-section otp-section">
                   <div class="form-row">
-                    <label for="otp">Enter OTP <span>*</span></label>
+                    <label>Enter OTP <span>*</span></label>
 
                     <div class="field-wrap">
-                      <input
-                        id="otp"
-                        type="text"
-                        class="form-control custom-input"
-                        formControlName="otp"
-                        placeholder="Enter 6 digit OTP"
-                        maxlength="6"
-                        inputmode="numeric"
-                        (input)="onOtpInput()"
-                      />
+                      <div class="otp-box-group" (paste)="onOtpPaste($event)">
+                        @for (digit of otpDigits; track $index) {
+                          <input
+                            [id]="'otp-' + $index"
+                            type="text"
+                            class="otp-box"
+                            maxlength="1"
+                            inputmode="numeric"
+                            autocomplete="one-time-code"
+                            [value]="digit"
+                            (input)="onOtpDigitInput($event, $index)"
+                            (keydown)="onOtpKeyDown($event, $index)"
+                          />
+                        }
+                      </div>
 
                       @if (f['otp'].touched && f['otp'].errors?.['required']) {
                         <small class="error-text">OTP is required.</small>
@@ -87,7 +82,7 @@
                       <div class="otp-meta">
                         @if (!canResendOtp) {
                           <small class="timer-text">
-                            Resend OTP in {{ timer }}s
+                            Resend OTP in 00:{{ timer < 10 ? '0' + timer : timer }}
                           </small>
                         }
 
@@ -119,49 +114,49 @@
               </div>
 
               <div class="footer-action">
-                <!-- <button type="button" class="back-btn">Back</button> -->
-                   <button type="button" class="back-btn" (click)="goBack()">
+                <button type="button" class="back-btn" (click)="goBack()">
                   ← Back
                 </button>
 
                 <div class="action-group">
-                  <button type="button" class="skip-btn">Skip CKYC </button>
+                  <button type="button" class="skip-btn" (click)="openSkipPopup()">
+                    Skip CKYC
+                  </button>
 
                   <button
-                    type="submit"
+                    type="button"
                     class="proceed-btn"
-                    [disabled]="ckycForm.invalid">
-                    Proceed with CKYC →
+                    [disabled]="f['mobileNumber'].invalid || f['consent'].invalid || (otpVisible && !isOtpComplete)"
+                    (click)="onProceedClick()">
+                    {{ actionButtonLabel }}
                   </button>
                 </div>
               </div>
             </form>
           </div>
         </div>
-
-        
       </div>
     </div>
   </section>
 
-  <!-- CKYC Success Modal -->
-  @if (showCkycPopup) {
-    <div class="ckyc-modal">
-      <div class="modal-box">
-        <div class="modal-content">
-          <div class="icon-wrap">
-            <div class="icon-circle">✓</div>
-          </div>
+  @if (showSkipPopup) {
+    <div class="skip-modal-overlay" (click)="closeSkipPopup()">
+      <div class="skip-modal-box" (click)="$event.stopPropagation()">
+        <div class="skip-modal-content">
+          <div class="skip-modal-icon">!</div>
 
-          <h3>CKYC details fetched!</h3>
+          <h3>Skip CKYC?</h3>
           <p>
-            We will use these details to autofill your information which will
-            fasten activation process
+            Are you sure you want to skip CKYC? You can complete it later.
           </p>
 
-          <div class="modal-action">
-            <button type="button" class="continue-btn" (click)="goToNextStep()">
-              Continue
+          <div class="skip-modal-actions">
+            <button type="button" class="skip-cancel-btn" (click)="closeSkipPopup()">
+              Cancel
+            </button>
+
+            <button type="button" class="skip-confirm-btn" (click)="confirmSkip()">
+              Yes, Continue
             </button>
           </div>
         </div>

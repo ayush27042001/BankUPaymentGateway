@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { NgSelectModule } from '@ng-select/ng-select';
 import {
   AbstractControl,
   FormBuilder,
@@ -24,7 +25,7 @@ type SectionKey = 'business' | 'kyc' | 'documents' | 'agreement';
 @Component({
   selector: 'app-connect-platform',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, OnboardingHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, OnboardingHeaderComponent,NgSelectModule],
   templateUrl: './connect-platform.html',
   styleUrl: './connect-platform.scss',
 })

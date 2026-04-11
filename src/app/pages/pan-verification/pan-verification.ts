@@ -20,15 +20,18 @@ import { OnboardingHeaderComponent } from '../../components/onboarding-header/on
 })
 export class PanVerificationComponent {
   panForm: FormGroup;
+  maxDobDate: string = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router
   ) {
+    this.maxDobDate = this.getTodayDate();
+
     this.panForm = this.fb.group({
       panNumber: ['', [Validators.required, this.panValidator]],
       fullName: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3)]],
-      dob: [{ value: '', disabled: true }, [Validators.required]],
+      dob: [{ value: '', disabled: true }, [Validators.required, this.age18Validator]],
     });
 
     this.panForm.get('panNumber')?.valueChanges.subscribe((value: string) => {
@@ -77,17 +80,45 @@ export class PanVerificationComponent {
     return panRegex.test(value) ? null : { invalidPan: true };
   }
 
+  age18Validator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (!value) return null;
+
+    const dob = new Date(value);
+    const today = new Date();
+
+    if (isNaN(dob.getTime())) {
+      return { invalidDate: true };
+    }
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+
+    return age >= 18 ? null : { underAge: true };
+  }
+
+  getTodayDate(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   onBack(): void {
     this.router.navigate(['/']);
   }
 
   onSubmit(): void {
-  if (this.panForm.invalid) {
-    this.panForm.markAllAsTouched();
-    return;
-  }
+    if (this.panForm.invalid) {
+      this.panForm.markAllAsTouched();
+      return;
+    }
 
-  // ✅ Navigate to next page
-  this.router.navigate(['/business-entity']);
-}
+    this.router.navigate(['/business-entity']);
+  }
 }
