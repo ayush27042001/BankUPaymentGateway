@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { NgSelectModule } from '@ng-select/ng-select';
 import {
   AbstractControl,
   FormBuilder,
@@ -24,11 +25,11 @@ type SectionKey = 'business' | 'kyc' | 'documents' | 'agreement';
 @Component({
   selector: 'app-connect-platform',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, OnboardingHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, OnboardingHeaderComponent,NgSelectModule],
   templateUrl: './connect-platform.html',
   styleUrl: './connect-platform.scss',
 })
-export class ConnectPlatformComponent implements OnDestroy {
+export class ConnectPlatformComponent implements OnInit, OnDestroy {
   currentStep: StepKey = 'platform';
 
   platformForm!: FormGroup;
@@ -37,7 +38,7 @@ export class ConnectPlatformComponent implements OnDestroy {
   businessAddressForm!: FormGroup;
   uploadDocumentsForm!: FormGroup;
 
-  imageUrl = '\src\assets\images\website-illustration.png';
+   imageUrl = '../../../assets/images/website-illustration.png';
 
   holderNames: string[] = ['AYUSH KUMAR AWASTHI', 'RISHABH PAL', 'BUSINESS NAME'];
 
@@ -68,6 +69,11 @@ export class ConnectPlatformComponent implements OnDestroy {
     this.initializeForms();
   }
 
+  ngOnInit(): void {
+    this.setupCollectionModeWatcher();
+    this.applyPlatformValidators(this.platformForm.get('collectionMode')?.value);
+  }
+
   ngOnDestroy(): void {
     this.unlockBodyScroll();
   }
@@ -75,9 +81,9 @@ export class ConnectPlatformComponent implements OnDestroy {
   initializeForms(): void {
     this.platformForm = this.fb.group({
       collectionMode: ['website-app', Validators.required],
-      websiteUrl: ['https://', [Validators.required, this.urlValidator]],
-      androidAppUrl: ['', this.optionalUrlValidator],
-      iosAppUrl: ['', this.optionalUrlValidator],
+      websiteUrl: ['https://', [Validators.required, this.urlValidator.bind(this)]],
+      androidAppUrl: ['', [this.optionalUrlValidator.bind(this)]],
+      iosAppUrl: ['', [this.optionalUrlValidator.bind(this)]],
     });
 
     this.bankForm = this.fb.group({
@@ -86,7 +92,7 @@ export class ConnectPlatformComponent implements OnDestroy {
         '',
         [Validators.required, Validators.pattern(/^[0-9]{9,18}$/)],
       ],
-      ifscCode: ['', [Validators.required, this.ifscValidator]],
+      ifscCode: ['', [Validators.required, this.ifscValidator.bind(this)]],
     });
 
     this.signingAuthorityForm = this.fb.group({
@@ -156,6 +162,54 @@ export class ConnectPlatformComponent implements OnDestroy {
     }
 
     return 'agreement';
+  }
+
+    // Watches the collection mode and updates validators dynamically
+  private setupCollectionModeWatcher(): void {
+    this.platformForm.get('collectionMode')?.valueChanges.subscribe((mode) => {
+      this.applyPlatformValidators(mode);
+    });
+  }
+
+  // Applies URL validators based on selected collection mode
+  private applyPlatformValidators(mode: string): void {
+    const websiteUrlControl = this.platformForm.get('websiteUrl');
+    const androidAppUrlControl = this.platformForm.get('androidAppUrl');
+    const iosAppUrlControl = this.platformForm.get('iosAppUrl');
+
+    if (!websiteUrlControl || !androidAppUrlControl || !iosAppUrlControl) {
+      return;
+    }
+
+    if (mode === 'website-app') {
+      // Website/app mode requires the main URL
+      websiteUrlControl.setValidators([
+        Validators.required,
+        this.urlValidator.bind(this),
+      ]);
+
+      // App URLs remain optional but valid format is required if user enters value
+      androidAppUrlControl.setValidators([this.optionalUrlValidator.bind(this)]);
+      iosAppUrlControl.setValidators([this.optionalUrlValidator.bind(this)]);
+    } else {
+      // Without website/app mode should allow user to continue directly
+      websiteUrlControl.clearValidators();
+      androidAppUrlControl.clearValidators();
+      iosAppUrlControl.clearValidators();
+
+      // Clear values so old validation state does not block the button
+      websiteUrlControl.setValue('', { emitEvent: false });
+      androidAppUrlControl.setValue('', { emitEvent: false });
+      iosAppUrlControl.setValue('', { emitEvent: false });
+
+      websiteUrlControl.markAsUntouched();
+      androidAppUrlControl.markAsUntouched();
+      iosAppUrlControl.markAsUntouched();
+    }
+
+    websiteUrlControl.updateValueAndValidity({ emitEvent: false });
+    androidAppUrlControl.updateValueAndValidity({ emitEvent: false });
+    iosAppUrlControl.updateValueAndValidity({ emitEvent: false });
   }
 
   isSidebarActive(section: SectionKey): boolean {
@@ -456,4 +510,6 @@ export class ConnectPlatformComponent implements OnDestroy {
   private unlockBodyScroll(): void {
     this.renderer.removeStyle(document.body, 'overflow');
   }
+
+  
 }

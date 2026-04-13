@@ -84,6 +84,11 @@ $page-bg: #fafafa;
   width: 100%;
 }
 
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+}
+
 /* AMOUNT INPUT */
 .amount-input-group {
   display: flex;
@@ -143,12 +148,14 @@ $page-bg: #fafafa;
 
 /* TEXT */
 .helper-text {
+  display: block;
   margin-top: 8px;
   font-size: 0.88rem;
   color: $text-muted;
 }
 
 .error-text {
+  display: block;
   margin-top: 8px;
   font-size: 0.88rem;
   color: $brand-secondary;
@@ -156,39 +163,42 @@ $page-bg: #fafafa;
 
 /* GST SWITCH */
 .gstin-toggle-row {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
 }
 
 .switch {
   position: relative;
-  width: 52px;
-  height: 30px;
+  display: inline-block;
+  width: 56px;
+  height: 32px;
 
   input {
     opacity: 0;
+    width: 0;
+    height: 0;
   }
 }
 
 .slider {
   position: absolute;
   inset: 0;
+  cursor: pointer;
   background: #d8d8d8;
   border-radius: 999px;
+  transition: all 0.3s ease;
 }
 
 .slider::before {
   content: '';
   position: absolute;
-  height: 22px;
-  width: 22px;
+  height: 24px;
+  width: 24px;
   left: 4px;
   top: 4px;
   background: $white;
   border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .switch input:checked + .slider {
@@ -196,7 +206,22 @@ $page-bg: #fafafa;
 }
 
 .switch input:checked + .slider::before {
-  transform: translateX(22px);
+  transform: translateX(24px);
+}
+
+.gstin-field-row {
+  animation: fadeSlideDown 0.25s ease;
+}
+
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* FOOTER */
@@ -214,6 +239,7 @@ $page-bg: #fafafa;
   border: none;
   color: $brand-primary;
   font-weight: 700;
+  cursor: pointer;
 }
 
 .proceed-btn {
@@ -222,18 +248,28 @@ $page-bg: #fafafa;
   border-radius: 12px;
   background: $brand-secondary;
   color: $white;
+  border: none;
+  font-weight: 700;
+  transition: 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: #d97c15;
+  }
+
+  &:disabled {
+    background: rgba(243, 144, 33, 0.45);
+    cursor: not-allowed;
+  }
 }
 
 /* ================= RESPONSIVE ================= */
 
-/* Tablet */
 @media (max-width: 991.98px) {
   .form-card {
     max-width: 100%;
   }
 }
 
-/* Mobile */
 @media (max-width: 767.98px) {
   .main-section {
     padding: 24px 0 40px;
@@ -259,7 +295,6 @@ $page-bg: #fafafa;
   }
 
   .gstin-toggle-row {
-    flex-direction: column;
     align-items: flex-start;
   }
 
@@ -280,7 +315,6 @@ $page-bg: #fafafa;
   }
 }
 
-/* Small Mobile */
 @media (max-width: 575.98px) {
   .card-body-custom h2 {
     font-size: 1.25rem;

@@ -1,42 +1,97 @@
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-/>
 <header class="top-header">
   <div class="container-fluid">
     <div class="header-inner">
-      <div class="brand-wrap">
-        <div class="brand-logo">B</div>
+      <!-- Desktop Layout -->
+      <div class="desktop-header-layout">
+        <div class="brand-wrap">
+          <div class="brand-logo">B</div>
 
-        <div class="brand-text">
-          <h1>BankU</h1>
-          <span>MID : {{ merchantId }}</span>
-        </div>
-      </div>
-
-      <div class="stepper-wrap">
-        <div class="stepper">
-          <span class="step" [class.active]="currentStep >= 1">1</span>
-          <span class="line"></span>
-          <span class="step" [class.active]="currentStep >= 2">2</span>
+          <div class="brand-text">
+            <h1>BankU</h1>
+            <span>MID : {{ merchantId }}</span>
+          </div>
         </div>
 
-        <p>{{ title }}</p>
-      </div>
+       <div class="stepper-center-wrap">
+  <span class="step" [class.active]="currentStep >= 1">1</span>
 
-      @if (showActions) {
-    <div class="header-actions">
-  <a href="javascript:void(0)" class="action-link">
-    <i class="bi bi-speedometer2"></i>
-    <span class="link-text">Go to Dashboard</span>
-  </a>
+  <span class="line"></span>
 
-  <a href="javascript:void(0)" class="action-link">
-    <i class="bi bi-box-arrow-right"></i>
-    <span class="link-text">Sign Out</span>
-  </a>
+  <div class="center-title">
+    {{ title }}
+  </div>
+
+  <span class="line"></span>
+
+  <span class="step" [class.active]="currentStep >= 2">2</span>
 </div>
-      }
+
+        @if (showActions) {
+          <div class="header-actions">
+            <a href="javascript:void(0)" class="action-link">
+              <i class="bi bi-speedometer2"></i>
+              <span class="link-text">Go to Dashboard</span>
+            </a>
+
+            <a href="javascript:void(0)" class="action-link">
+              <i class="bi bi-box-arrow-right"></i>
+              <span class="link-text">Sign Out</span>
+            </a>
+          </div>
+        }
+      </div>
+
+      <!-- Mobile Layout -->
+      <div class="mobile-header-layout">
+        <div class="mobile-top-row">
+          <div class="brand-wrap">
+            <div class="brand-logo">B</div>
+
+            <div class="brand-text">
+              <h1>BankU</h1>
+              <span>MID : {{ merchantId }}</span>
+            </div>
+          </div>
+
+          @if (showActions) {
+            <button
+              type="button"
+              class="mobile-menu-toggle"
+              (click)="toggleMobileMenu()"
+              [attr.aria-expanded]="mobileMenuOpen"
+              aria-label="Toggle menu">
+              <i class="bi" [ngClass]="mobileMenuOpen ? 'bi-x-lg' : 'bi-list'"></i>
+            </button>
+          }
+        </div>
+
+        <div class="mobile-step-row">
+          <span class="mobile-step" [class.active]="currentStep >= 1">1</span>
+          <span class="mobile-line"></span>
+
+          <div class="mobile-step-content">
+            <small>STEP {{ currentStep }} OF 2</small>
+            <p>{{ title }}</p>
+          </div>
+
+          <span class="mobile-line"></span>
+          <span class="mobile-step" [class.active]="currentStep >= 2">2</span>
+        </div>
+
+        @if (showActions && mobileMenuOpen) {
+          <div class="mobile-actions-dropdown">
+            <a href="javascript:void(0)" class="action-link" (click)="closeMobileMenu()">
+              <i class="bi bi-speedometer2"></i>
+              <span>Go to Dashboard</span>
+            </a>
+
+            <a href="javascript:void(0)" class="action-link" (click)="closeMobileMenu()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Sign Out</span>
+            </a>
+          </div>
+        }
+      </div>
     </div>
   </div>
 </header>
