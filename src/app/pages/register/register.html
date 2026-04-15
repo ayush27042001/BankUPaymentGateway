@@ -1,0 +1,285 @@
+<div class="register-page">
+  <div class="register-shell">
+    <div class="visual-panel">
+      <div class="visual-overlay"></div>
+
+      <div class="visual-frame">
+        <img
+          src="assets/images/register.png"
+          alt="Merchant onboarding banner"
+        />
+      </div>
+    </div>
+
+    <div class="form-panel">
+      <div class="dot-pattern"></div>
+
+      <div class="form-card">
+        <span class="form-badge">Merchant Onboarding</span>
+
+        <h1>Create your BankU account</h1>
+
+        <p class="login-text">
+          Already have an account?
+          <a routerLink="/">Login</a>
+        </p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="sendOtp()" novalidate>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="email">Email<span>*</span></label>
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                placeholder="Enter your email"
+                [class.invalid]="email?.invalid && email?.touched"
+              />
+
+              <p class="field-error" *ngIf="email?.touched && email?.errors?.['required']">
+                Email is required.
+              </p>
+
+              <p class="field-error" *ngIf="email?.touched && email?.errors?.['email']">
+                Please enter a valid email.
+              </p>
+            </div>
+
+            <div class="form-group full-width password-group">
+              <label for="password">Set a Password<span>*</span></label>
+
+              <div class="password-field">
+                <input
+                  id="password"
+                  [type]="isPasswordVisible ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="Create password"
+                  [class.invalid]="password?.invalid && password?.touched"
+                />
+
+                <button
+                  type="button"
+                  class="eye-btn"
+                  (click)="togglePassword()"
+                  aria-label="Toggle password visibility"
+                >
+                  <span *ngIf="!isPasswordVisible">👁</span>
+                  <span *ngIf="isPasswordVisible">🙈</span>
+                </button>
+              </div>
+
+              <div class="password-rule-card" *ngIf="passwordValue && !isPasswordStrong">
+                <h4>Your password must have:</h4>
+
+                <div class="rule" [class.valid]="hasMinLength">
+                  <span class="rule-icon"></span>
+                  <span>at least 8 characters</span>
+                </div>
+
+                <div class="rule" [class.valid]="hasUppercase">
+                  <span class="rule-icon"></span>
+                  <span>at least 1 uppercase</span>
+                </div>
+
+                <div class="rule" [class.valid]="hasLowercase">
+                  <span class="rule-icon"></span>
+                  <span>at least 1 lowercase</span>
+                </div>
+
+                <div class="rule" [class.valid]="hasNumber">
+                  <span class="rule-icon"></span>
+                  <span>at least 1 number</span>
+                </div>
+
+                <div class="rule" [class.valid]="hasSpecialCharacter">
+                  <span class="rule-icon"></span>
+                  <span>at least 1 special character</span>
+                </div>
+              </div>
+
+              <p
+                class="field-error"
+                *ngIf="password?.touched && password?.errors?.['required']"
+              >
+                Password is required.
+              </p>
+
+              <p
+                class="field-error"
+                *ngIf="password?.touched && password?.errors?.['weakPassword'] && passwordValue"
+              >
+                Please enter a strong password.
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label for="mobileNumber">Mobile Number<span>*</span></label>
+              <input
+                id="mobileNumber"
+                type="text"
+                maxlength="10"
+                inputmode="numeric"
+                formControlName="mobileNumber"
+                placeholder="Enter mobile number"
+                [class.invalid]="mobileNumber?.invalid && mobileNumber?.touched"
+              />
+
+              <p
+                class="field-error"
+                *ngIf="mobileNumber?.touched && mobileNumber?.errors?.['required']"
+              >
+                Mobile number is required.
+              </p>
+
+              <p
+                class="field-error"
+                *ngIf="mobileNumber?.touched && mobileNumber?.errors?.['pattern']"
+              >
+                Please enter a valid 10-digit mobile number.
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label for="companyWebsite">Company Website<span>*</span></label>
+              <input
+                id="companyWebsite"
+                type="text"
+                formControlName="companyWebsite"
+                placeholder="Enter company website"
+                [class.invalid]="companyWebsite?.invalid && companyWebsite?.touched"
+              />
+
+              <p
+                class="field-error"
+                *ngIf="companyWebsite?.touched && companyWebsite?.errors?.['required']"
+              >
+                Company website is required.
+              </p>
+
+              <p
+                class="field-error"
+                *ngIf="companyWebsite?.touched && companyWebsite?.errors?.['pattern']"
+              >
+                Please enter a valid website URL.
+              </p>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            SEND OTP &amp; CREATE ACCOUNT
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="otp-modal-overlay" *ngIf="showOtpModal">
+    <div class="otp-modal">
+      <button type="button" class="otp-close" (click)="closeOtpModal()">×</button>
+
+      <div class="otp-icon-wrap">
+        <div class="otp-icon">🔐</div>
+      </div>
+
+      <h3>Verify OTP</h3>
+      <p>
+        Enter the 6-digit OTP sent to
+        <strong>{{ mobileNumber?.value }}</strong>
+      </p>
+
+      <form [formGroup]="otpForm" (ngSubmit)="submitOtp()" novalidate>
+        <div class="otp-boxes">
+          <input
+            #otpInput
+            type="text"
+            maxlength="1"
+            inputmode="numeric"
+            class="otp-input"
+            formControlName="otp0"
+            (input)="onOtpInput($event, 0)"
+            (keydown)="onOtpKeyDown($event, 0)"
+            (paste)="onOtpPaste($event)"
+          />
+
+          <input
+            #otpInput
+            type="text"
+            maxlength="1"
+            inputmode="numeric"
+            class="otp-input"
+            formControlName="otp1"
+            (input)="onOtpInput($event, 1)"
+            (keydown)="onOtpKeyDown($event, 1)"
+          />
+
+          <input
+            #otpInput
+            type="text"
+            maxlength="1"
+            inputmode="numeric"
+            class="otp-input"
+            formControlName="otp2"
+            (input)="onOtpInput($event, 2)"
+            (keydown)="onOtpKeyDown($event, 2)"
+          />
+
+          <input
+            #otpInput
+            type="text"
+            maxlength="1"
+            inputmode="numeric"
+            class="otp-input"
+            formControlName="otp3"
+            (input)="onOtpInput($event, 3)"
+            (keydown)="onOtpKeyDown($event, 3)"
+          />
+
+          <input
+            #otpInput
+            type="text"
+            maxlength="1"
+            inputmode="numeric"
+            class="otp-input"
+            formControlName="otp4"
+            (input)="onOtpInput($event, 4)"
+            (keydown)="onOtpKeyDown($event, 4)"
+          />
+
+          <input
+            #otpInput
+            type="text"
+            maxlength="1"
+            inputmode="numeric"
+            class="otp-input"
+            formControlName="otp5"
+            (input)="onOtpInput($event, 5)"
+            (keydown)="onOtpKeyDown($event, 5)"
+          />
+        </div>
+
+        <p class="field-error otp-error" *ngIf="otpForm.touched && otpForm.invalid">
+          Please enter a valid 6-digit OTP.
+        </p>
+
+        <div class="otp-meta">
+          <span class="timer" *ngIf="otpTimer > 0">
+            Resend OTP in {{ otpTimer }}s
+          </span>
+
+          <button
+            type="button"
+            class="resend-btn"
+            [disabled]="otpTimer > 0"
+            (click)="resendOtp()"
+          >
+            Resend OTP
+          </button>
+        </div>
+
+        <button type="submit" class="submit-btn otp-btn">
+          VERIFY &amp; PROCEED
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
