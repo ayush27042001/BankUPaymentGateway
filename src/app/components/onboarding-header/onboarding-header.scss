@@ -18,9 +18,6 @@ $white: #ffffff;
   width: 100%;
 }
 
-/* =========================
-   DESKTOP: EXACT OLD STYLE
-   ========================= */
 .desktop-header-layout {
   display: flex;
   align-items: center;
@@ -71,54 +68,6 @@ $white: #ffffff;
   }
 }
 
-.stepper-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-
-  p {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-}
-
-.stepper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  .step {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.25);
-    color: $white;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 700;
-    flex-shrink: 0;
-
-    &.active {
-      background: $brand-secondary;
-    }
-  }
-
-  .line {
-    width: 48px;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.55);
-    border-radius: 999px;
-    flex-shrink: 0;
-  }
-}
-
 .header-actions {
   display: flex;
   align-items: center;
@@ -127,7 +76,7 @@ $white: #ffffff;
   flex-wrap: wrap;
   min-width: 0;
 
-  a {
+  .action-link {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -143,7 +92,7 @@ $white: #ffffff;
     }
   }
 }
-/* ===== CENTER STEPPER FOR DESKTOP ===== */
+
 .stepper-center-wrap {
   display: flex;
   align-items: center;
@@ -151,6 +100,7 @@ $white: #ffffff;
   gap: 12px;
   flex: 1;
   margin: 0 auto;
+  min-width: 0;
 
   .center-title {
     font-size: 1.1rem;
@@ -160,31 +110,36 @@ $white: #ffffff;
   }
 
   .step {
-    width: 28px;
-    height: 28px;
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.25);
-    color: #fff;
-    display: flex;
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.28);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
 
-    &.active {
-      background: #f39021;
-    }
+  .step.active {
+    background: $brand-secondary;
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   .line {
-    width: 60px;
+    width: 72px;
     height: 2px;
     background: rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    flex-shrink: 0;
   }
 }
-/* =========================
-   MOBILE NEW LAYOUT
-   ========================= */
+
 .mobile-header-layout {
   display: none;
 }
@@ -230,19 +185,23 @@ $white: #ffffff;
 .mobile-step {
   width: 30px;
   height: 30px;
+  min-width: 30px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.22);
-  color: $white;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.28);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 0.88rem;
   font-weight: 700;
   flex-shrink: 0;
+  transition: all 0.3s ease;
+}
 
-  &.active {
-    background: $brand-secondary;
-  }
+.mobile-step.active {
+  background: $brand-secondary;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .mobile-line {
@@ -302,25 +261,26 @@ $white: #ffffff;
   }
 }
 
-/* =========================
-   RESPONSIVE
-   ========================= */
 @media (max-width: 1199.98px) {
-  .top-header {
-    .desktop-header-layout {
-      gap: 16px;
+  .desktop-header-layout {
+    gap: 16px;
+  }
+
+  .brand-text h1 {
+    font-size: 1.4rem;
+  }
+
+  .header-actions {
+    gap: 16px;
+  }
+
+  .stepper-center-wrap {
+    .line {
+      width: 56px;
     }
 
-    .brand-text h1 {
-      font-size: 1.4rem;
-    }
-
-    .stepper-wrap p {
+    .center-title {
       font-size: 1rem;
-    }
-
-    .header-actions {
-      gap: 16px;
     }
   }
 }
@@ -335,19 +295,17 @@ $white: #ffffff;
   }
 
   .brand-wrap,
-  .stepper-wrap,
   .header-actions {
     justify-content: center;
     width: 100%;
   }
 
-  .stepper-wrap {
-    flex-direction: column;
-    gap: 10px;
+  .stepper-center-wrap {
+    width: 100%;
+    order: 3;
   }
 }
 
-/* ONLY MOBILE CHANGES */
 @media (max-width: 767.98px) {
   .top-header {
     padding: 10px 0;
@@ -414,6 +372,7 @@ $white: #ffffff;
   .mobile-step {
     width: 28px;
     height: 28px;
+    min-width: 28px;
     font-size: 0.82rem;
   }
 
@@ -430,5 +389,4 @@ $white: #ffffff;
   .mobile-actions-dropdown {
     padding: 10px;
   }
-  
 }

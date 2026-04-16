@@ -202,98 +202,116 @@
               </form>
             }
 
-            @if (isStep('bank-details')) {
-              <h2>Share bank account details</h2>
-              <p class="subtitle">
-                We need your bank account details to process transactions seamlessly into your account.
-              </p>
+           @if (isStep('bank-details')) {
+  <h2>Share bank account details</h2>
+  <p class="subtitle">
+    We need your bank account details to process transactions seamlessly into your account.
+  </p>
 
-              <form [formGroup]="bankForm" (ngSubmit)="submitBankDetails()" novalidate>
-                <div class="bank-form-grid">
-                 <div class="form-block">
-  <label for="bankHolderName" class="block-label">
-    Bank Holder Name <span>*</span>
-  </label>
+  <form [formGroup]="bankForm" (ngSubmit)="submitBankDetails()" novalidate>
+    <div class="bank-form-grid">
+      <div class="form-block">
+        <label for="bankHolderName" class="block-label">
+          Bank Holder Name <span>*</span>
+        </label>
 
-  <ng-select
-  id="bankHolderName"
-  class="custom-ng-select"
-  [items]="holderNames"
-  [searchable]="true"
-  [clearable]="false"
-  [addTag]="true"
-  [placeholder]="'Select or enter holder name'"
-  formControlName="bankHolderName">
-</ng-select>
+        <ng-select
+          id="bankHolderName"
+          class="custom-ng-select"
+          [items]="holderNamesWithAddOption"
+          bindLabel="label"
+          bindValue="value"
+          [searchable]="true"
+          [clearable]="false"
+          [placeholder]="'Select Bank Holder Name'"
+          formControlName="bankHolderName"
+          (change)="onHolderChange($event)">
+        </ng-select>
 
-  @if (bankControls['bankHolderName'].touched && bankControls['bankHolderName'].errors?.['required']) {
-    <small class="error-text">Bank holder name is required.</small>
-  }
-</div>
+        @if (showNewHolderInput) {
+          <div class="mt-2">
+            <input
+              type="text"
+              class="form-control custom-input"
+              placeholder="Enter Bank Holder Name"
+              formControlName="newBankHolderName"
+              (input)="onNewBankHolderInput()"
+            />
 
-                  <div class="form-block">
-                    <label for="bankAccountNumber" class="block-label">
-                      Bank Account Number <span>*</span>
-                    </label>
-
-                    <input
-                      id="bankAccountNumber"
-                      type="text"
-                      class="form-control custom-input"
-                      formControlName="bankAccountNumber"
-                      placeholder="Enter Account Number"
-                      inputmode="numeric"
-                      (input)="onAccountNumberInput()"
-                    />
-
-                    @if (bankControls['bankAccountNumber'].touched && bankControls['bankAccountNumber'].errors?.['required']) {
-                      <small class="error-text">Bank account number is required.</small>
-                    }
-
-                    @if (bankControls['bankAccountNumber'].touched && bankControls['bankAccountNumber'].errors?.['pattern']) {
-                      <small class="error-text">Enter a valid account number.</small>
-                    }
-                  </div>
-
-                  <div class="form-block ifsc-block">
-                    <label for="ifscCode" class="block-label">
-                      IFSC Code <span>*</span>
-                    </label>
-
-                    <input
-                      id="ifscCode"
-                      type="text"
-                      class="form-control custom-input"
-                      formControlName="ifscCode"
-                      placeholder="Enter IFSC Code"
-                      maxlength="11"
-                      (input)="onIfscInput()"
-                    />
-
-                    @if (bankControls['ifscCode'].touched && bankControls['ifscCode'].errors?.['required']) {
-                      <small class="error-text">IFSC code is required.</small>
-                    }
-
-                    @if (bankControls['ifscCode'].touched && bankControls['ifscCode'].errors?.['invalidIfsc']) {
-                      <small class="error-text">Enter a valid IFSC code.</small>
-                    }
-                  </div>
-                </div>
-
-                <div class="footer-action">
-                  <button type="button" class="back-btn" (click)="goBack()">
-                    ← Back
-                  </button>
-
-                  <button
-                    type="submit"
-                    class="proceed-btn"
-                    [disabled]="bankForm.invalid">
-                    Confirm &amp; Proceed →
-                  </button>
-                </div>
-              </form>
+            @if (bankControls['newBankHolderName'].touched && bankControls['newBankHolderName'].errors?.['required']) {
+              <small class="error-text">New bank holder name is required.</small>
             }
+          </div>
+        }
+
+        @if (!showNewHolderInput && bankControls['bankHolderName'].touched && bankControls['bankHolderName'].errors?.['required']) {
+          <small class="error-text">Bank holder name is required.</small>
+        }
+      </div>
+
+      <div class="form-block">
+        <label for="bankAccountNumber" class="block-label">
+          Bank Account Number <span>*</span>
+        </label>
+
+        <input
+          id="bankAccountNumber"
+          type="text"
+          class="form-control custom-input"
+          formControlName="bankAccountNumber"
+          placeholder="Enter Account Number"
+          inputmode="numeric"
+          (input)="onAccountNumberInput()"
+        />
+
+        @if (bankControls['bankAccountNumber'].touched && bankControls['bankAccountNumber'].errors?.['required']) {
+          <small class="error-text">Bank account number is required.</small>
+        }
+
+        @if (bankControls['bankAccountNumber'].touched && bankControls['bankAccountNumber'].errors?.['pattern']) {
+          <small class="error-text">Enter a valid account number.</small>
+        }
+      </div>
+
+      <div class="form-block ifsc-block">
+        <label for="ifscCode" class="block-label">
+          IFSC Code <span>*</span>
+        </label>
+
+        <input
+          id="ifscCode"
+          type="text"
+          class="form-control custom-input"
+          formControlName="ifscCode"
+          placeholder="Enter IFSC Code"
+          maxlength="11"
+          (input)="onIfscInput()"
+        />
+
+        @if (bankControls['ifscCode'].touched && bankControls['ifscCode'].errors?.['required']) {
+          <small class="error-text">IFSC code is required.</small>
+        }
+
+        @if (bankControls['ifscCode'].touched && bankControls['ifscCode'].errors?.['invalidIfsc']) {
+          <small class="error-text">Enter a valid IFSC code.</small>
+        }
+      </div>
+    </div>
+
+    <div class="footer-action">
+      <button type="button" class="back-btn" (click)="goBack()">
+        ← Back
+      </button>
+
+      <button
+        type="submit"
+        class="proceed-btn"
+        [disabled]="bankForm.invalid">
+        Confirm &amp; Proceed →
+      </button>
+    </div>
+  </form>
+}
 
             @if (isStep('signing-authority')) {
               <h2>Signing Authority Details</h2>

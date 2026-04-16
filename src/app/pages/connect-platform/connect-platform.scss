@@ -3,8 +3,8 @@
 }
 
 $brand-primary: #81007e;
-$brand-secondary: #f7941d;
-$brand-secondary-dark: #db7f10;
+$brand-secondary: #a515a5; /* Updated action button color */
+$brand-secondary-dark: #8e128e; /* Updated action hover color */
 $white: #ffffff;
 $text-dark: #243237;
 $text-muted: #7b8a90;
@@ -12,7 +12,7 @@ $border-color: #e7ecef;
 $page-bg: #fafcfc;
 $sidebar-hover: rgba(129, 0, 126, 0.05);
 $sidebar-active: rgba(129, 0, 126, 0.08);
-$success-bg: rgba(247, 148, 29, 0.14);
+$success-bg: rgba(165, 21, 165, 0.14);
 
 .connect-platform-page {
   min-height: 100vh;
@@ -160,8 +160,9 @@ h2 {
   color: #44535a;
   margin-bottom: 12px;
 
+  /* Required asterisk color */
   span {
-    color: $brand-secondary;
+    color: red;
   }
 }
 
@@ -260,6 +261,7 @@ h2 {
   cursor: pointer;
 }
 
+/* Standard input */
 .custom-input {
   width: 100%;
   height: 52px;
@@ -272,7 +274,7 @@ h2 {
 
   &:focus {
     border-color: $brand-secondary;
-    box-shadow: 0 0 0 0.18rem rgba(247, 148, 29, 0.18);
+    box-shadow: 0 0 0 0.18rem rgba(165, 21, 165, 0.18);
     outline: none;
   }
 
@@ -281,10 +283,22 @@ h2 {
   }
 }
 
+/* Validation state for normal input */
+.custom-input.ng-invalid.ng-touched {
+  border-color: red !important;
+  box-shadow: none !important;
+}
+
+.custom-input.ng-invalid.ng-touched:focus {
+  border-color: red !important;
+  box-shadow: none !important;
+}
+
+/* Validation message */
 .error-text {
   display: block;
   margin-top: 8px;
-  color: #d9781a;
+  color: red;
   font-size: 0.88rem;
   font-weight: 500;
 }
@@ -324,7 +338,7 @@ h2 {
   }
 
   &:disabled {
-    background: rgba(247, 148, 29, 0.4);
+    background: rgba(165, 21, 165, 0.4);
     cursor: not-allowed;
   }
 }
@@ -401,9 +415,9 @@ h2 {
   width: 72px;
   height: 72px;
   border-radius: 18px;
-  background: rgba(247, 148, 29, 0.12);
+  background: rgba(165, 21, 165, 0.12);
   color: $brand-primary;
-  border: 1px solid rgba(247, 148, 29, 0.16);
+  border: 1px solid rgba(165, 21, 165, 0.16);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -991,7 +1005,10 @@ h2 {
   .account-line {
     font-size: 15px;
   }
-  :host ::ng-deep .custom-ng-select .ng-select-container {
+}
+
+/* ng-select base styling */
+:host ::ng-deep .custom-ng-select .ng-select-container {
   height: 52px;
   border-radius: 12px;
   border: 1px solid #e7ecef;
@@ -999,9 +1016,21 @@ h2 {
   font-size: 1rem;
 }
 
+/* ng-select focus styling */
 :host ::ng-deep .custom-ng-select.ng-select-focused .ng-select-container {
-  border-color: #f7941d;
-  box-shadow: 0 0 0 0.18rem rgba(247, 148, 29, 0.18);
+  border-color: $brand-secondary;
+  box-shadow: 0 0 0 0.18rem rgba(165, 21, 165, 0.18);
+}
+
+/* ng-select validation styling */
+:host ::ng-deep .custom-ng-select.ng-invalid.ng-touched .ng-select-container {
+  border: 1px solid red !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .custom-ng-select.ng-invalid.ng-touched.ng-select-focused .ng-select-container {
+  border-color: red !important;
+  box-shadow: none !important;
 }
 
 :host ::ng-deep .custom-ng-select .ng-placeholder {
@@ -1014,7 +1043,7 @@ h2 {
 
 :host ::ng-deep .custom-ng-select .ng-dropdown-panel {
   border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
 :host ::ng-deep .custom-ng-select .ng-option.ng-option-marked {
@@ -1025,5 +1054,4 @@ h2 {
 :host ::ng-deep .custom-ng-select .ng-option.ng-option-selected {
   background: #81007e;
   color: white;
-}
 }

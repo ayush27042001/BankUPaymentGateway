@@ -23,7 +23,7 @@ export class BusinessEntityComponent {
     this.router.navigate(['/phone-ckyc']);
   }
   goBack(): void {
-    this.router.navigate(['']);
+    this.router.navigate(['/pan-verification']);
   }
 
 }

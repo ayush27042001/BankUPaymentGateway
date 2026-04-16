@@ -25,7 +25,7 @@ type SectionKey = 'business' | 'kyc' | 'documents' | 'agreement';
 @Component({
   selector: 'app-connect-platform',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, OnboardingHeaderComponent,NgSelectModule],
+  imports: [CommonModule, ReactiveFormsModule, OnboardingHeaderComponent, NgSelectModule],
   templateUrl: './connect-platform.html',
   styleUrl: './connect-platform.scss',
 })
@@ -38,14 +38,18 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   businessAddressForm!: FormGroup;
   uploadDocumentsForm!: FormGroup;
 
-   imageUrl = '../../../assets/images/website-illustration.png';
+  imageUrl = '../../../assets/images/website-illustration.png';
 
-  holderNames: string[] = ['AYUSH KUMAR AWASTHI', 'RISHABH PAL', 'BUSINESS NAME'];
+  holderNamesWithAddOption = [
+    { label: 'AYUSH KUMAR AWASTHI', value: 'AYUSH KUMAR AWASTHI' },
+    { label: 'RISHABH PAL', value: 'RISHABH PAL' },
+    { label: 'BUSINESS NAME', value: 'BUSINESS NAME' },
+    { label: 'Add New Bank Holder Name', value: 'add_new_holder' },
+  ];
 
-  // Controls the bank confirmation modal visibility
+  showNewHolderInput = false;
+
   showBankConfirmModal = false;
-
-  // Controls the upload documents modal visibility
   showUploadDocumentsModal = false;
 
   matchedBankName = 'BANK OF INDIA | SITAPUR';
@@ -88,6 +92,7 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
 
     this.bankForm = this.fb.group({
       bankHolderName: ['', Validators.required],
+      newBankHolderName: [''],
       bankAccountNumber: [
         '',
         [Validators.required, Validators.pattern(/^[0-9]{9,18}$/)],
@@ -164,14 +169,12 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     return 'agreement';
   }
 
-    // Watches the collection mode and updates validators dynamically
   private setupCollectionModeWatcher(): void {
     this.platformForm.get('collectionMode')?.valueChanges.subscribe((mode) => {
       this.applyPlatformValidators(mode);
     });
   }
 
-  // Applies URL validators based on selected collection mode
   private applyPlatformValidators(mode: string): void {
     const websiteUrlControl = this.platformForm.get('websiteUrl');
     const androidAppUrlControl = this.platformForm.get('androidAppUrl');
@@ -182,22 +185,18 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     }
 
     if (mode === 'website-app') {
-      // Website/app mode requires the main URL
       websiteUrlControl.setValidators([
         Validators.required,
         this.urlValidator.bind(this),
       ]);
 
-      // App URLs remain optional but valid format is required if user enters value
       androidAppUrlControl.setValidators([this.optionalUrlValidator.bind(this)]);
       iosAppUrlControl.setValidators([this.optionalUrlValidator.bind(this)]);
     } else {
-      // Without website/app mode should allow user to continue directly
       websiteUrlControl.clearValidators();
       androidAppUrlControl.clearValidators();
       iosAppUrlControl.clearValidators();
 
-      // Clear values so old validation state does not block the button
       websiteUrlControl.setValue('', { emitEvent: false });
       androidAppUrlControl.setValue('', { emitEvent: false });
       iosAppUrlControl.setValue('', { emitEvent: false });
@@ -308,7 +307,59 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     this.currentStep = 'bank-details';
   }
 
+  onHolderChange(selectedValue: string | null): void {
+    if (selectedValue === 'add_new_holder') {
+      this.showNewHolderInput = true;
+
+      this.bankForm.patchValue({
+        bankHolderName: '',
+        newBankHolderName: '',
+      });
+
+      this.bankForm.get('newBankHolderName')?.setValidators([Validators.required]);
+      this.bankForm.get('newBankHolderName')?.updateValueAndValidity();
+
+      this.bankForm.get('bankHolderName')?.clearValidators();
+      this.bankForm.get('bankHolderName')?.updateValueAndValidity();
+      return;
+    }
+
+    this.showNewHolderInput = false;
+
+    this.bankForm.get('bankHolderName')?.setValidators([Validators.required]);
+    this.bankForm.get('bankHolderName')?.updateValueAndValidity();
+
+    this.bankForm.get('newBankHolderName')?.clearValidators();
+    this.bankForm.get('newBankHolderName')?.setValue('');
+    this.bankForm.get('newBankHolderName')?.updateValueAndValidity();
+  }
+
+  onNewBankHolderInput(): void {
+    const control = this.bankForm.get('newBankHolderName');
+    if (!control) return;
+
+    const formattedValue = (control.value || '')
+      .replace(/\s+/g, ' ')
+      .trimStart();
+
+    control.setValue(formattedValue, { emitEvent: false });
+  }
+
   submitBankDetails(): void {
+    if (this.showNewHolderInput) {
+      const enteredHolderName =
+        this.bankForm.get('newBankHolderName')?.value?.trim() || '';
+
+      if (!enteredHolderName) {
+        this.bankForm.get('newBankHolderName')?.markAsTouched();
+        return;
+      }
+
+      this.bankForm.patchValue({
+        bankHolderName: enteredHolderName,
+      });
+    }
+
     if (this.bankForm.invalid) {
       this.bankForm.markAllAsTouched();
       return;
@@ -364,13 +415,11 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     this.currentStep = 'video-kyc';
   }
 
-  // Opens the upload documents modal after clicking Schedule Video KYC
   scheduleVideoKyc(): void {
     this.showUploadDocumentsModal = true;
     this.lockBodyScroll();
   }
 
-  // Closes the upload documents modal and restores page scrolling
   closeUploadDocumentsModal(): void {
     this.showUploadDocumentsModal = false;
     this.unlockBodyScroll();
@@ -380,7 +429,6 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     fileInput.click();
   }
 
-  // Handles file selection for a specific upload field
   onFileSelected(event: Event, controlName: string): void {
     const input = event.target as HTMLInputElement;
     const file = input.files && input.files.length ? input.files[0] : null;
@@ -402,7 +450,6 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     };
   }
 
-  // Submits all uploaded KYC documents and shows the thank you screen
   submitKycDocuments(): void {
     if (this.uploadDocumentsForm.invalid) {
       this.uploadDocumentsForm.markAllAsTouched();
@@ -510,6 +557,4 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   private unlockBodyScroll(): void {
     this.renderer.removeStyle(document.body, 'overflow');
   }
-
-  
 }
