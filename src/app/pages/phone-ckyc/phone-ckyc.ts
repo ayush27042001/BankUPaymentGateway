@@ -8,8 +8,8 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
 import { Router } from '@angular/router';
+import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
 
 @Component({
   selector: 'app-phone-ckyc',
@@ -25,24 +25,30 @@ export class PhoneCkycComponent implements OnDestroy {
   otpSent = false;
   timer = 30;
   canResendOtp = false;
-  showCkycPopup = false;
   showSkipPopup = false;
+
+  isMobileEditable = false;
 
   otpDigits: string[] = ['', '', '', '', '', ''];
 
   private timerInterval: ReturnType<typeof setInterval> | null = null;
 
- constructor(
-  private fb: FormBuilder,
-  private router: Router,
-  private cdr: ChangeDetectorRef
-) {
-  this.ckycForm = this.fb.group({
-    mobileNumber: ['', [Validators.required, this.mobileValidator]],
-    otp: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
-    consent: [true, Validators.requiredTrue],
-  });
-}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.ckycForm = this.fb.group({
+      mobileNumber: ['9907866754', [Validators.required, this.mobileValidator]],
+      otp: [
+        { value: '', disabled: true },
+        [Validators.required, Validators.pattern(/^[0-9]{6}$/)],
+      ],
+      consent: [true, Validators.requiredTrue],
+    });
+
+    this.ckycForm.get('mobileNumber')?.markAsTouched();
+  }
 
   get f() {
     return this.ckycForm.controls;
@@ -60,11 +66,19 @@ export class PhoneCkycComponent implements OnDestroy {
 
   mobileValidator(control: AbstractControl): ValidationErrors | null {
     const value = (control.value || '').toString().replace(/\D/g, '');
-    if (!value) return null;
+
+    if (!value) {
+      return { required: true };
+    }
+
     return /^[6-9][0-9]{9}$/.test(value) ? null : { invalidMobile: true };
   }
 
   onMobileInput(): void {
+    if (!this.isMobileEditable) {
+      return;
+    }
+
     const mobileControl = this.ckycForm.get('mobileNumber');
     const rawValue = mobileControl?.value || '';
     const digitsOnly = rawValue.toString().replace(/\D/g, '').slice(0, 10);
@@ -73,9 +87,30 @@ export class PhoneCkycComponent implements OnDestroy {
       mobileControl?.setValue(digitsOnly, { emitEvent: false });
     }
 
+    mobileControl?.markAsTouched();
+    mobileControl?.updateValueAndValidity();
+
     if (digitsOnly.length < 10) {
       this.resetOtpState();
     }
+  }
+
+  enableEdit(): void {
+    this.isMobileEditable = true;
+
+    const mobileControl = this.ckycForm.get('mobileNumber');
+    mobileControl?.markAsTouched();
+    mobileControl?.updateValueAndValidity();
+
+    setTimeout(() => {
+      const input = document.getElementById('mobileNumber') as HTMLInputElement | null;
+      if (input) {
+        input.removeAttribute('readonly');
+        input.focus();
+        const valueLength = input.value.length;
+        input.setSelectionRange(valueLength, valueLength);
+      }
+    }, 0);
   }
 
   onProceedClick(): void {
@@ -84,6 +119,7 @@ export class PhoneCkycComponent implements OnDestroy {
 
     mobileControl?.markAsTouched();
     consentControl?.markAsTouched();
+    mobileControl?.updateValueAndValidity();
 
     if (mobileControl?.invalid || consentControl?.invalid) {
       return;
@@ -94,8 +130,9 @@ export class PhoneCkycComponent implements OnDestroy {
       return;
     }
 
+    this.ckycForm.get('otp')?.markAsTouched();
+
     if (!this.isOtpComplete) {
-      this.ckycForm.get('otp')?.markAsTouched();
       return;
     }
 
@@ -105,8 +142,10 @@ export class PhoneCkycComponent implements OnDestroy {
   sendOtp(): void {
     const mobileControl = this.ckycForm.get('mobileNumber');
 
+    mobileControl?.markAsTouched();
+    mobileControl?.updateValueAndValidity();
+
     if (mobileControl?.invalid) {
-      mobileControl.markAsTouched();
       return;
     }
 
@@ -177,7 +216,9 @@ export class PhoneCkycComponent implements OnDestroy {
     const pastedData = event.clipboardData?.getData('text') || '';
     const digits = pastedData.replace(/\D/g, '').slice(0, 6).split('');
 
-    if (!digits.length) return;
+    if (!digits.length) {
+      return;
+    }
 
     this.resetOtpBoxes();
 
@@ -199,11 +240,11 @@ export class PhoneCkycComponent implements OnDestroy {
 
   updateOtpFormValue(): void {
     const otpValue = this.otpDigits.join('');
-    this.ckycForm.get('otp')?.setValue(otpValue, { emitEvent: false });
+    const otpControl = this.ckycForm.get('otp');
 
-    if (otpValue.length === 6) {
-      this.ckycForm.get('otp')?.markAsTouched();
-    }
+    otpControl?.setValue(otpValue, { emitEvent: false });
+    otpControl?.markAsTouched();
+    otpControl?.updateValueAndValidity();
   }
 
   resetOtpBoxes(): void {
@@ -218,29 +259,32 @@ export class PhoneCkycComponent implements OnDestroy {
   }
 
   resendOtp(): void {
-    if (!this.canResendOtp) return;
+    if (!this.canResendOtp) {
+      return;
+    }
+
     this.sendOtp();
   }
 
- startTimer(): void {
-  this.clearTimer();
-  this.timer = 30;
-  this.canResendOtp = false;
-  this.cdr.detectChanges();
+  startTimer(): void {
+    this.clearTimer();
+    this.timer = 30;
+    this.canResendOtp = false;
+    this.cdr.detectChanges();
 
-  this.timerInterval = setInterval(() => {
-    if (this.timer > 0) {
-      this.timer--;
-      this.cdr.detectChanges();
-    }
+    this.timerInterval = setInterval(() => {
+      if (this.timer > 0) {
+        this.timer--;
+        this.cdr.detectChanges();
+      }
 
-    if (this.timer === 0) {
-      this.canResendOtp = true;
-      this.clearTimer();
-      this.cdr.detectChanges();
-    }
-  }, 1000);
-}
+      if (this.timer === 0) {
+        this.canResendOtp = true;
+        this.clearTimer();
+        this.cdr.detectChanges();
+      }
+    }, 1000);
+  }
 
   clearTimer(): void {
     if (this.timerInterval) {
@@ -271,17 +315,8 @@ export class PhoneCkycComponent implements OnDestroy {
     this.router.navigate(['/business-category']);
   }
 
-  goToNextStep(): void {
-    this.showCkycPopup = false;
-    this.router.navigate(['/business-category']);
-  }
-
   goBack(): void {
     this.router.navigate(['/business-entity']);
-  }
-
-  closePopup(): void {
-    this.showCkycPopup = false;
   }
 
   openSkipPopup(): void {

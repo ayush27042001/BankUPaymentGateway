@@ -20,19 +20,36 @@
                 <label for="mobileNumber">Mobile Number <span>*</span></label>
 
                 <div class="field-wrap">
-                  <div class="mobile-input-group">
+                  <div
+                    class="mobile-input-group editable-field"
+                    [ngClass]="{
+                      'error-state': f['mobileNumber'].invalid && f['mobileNumber'].touched
+                    }">
+
                     <span class="country-code">+91</span>
 
                     <input
                       id="mobileNumber"
                       type="text"
                       class="form-control custom-input"
+                      [ngClass]="{
+                        'error-state': f['mobileNumber'].invalid && f['mobileNumber'].touched,
+                        'readonly-input': !isMobileEditable
+                      }"
                       formControlName="mobileNumber"
                       placeholder="Enter mobile number"
                       maxlength="10"
                       inputmode="numeric"
-                      (input)="onMobileInput()"
-                    />
+                      [readonly]="!isMobileEditable"
+                      (input)="onMobileInput()" />
+
+                    <button
+  *ngIf="otpVisible"
+  type="button"
+  class="edit-label"
+  (click)="enableEdit()">
+  Edit
+</button>
                   </div>
 
                   <small class="helper-text">
@@ -61,13 +78,15 @@
                             [id]="'otp-' + $index"
                             type="text"
                             class="otp-box"
+                            [ngClass]="{
+                              'error-state': f['otp'].invalid && f['otp'].touched
+                            }"
                             maxlength="1"
                             inputmode="numeric"
                             autocomplete="one-time-code"
                             [value]="digit"
                             (input)="onOtpDigitInput($event, $index)"
-                            (keydown)="onOtpKeyDown($event, $index)"
-                          />
+                            (keydown)="onOtpKeyDown($event, $index)" />
                         }
                       </div>
 
@@ -104,8 +123,7 @@
                 <input
                   id="consent"
                   type="checkbox"
-                  formControlName="consent"
-                />
+                  formControlName="consent" />
                 <label for="consent">
                   By sharing CKYC identifier, you provide explicit consent to
                   download the documents and information from CKYC Registry and
@@ -126,7 +144,11 @@
                   <button
                     type="button"
                     class="proceed-btn"
-                    [disabled]="f['mobileNumber'].invalid || f['consent'].invalid || (otpVisible && !isOtpComplete)"
+                    [disabled]="
+                      f['mobileNumber'].invalid ||
+                      f['consent'].invalid ||
+                      (otpVisible && !isOtpComplete)
+                    "
                     (click)="onProceedClick()">
                     {{ actionButtonLabel }}
                   </button>
