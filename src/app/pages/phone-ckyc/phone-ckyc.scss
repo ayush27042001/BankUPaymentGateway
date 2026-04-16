@@ -3,12 +3,14 @@
 }
 
 $brand-primary: #800180;
-$brand-secondary: #a515a5; /* Updated action button color */
+$brand-secondary: #f39021;
+$proceed-btn-color: #a515a5;
 $white: #ffffff;
 $text-dark: #2d2d2d;
 $text-muted: #7a7a7a;
 $border-color: #e7e7e7;
 $page-bg: #fafafa;
+$error-color: #ff0000;
 
 .ckyc-page {
   min-height: 100vh;
@@ -70,9 +72,8 @@ $page-bg: #fafafa;
     font-size: 1rem;
     font-weight: 600;
 
-    /* Required asterisk color */
     span {
-      color: red;
+      color: $error-color;
     }
   }
 }
@@ -104,6 +105,7 @@ $page-bg: #fafafa;
     background: rgba(128, 1, 128, 0.05);
     font-weight: 700;
     border-right: 1px solid $border-color;
+    flex-shrink: 0;
   }
 
   .custom-input {
@@ -117,13 +119,29 @@ $page-bg: #fafafa;
   }
 }
 
+.mobile-input-group.error-state {
+  border-color: $error-color !important;
+  box-shadow: 0 0 0 0.12rem rgba(255, 0, 0, 0.15);
+
+  .country-code {
+    border-right-color: rgba(255, 0, 0, 0.28);
+  }
+}
+
+.mobile-input-group.error-state:focus-within {
+  border-color: $error-color !important;
+  box-shadow: 0 0 0 0.18rem rgba(255, 0, 0, 0.18) !important;
+}
+
 .custom-input {
   width: 100%;
   height: 54px;
   border: 1px solid $border-color;
   border-radius: 14px;
-  padding: 0 16px;
+  padding: 0 72px 0 16px;
   font-size: 1rem;
+  background: $white;
+  color: $text-dark;
 
   &:focus {
     border-color: $brand-primary;
@@ -132,22 +150,48 @@ $page-bg: #fafafa;
   }
 }
 
-/* Validation state */
-.custom-input.ng-invalid.ng-touched,
-.mobile-input-group.ng-invalid.ng-touched,
-.otp-box.ng-invalid.ng-touched,
-input.ng-invalid.ng-touched,
-select.ng-invalid.ng-touched,
-textarea.ng-invalid.ng-touched {
-  border-color: red !important;
+.custom-input.error-state {
+  border-color: $error-color !important;
+  box-shadow: 0 0 0 0.12rem rgba(255, 0, 0, 0.15);
 }
 
-/* Keep wrapper stable when invalid */
-.mobile-input-group.ng-invalid.ng-touched {
-  box-shadow: none;
+.custom-input.error-state:focus {
+  border-color: $error-color !important;
+  box-shadow: 0 0 0 0.18rem rgba(255, 0, 0, 0.18) !important;
+  outline: none;
+}
+
+.readonly-input {
+  cursor: default;
+}
+
+.editable-field {
+  position: relative;
+}
+
+.edit-label {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: $error-color;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  padding: 0;
+  z-index: 2;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .helper-text {
+  display: block;
   margin-top: 8px;
   font-size: 0.88rem;
   color: $text-muted;
@@ -157,7 +201,7 @@ textarea.ng-invalid.ng-touched {
   display: block;
   margin-top: 8px;
   font-size: 0.88rem;
-  color: red;
+  color: $error-color;
 }
 
 .otp-section {
@@ -188,6 +232,16 @@ textarea.ng-invalid.ng-touched {
     border-color: $brand-primary;
     box-shadow: 0 0 0 0.18rem rgba(128, 1, 128, 0.12);
   }
+}
+
+.otp-box.error-state {
+  border-color: $error-color !important;
+  box-shadow: 0 0 0 0.12rem rgba(255, 0, 0, 0.15);
+}
+
+.otp-box.error-state:focus {
+  border-color: $error-color !important;
+  box-shadow: 0 0 0 0.18rem rgba(255, 0, 0, 0.18) !important;
 }
 
 .otp-meta {
@@ -221,9 +275,8 @@ textarea.ng-invalid.ng-touched {
   padding: 0 18px;
 }
 
-/* Updated proceed button color */
 .proceed-btn {
-  background: $brand-secondary;
+  background: $proceed-btn-color;
   color: $white;
   border: none;
 
@@ -232,7 +285,8 @@ textarea.ng-invalid.ng-touched {
   }
 
   &:disabled {
-    background: rgba(165, 21, 165, 0.45);
+    background: $proceed-btn-color;
+    opacity: 0.55;
     cursor: not-allowed;
   }
 }
@@ -332,7 +386,7 @@ textarea.ng-invalid.ng-touched {
   height: 64px;
   margin: 0 auto 16px;
   border-radius: 50%;
-  background: rgba(165, 21, 165, 0.12);
+  background: rgba(243, 144, 33, 0.12);
   color: $brand-secondary;
   display: flex;
   align-items: center;
@@ -371,7 +425,7 @@ textarea.ng-invalid.ng-touched {
 }
 
 .skip-confirm-btn {
-  background: $brand-secondary;
+  background: $proceed-btn-color;
   color: $white;
   border: none;
 
@@ -385,6 +439,7 @@ textarea.ng-invalid.ng-touched {
     opacity: 0;
     transform: translateY(18px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -419,6 +474,15 @@ textarea.ng-invalid.ng-touched {
   .custom-input,
   .mobile-input-group .country-code {
     height: 48px;
+  }
+
+  .custom-input {
+    padding-right: 58px;
+  }
+
+  .edit-label {
+    right: 10px;
+    font-size: 0.84rem;
   }
 
   .otp-box-group {
