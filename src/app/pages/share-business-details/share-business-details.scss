@@ -3,7 +3,7 @@
 }
 
 $brand-primary: #800180;
-$brand-secondary: #f39021;
+$brand-secondary: #a515a5; /* Updated action button color */
 $white: #ffffff;
 $text-dark: #2d2d2d;
 $text-muted: #7a7a7a;
@@ -74,8 +74,9 @@ $page-bg: #fafafa;
     font-size: 1rem;
     font-weight: 600;
 
+    /* Required asterisk color */
     span {
-      color: $brand-secondary;
+      color: red;
     }
   }
 }
@@ -89,7 +90,8 @@ $page-bg: #fafafa;
   align-items: center;
 }
 
-/* AMOUNT INPUT */
+/* ================= AMOUNT INPUT ================= */
+
 .amount-input-group {
   display: flex;
   align-items: center;
@@ -146,19 +148,44 @@ $page-bg: #fafafa;
   }
 }
 
+/* ================= VALIDATION FIX ================= */
+
+/* Full wrapper red border (amount input group) */
+.amount-input-group.ng-invalid.ng-touched {
+  border: 1px solid red !important;
+}
+
+/* Remove purple focus when invalid */
+.amount-input-group.ng-invalid.ng-touched:focus-within {
+  border-color: red !important;
+  box-shadow: none !important;
+}
+
+/* Inner input clean */
+.amount-input-group.ng-invalid.ng-touched .custom-input {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Normal input red border */
+.custom-input.ng-invalid.ng-touched {
+  border: 1px solid red !important;
+}
+
+/* Error text */
+.error-text {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.88rem;
+  color: red;
+}
+
 /* TEXT */
 .helper-text {
   display: block;
   margin-top: 8px;
   font-size: 0.88rem;
   color: $text-muted;
-}
-
-.error-text {
-  display: block;
-  margin-top: 8px;
-  font-size: 0.88rem;
-  color: $brand-secondary;
 }
 
 /* GST SWITCH */
@@ -209,21 +236,6 @@ $page-bg: #fafafa;
   transform: translateX(24px);
 }
 
-.gstin-field-row {
-  animation: fadeSlideDown 0.25s ease;
-}
-
-@keyframes fadeSlideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* FOOTER */
 .footer-action {
   padding-top: 24px;
@@ -242,6 +254,7 @@ $page-bg: #fafafa;
   cursor: pointer;
 }
 
+/* Submit button */
 .proceed-btn {
   min-width: 210px;
   height: 48px;
@@ -250,77 +263,13 @@ $page-bg: #fafafa;
   color: $white;
   border: none;
   font-weight: 700;
-  transition: 0.3s ease;
 
   &:hover:not(:disabled) {
-    background: #d97c15;
+    background: #8e128e;
   }
 
   &:disabled {
-    background: rgba(243, 144, 33, 0.45);
+    background: rgba(165, 21, 165, 0.45);
     cursor: not-allowed;
-  }
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 991.98px) {
-  .form-card {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 767.98px) {
-  .main-section {
-    padding: 24px 0 40px;
-  }
-
-  .card-body-custom {
-    padding: 20px 14px;
-    min-height: auto;
-
-    h2 {
-      font-size: 1.4rem;
-    }
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .custom-input,
-  .amount-input-group .currency-symbol {
-    height: 48px;
-  }
-
-  .gstin-toggle-row {
-    align-items: flex-start;
-  }
-
-  .footer-action {
-    flex-direction: column-reverse;
-  }
-
-  .proceed-btn,
-  .back-btn {
-    width: 100%;
-  }
-
-  .back-btn {
-    height: 48px;
-    border: 1px solid rgba(128, 1, 128, 0.2);
-    border-radius: 12px;
-    background: $white;
-  }
-}
-
-@media (max-width: 575.98px) {
-  .card-body-custom h2 {
-    font-size: 1.25rem;
-  }
-
-  .custom-input {
-    font-size: 0.9rem;
   }
 }

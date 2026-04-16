@@ -3,7 +3,7 @@
 }
 
 $brand-primary: #800180;
-$brand-secondary: #f39021;
+$brand-secondary: #a515a5; /* Updated action button color */
 $white: #ffffff;
 $text-dark: #2d2d2d;
 $text-muted: #7a7a7a;
@@ -64,6 +64,7 @@ $page-bg: #fafafa;
   position: relative;
 }
 
+/* Search input default state */
 .search-input {
   width: 100%;
   height: 52px;
@@ -85,6 +86,18 @@ $page-bg: #fafafa;
   &::placeholder {
     color: #9a9a9a;
   }
+}
+
+/* Validation state for search input */
+.search-input.ng-invalid.ng-touched {
+  border-color: red !important;
+  box-shadow: none !important;
+}
+
+.search-input.ng-invalid.ng-touched:focus,
+.search-input.ng-invalid.ng-touched:hover {
+  border-color: red !important;
+  box-shadow: none !important;
 }
 
 .search-icon {
@@ -158,10 +171,11 @@ $page-bg: #fafafa;
   font-size: 0.95rem;
 }
 
+/* Validation message color */
 .error-text {
   display: block;
   margin-top: 10px;
-  color: $brand-secondary;
+  color: red;
   font-size: 0.88rem;
   font-weight: 500;
 }
@@ -185,6 +199,7 @@ $page-bg: #fafafa;
   cursor: pointer;
 }
 
+/* Updated submit button color */
 .proceed-btn {
   min-width: 190px;
   height: 48px;
@@ -198,11 +213,11 @@ $page-bg: #fafafa;
   transition: 0.25s ease;
 
   &:hover:not(:disabled) {
-    background: #d97c15;
+    background: #8e128e;
   }
 
   &:disabled {
-    background: rgba(243, 144, 33, 0.45);
+    background: rgba(165, 21, 165, 0.45);
     color: $white;
     cursor: not-allowed;
   }

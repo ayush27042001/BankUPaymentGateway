@@ -3,7 +3,7 @@
 }
 
 $brand-primary: #800180;
-$brand-secondary: #f39021;
+$brand-secondary: #a515a5;
 $white: #ffffff;
 $text-dark: #2d2d2d;
 $text-muted: #7a7a7a;
@@ -16,7 +16,7 @@ $page-bg: #fafafa;
   overflow-x: hidden;
 }
 
-/* HEADER (aligned with global header) */
+/* HEADER */
 .top-header {
   background: linear-gradient(90deg, $brand-primary 0%, #5f015f 100%);
   color: $white;
@@ -54,104 +54,17 @@ $page-bg: #fafafa;
       margin: 0;
       font-size: 1.5rem;
       font-weight: 700;
-      line-height: 1.2;
     }
 
     span {
       font-size: 0.9rem;
-      opacity: 0.9;
-    }
-  }
-
-  .stepper-wrap {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-
-    p {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-  }
-
-  .stepper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-
-    .step {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.25);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      font-weight: 700;
-
-      &.active {
-        background: $brand-secondary;
-      }
-    }
-
-    .line {
-      width: 48px;
-      height: 2px;
-      background: rgba(255, 255, 255, 0.55);
-    }
-  }
-
-  .header-actions {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-
-    a {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: $white;
-      text-decoration: none;
-      font-weight: 600;
-
-      &:hover {
-        color: $brand-secondary;
-      }
     }
   }
 }
 
 /* MAIN */
 .main-section {
-  position: relative;
   padding: 40px 0;
-  overflow: hidden;
-}
-
-.bg-glow {
-  position: absolute;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.12;
-  pointer-events: none;
-}
-
-.left-glow {
-  left: 10%;
-  top: 20%;
-  background: rgba(128, 1, 128, 0.18);
-}
-
-.right-glow {
-  right: 10%;
-  bottom: 10%;
-  background: rgba(243, 144, 33, 0.18);
 }
 
 .form-layout {
@@ -159,7 +72,6 @@ $page-bg: #fafafa;
   justify-content: center;
   align-items: center;
   min-height: 75vh;
-   overflow: hidden;
 }
 
 .form-card {
@@ -174,18 +86,14 @@ $page-bg: #fafafa;
 /* BODY */
 .card-body-custom {
   padding: 32px;
-  line-height: 1.25;
 
   h2 {
     font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 12px;
     color: $text-dark;
   }
 
   .subtitle {
-    font-size: 1rem;
-    line-height: 1.7;
     color: $text-muted;
     margin-bottom: 32px;
   }
@@ -196,16 +104,14 @@ $page-bg: #fafafa;
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 18px;
-  align-items: start;
   margin-bottom: 24px;
 
   label {
-    font-size: 1rem;
     font-weight: 600;
-    color: $text-dark;
 
+    /* Asterisk color FIX */
     span {
-      color: $brand-secondary;
+      color: red;
     }
   }
 }
@@ -214,6 +120,8 @@ $page-bg: #fafafa;
   width: 100%;
 }
 
+/* ================= INPUT ================= */
+
 .custom-input {
   height: 52px;
   border: 1px solid $border-color;
@@ -221,80 +129,30 @@ $page-bg: #fafafa;
   padding: 0 16px;
   width: 100%;
   font-size: 1rem;
-  color: $text-dark;
   background: $white;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 
   &:focus {
     border-color: $brand-primary;
     box-shadow: 0 0 0 0.18rem rgba(128, 1, 128, 0.12);
-     outline: none;
+    outline: none;
   }
 }
 
-.editable-input-wrap {
-  position: relative;
-  width: 100%;
+/* ================= VALIDATION ================= */
 
-  .editable-input-control {
-    padding-right: 48px; /* Space reserved for the icon */
-    cursor: text;
-  }
-
-  .edit-icon {
-    position: absolute;
-    top: 50%;
-    right: 16px;
-    transform: translateY(-50%);
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(16, 185, 129, 0.1);
-    color: #10b981;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    line-height: 1;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.25s ease;
-    pointer-events: none;
-  }
-
-  &:hover .edit-icon,
-  &:focus-within .edit-icon {
-    opacity: 1;
-    visibility: visible;
-
-  }
+.custom-input.ng-invalid.ng-touched {
+  border: 1px solid red !important;
 }
 
 .error-text {
-  display: inline-block; 
+  display: inline-block;
   margin-top: 8px;
-  color: $brand-secondary;
+  color: red;
   font-size: 0.88rem;
 }
 
-/* Section animation */
-.animate-section {
-  animation: fadeSlide 0.3s ease;
-}
-
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Footer action */
+/* ================= FOOTER ================= */
 
 .footer-action {
   border-top: 1px solid #f1f1f1;
@@ -320,113 +178,12 @@ $page-bg: #fafafa;
   background: $brand-secondary;
   color: $white;
   font-weight: 700;
- transition: background 0.25s ease, opacity 0.25s ease;
 
   &:hover:not(:disabled) {
-    background: #d97c15;
+    background: #8e128e;
   }
-    &:disabled {
+
+  &:disabled {
     opacity: 0.65;
-    cursor: not-allowed;
-  }
-}
-
-
-
-/* ================= RESPONSIVE ================= */
-
-/* Tablet */
-@media (max-width: 991.98px) {
-  .top-header .header-inner {
-    justify-content: center;
-    text-align: center;
-  }
-
-  .brand-wrap,
-  .stepper-wrap,
-  .header-actions {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .bg-glow {
-    width: 220px;
-    height: 220px;
-    filter: blur(70px);
-  }
-}
-
-/* Mobile */
-@media (max-width: 767.98px) {
-  .main-section {
-    padding: 24px 0 40px;
-  }
-
-  .card-body-custom {
-    padding: 20px 14px;
-
-    h2 {
-      font-size: 1.4rem;
-    }
-
-    .subtitle {
-      font-size: 0.95rem;
-    }
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .custom-input {
-    height: 48px;
-  }
-
-  .editable-input-wrap {
-    .editable-input-control {
-      padding-right: 44px;
-    }
-
-    .edit-icon {
-      right: 12px;
-      width: 26px;
-      height: 26px;
-      font-size: 13px;
-    }
-  }
-
-  .footer-action {
-    flex-direction: column-reverse;
-  }
-
-  .proceed-btn,
-  .back-btn {
-    width: 100%;
-  }
-}
-
-/* Small Mobile */
-@media (max-width: 575.98px) {
-  .card-body-custom {
-    padding: 18px 12px;
-
-    h2 {
-      font-size: 1.25rem;
-    }
-  }
-
-  .form-row label {
-    font-size: 0.95rem;
-  }
-
-  .custom-input {
-    font-size: 0.9rem;
-  }
-
-  .editable-input-wrap {
-    .edit-icon {
-      right: 10px;
-    }
   }
 }
