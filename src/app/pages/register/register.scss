@@ -206,6 +206,22 @@ input.invalid {
   font-weight: 700;
 }
 
+.api-error {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(229, 57, 53, 0.06);
+  border: 1px solid rgba(229, 57, 53, 0.2);
+  border-radius: 12px;
+}
+
+.api-error p {
+  margin: 0;
+  color: #e53935;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
 .password-group {
   position: relative;
   padding-bottom: 0;

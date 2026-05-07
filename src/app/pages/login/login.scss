@@ -265,6 +265,20 @@ $error-color: #dc2626;
   color: $error-color;
 }
 
+.api-error {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  font-size: 13px;
+  font-weight: 600;
+  color: $error-color;
+  display: block;
+  visibility: visible;
+}
+
 .form-options {
   display: flex;
   align-items: center;

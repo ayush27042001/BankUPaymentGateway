@@ -8,6 +8,8 @@ import { BusinessCategoryComponent } from './pages/business-category/business-ca
 import { ShareBusinessDetailsComponent } from './pages/share-business-details/share-business-details';
 import { ConnectPlatformComponent } from './pages/connect-platform/connect-platform';
 import { RegisterComponent } from './pages/register/register';
+import { authGuard } from './guards/auth.guard';
+
 export const routes: Routes = [
   // ✅ default route → login
   { path: '', component: LoginComponent },
@@ -15,14 +17,16 @@ export const routes: Routes = [
   // ✅ login route
   { path: 'login', component: LoginComponent },
 
-  // existing routes (same as yours)
-  { path: 'pan-verification', component: PanVerificationComponent },
-  { path: 'business-entity', component: BusinessEntityComponent },
-  { path: 'phone-ckyc', component: PhoneCkycComponent },
-  { path: 'business-category', component: BusinessCategoryComponent },
-  { path: 'share-business-details', component: ShareBusinessDetailsComponent },
-  { path: 'connect-platform', component: ConnectPlatformComponent },
+  // ✅ register route (public)
   { path: 'register', component: RegisterComponent },
+
+  // protected routes
+  { path: 'pan-verification', component: PanVerificationComponent, canActivate: [authGuard] },
+  { path: 'business-entity', component: BusinessEntityComponent, canActivate: [authGuard] },
+  { path: 'phone-ckyc', component: PhoneCkycComponent, canActivate: [authGuard] },
+  { path: 'business-category', component: BusinessCategoryComponent, canActivate: [authGuard] },
+  { path: 'share-business-details', component: ShareBusinessDetailsComponent, canActivate: [authGuard] },
+  { path: 'connect-platform', component: ConnectPlatformComponent, canActivate: [authGuard] },
 
   // ✅ optional fallback (recommended)
   { path: '**', redirectTo: 'login' }
