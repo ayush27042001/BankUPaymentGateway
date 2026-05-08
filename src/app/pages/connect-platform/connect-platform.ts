@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import {
   AbstractControl,
   FormBuilder,
@@ -8,6 +10,7 @@ import {
   ReactiveFormsModule,
   ValidationErrors,
   Validators,
+  FormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
@@ -18,6 +21,7 @@ type StepKey =
   | 'signing-authority'
   | 'business-address'
   | 'video-kyc'
+  | 'service-agreement'
   | 'thank-you';
 
 type SectionKey = 'business' | 'kyc' | 'documents' | 'agreement';
@@ -25,7 +29,13 @@ type SectionKey = 'business' | 'kyc' | 'documents' | 'agreement';
 @Component({
   selector: 'app-connect-platform',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, OnboardingHeaderComponent, NgSelectModule],
+  imports: [
+  CommonModule,
+  ReactiveFormsModule,
+  FormsModule,
+  OnboardingHeaderComponent,
+  NgSelectModule,
+],
   templateUrl: './connect-platform.html',
   styleUrl: './connect-platform.scss',
 })
@@ -65,13 +75,20 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     applicationFormFile: '',
   };
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private renderer: Renderer2
-  ) {
-    this.initializeForms();
-  }
+  // Agreement Step Properties
+  selectedAgreementFile: File | null = null;
+  agreementFileName: string = '';
+  agreementDate: string = '';
+  agreementAccepted: boolean = false;
+
+ constructor(
+  private fb: FormBuilder,
+  private router: Router,
+  private renderer: Renderer2,
+  @Inject(PLATFORM_ID) private platformId: Object
+) {
+  this.initializeForms();
+}
 
   ngOnInit(): void {
     this.setupCollectionModeWatcher();
@@ -162,8 +179,15 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
       return 'kyc';
     }
 
-    if (this.currentStep === 'video-kyc' || this.currentStep === 'thank-you') {
+    if (
+      this.currentStep === 'video-kyc' ||
+      this.currentStep === 'thank-you'
+    ) {
       return 'documents';
+    }
+
+    if (this.currentStep === 'service-agreement') {
+      return 'agreement';
     }
 
     return 'agreement';
@@ -230,6 +254,13 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     }
 
     if (section === 'documents') {
+      return (
+        this.currentStep === 'service-agreement' ||
+        this.currentStep === 'thank-you'
+      );
+    }
+
+    if (section === 'agreement') {
       return this.currentStep === 'thank-you';
     }
 
@@ -268,9 +299,15 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
         this.currentStep = 'business-address';
         break;
 
-      case 'thank-you':
-        this.currentStep = 'video-kyc';
-        break;
+     // Navigate back from service agreement to video KYC.
+case 'service-agreement':
+  this.currentStep = 'video-kyc';
+  break;
+
+// Navigate back from thank you page to service agreement.
+case 'thank-you':
+  this.currentStep = 'service-agreement';
+  break;
 
       default:
         this.router.navigateByUrl('/');
@@ -464,7 +501,8 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
 
     this.showUploadDocumentsModal = false;
     this.unlockBodyScroll();
-    this.currentStep = 'thank-you';
+   // Navigate user to service agreement step.
+this.currentStep = 'service-agreement';
   }
 
   onAccountNumberInput(): void {
@@ -519,11 +557,64 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
         return 'STEP 4 OF 5';
       case 'video-kyc':
         return 'STEP 5 OF 5';
+      case 'service-agreement':
+        return 'FINAL STEP';
       case 'thank-you':
         return 'COMPLETED';
       default:
         return '';
     }
+  }
+
+  /**
+   * Opens agreement document in a new browser tab.
+   */
+  viewAgreement(): void {
+  const pdfUrl = '/assets/images/agreement/service-agreement.pdf';
+
+  window.open(pdfUrl, '_blank');
+}
+
+  /**
+   * Downloads agreement PDF document.
+   */
+  downloadAgreement(): void {
+  const link = document.createElement('a');
+
+  link.setAttribute(
+    'href',
+    '/assets/images/agreement/service-agreement.pdf'
+  );
+
+  link.setAttribute(
+    'download',
+    'service-agreement.pdf'
+  );
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  document.body.removeChild(link);
+}
+
+  /**
+   * Handles uploaded agreement file selection.
+   */
+  onAgreementFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files.length > 0) {
+      this.selectedAgreementFile = input.files[0];
+      this.agreementFileName = input.files[0].name;
+    }
+  }
+
+  /**
+   * Navigates user to thank you page.
+   */
+  goToThankYouPage(): void {
+    this.currentStep = 'thank-you';
   }
 
   urlValidator(control: AbstractControl): ValidationErrors | null {
@@ -550,11 +641,15 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     return pattern.test(value) ? null : { invalidIfsc: true };
   }
 
-  private lockBodyScroll(): void {
+ private lockBodyScroll(): void {
+  if (isPlatformBrowser(this.platformId)) {
     this.renderer.setStyle(document.body, 'overflow', 'hidden');
   }
+}
 
-  private unlockBodyScroll(): void {
+private unlockBodyScroll(): void {
+  if (isPlatformBrowser(this.platformId)) {
     this.renderer.removeStyle(document.body, 'overflow');
   }
+}
 }
