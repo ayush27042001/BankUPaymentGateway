@@ -634,7 +634,36 @@
                   </div>
 
                   <!-- Upload Signature Card -->
-                  <div class="agreement-card">
+                   <div class="signature-card">
+  <div class="signature-icon">
+    ✍️
+  </div>
+
+  <h3>Digital Signature</h3>
+
+  <div class="signature-pad-wrapper">
+    <canvas #signatureCanvas></canvas>
+  </div>
+
+  <div class="signature-actions">
+    <button
+      type="button"
+      class="clear-btn"
+      (click)="clearSignature()"
+    >
+      Clear
+    </button>
+
+    <button
+      type="button"
+      class="submit-btn"
+      (click)="saveSignature()"
+    >
+      Submit
+    </button>
+  </div>
+</div>
+                  <!-- <div class="agreement-card">
                     <div class="agreement-icon">✍</div>
                     <h3>Upload Digital Signature</h3>
                     <p>
@@ -655,7 +684,7 @@
                         <small class="file-name">{{ agreementFileName }}</small>
                       }
                     </div>
-                  </div>
+                  </div> -->
 
                   <!-- Date Selection Card -->
                   <div class="agreement-card date-card">
@@ -690,7 +719,7 @@
                   <button
                     type="button"
                     class="proceed-btn"
-                    [disabled]="!agreementAccepted || !selectedAgreementFile"
+                    [disabled]="!agreementAccepted || !isSigned"
                     (click)="goToThankYouPage()">
                     Finish &amp; Proceed →
                   </button>

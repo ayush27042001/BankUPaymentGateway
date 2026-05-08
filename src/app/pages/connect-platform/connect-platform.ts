@@ -4,6 +4,13 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import {
+  AfterViewInit,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
+
+import SignaturePad from 'signature_pad';
+import {
   AbstractControl,
   FormBuilder,
   FormGroup,
@@ -98,7 +105,65 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unlockBodyScroll();
   }
+  @ViewChild('signatureCanvas') set signatureCanvas(content: ElementRef<HTMLCanvasElement>) {
+    if (content) {
+      this._signatureCanvas = content;
+      this.initializeSignaturePad();
+    }
+  }
+  private _signatureCanvas!: ElementRef<HTMLCanvasElement>;
 
+  signaturePad!: SignaturePad;
+  signatureImage = '';
+  isSigned = false;
+
+  ngAfterViewInit(): void {
+    // Initialization is now handled by the setter
+  }
+  initializeSignaturePad(): void {
+    if (!isPlatformBrowser(this.platformId) || !this._signatureCanvas) {
+      return;
+    }
+
+    const canvas = this._signatureCanvas.nativeElement;
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+
+    // Set canvas dimensions based on container
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    canvas.getContext('2d')?.scale(ratio, ratio);
+
+    this.signaturePad = new SignaturePad(canvas, {
+      minWidth: 1.5,
+      maxWidth: 3,
+      penColor: '#1565c0',
+    });
+
+    // Add listener to track signing state
+    this.signaturePad.addEventListener('beginStroke', () => {
+      this.isSigned = true;
+    });
+  }
+
+  clearSignature(): void {
+    if (this.signaturePad) {
+      this.signaturePad.clear();
+      this.isSigned = false;
+      this.signatureImage = '';
+    }
+  }
+
+  saveSignature(): void {
+    if (!this.signaturePad || this.signaturePad.isEmpty()) {
+      alert('Please provide signature first.');
+      this.isSigned = false;
+      return;
+    }
+
+    this.signatureImage = this.signaturePad.toDataURL('image/png');
+    this.isSigned = true;
+    console.log('Signature saved:', this.signatureImage);
+  }
   initializeForms(): void {
     this.platformForm = this.fb.group({
       collectionMode: ['website-app', Validators.required],
