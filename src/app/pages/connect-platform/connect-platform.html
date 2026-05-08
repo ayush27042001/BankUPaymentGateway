@@ -60,8 +60,19 @@
             </span>
           </button>
 
-          <button type="button" class="nav-item">
+          <button
+            type="button"
+            class="nav-item"
+            [class.active]="isSidebarActive('agreement')"
+            [class.completed]="isSidebarCompleted('agreement')">
             <span>Service Agreement</span>
+            <span class="nav-status">
+              @if (isSidebarCompleted('agreement')) {
+                <span class="status-check">✓</span>
+              } @else {
+                <span class="arrow">›</span>
+              }
+            </span>
           </button>
         </nav>
       </aside>
@@ -597,7 +608,124 @@
                 </button>
               </div>
             }
+            @if (isStep('service-agreement')) {
+              <h2>Service Agreement</h2>
+              <p class="subtitle">
+                Please review and sign the service agreement to proceed with your onboarding.
+              </p>
 
+              <div class="service-agreement-wrapper">
+                <div class="agreement-grid">
+                  <!-- View/Download Card -->
+                  <div class="agreement-card mandatory-card">
+                    <div class="agreement-icon">📄</div>
+                    <h3>Review Agreement</h3>
+                    <p>
+                      Download and read the service agreement carefully before signing.
+                    </p>
+                    <div class="agreement-actions">
+                      <button type="button" class="outline-action-btn" (click)="viewAgreement()">
+                        View Agreement
+                      </button>
+                      <button type="button" class="tool-link" (click)="downloadAgreement()">
+                        Download PDF
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Upload Signature Card -->
+                   <div class="signature-card">
+  <div class="signature-icon">
+    ✍️
+  </div>
+
+  <h3>Digital Signature</h3>
+
+  <div class="signature-pad-wrapper">
+    <canvas #signatureCanvas></canvas>
+  </div>
+
+  <div class="signature-actions">
+    <button
+      type="button"
+      class="clear-btn"
+      (click)="clearSignature()"
+    >
+      Clear
+    </button>
+
+    <button
+      type="button"
+      class="submit-btn"
+      (click)="saveSignature()"
+    >
+      Submit
+    </button>
+  </div>
+</div>
+                  <!-- <div class="agreement-card">
+                    <div class="agreement-icon">✍</div>
+                    <h3>Upload Digital Signature</h3>
+                    <p>
+                      Upload the signed agreement document or your digital signature to continue.
+                    </p>
+                    <div class="file-upload-box">
+                      <input
+                        type="file"
+                        id="agreementFile"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        class="hidden-file-input"
+                        (change)="onAgreementFileSelected($event)"
+                      />
+                      <label for="agreementFile" class="proceed-btn upload-btn">
+                        {{ agreementFileName ? 'Change File' : 'Select Signed File' }}
+                      </label>
+                      @if (agreementFileName) {
+                        <small class="file-name">{{ agreementFileName }}</small>
+                      }
+                    </div>
+                  </div> -->
+
+                  <!-- Date Selection Card -->
+                  <div class="agreement-card date-card">
+                    <div class="agreement-icon">📅</div>
+                    <h3>Agreement Date</h3>
+                    <p>Select the date of signing.</p>
+                    <input
+                      type="date"
+                      class="form-control custom-input"
+                      [(ngModel)]="agreementDate"
+                    />
+                  </div>
+                </div>
+
+                <!-- Agreement Acceptance -->
+                <div class="agreement-checkbox">
+                  <label class="checkbox-container">
+                    <input type="checkbox" [(ngModel)]="agreementAccepted" />
+                    <span class="checkmark"></span>
+                    <span class="checkbox-text">
+                      I have read and accepted the service agreement terms and conditions.
+                    </span>
+                  </label>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="footer-action agreement-footer">
+                  <button type="button" class="back-btn" (click)="goBack()">
+                    ← Back
+                  </button>
+
+                  <button
+                    type="button"
+                    class="proceed-btn"
+                    [disabled]="!agreementAccepted || !isSigned"
+                    (click)="goToThankYouPage()">
+                    Finish &amp; Proceed →
+                  </button>
+                </div>
+              </div>
+            }
             @if (isStep('thank-you')) {
               <div class="thank-you-screen">
                 <div class="thank-you-icon">✓</div>
