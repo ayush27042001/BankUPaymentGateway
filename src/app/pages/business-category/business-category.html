@@ -1,8 +1,7 @@
 <div class="business-category-page">
   <app-onboarding-header
     [title]="'Account Creation'"
-    [currentStep]="2"
-    [merchantId]="'13574280'">
+    [currentStep]="2">
   </app-onboarding-header>
 
   <section class="main-section">
@@ -17,9 +16,19 @@
 
             <form [formGroup]="businessCategoryForm" (ngSubmit)="onProceed()">
               <div class="category-search-wrap">
+                @if (loading) {
+                  <div class="loading-wrapper">
+                    <div class="spinner"></div>
+                    <div class="loading-message">Loading business categories...</div>
+                  </div>
+                } @else if (error) {
+                  <div class="error-message">{{ error }}</div>
+                }
+
                 <div
                   class="search-box"
                   (mouseenter)="openDropdown()"
+                  [class.disabled]="loading || !!error"
                 >
                   <input
                     type="text"
@@ -28,12 +37,13 @@
                     placeholder="Search Category and Sub-Category your business falls under"
                     (focus)="openDropdown()"
                     (input)="onSearchInput()"
+                    [disabled]="loading || !!error"
                   />
 
                   <span class="search-icon">⌕</span>
                 </div>
 
-                @if (showDropdown) {
+                @if (showDropdown && !loading && !error) {
                   <div class="category-dropdown">
                     @for (group of filteredGroups; track group.title) {
                       <div class="category-group">
@@ -73,8 +83,12 @@
                 <button
                   type="submit"
                   class="proceed-btn"
-                  [disabled]="businessCategoryForm.invalid">
-                  Confirm &amp; Proceed →
+                  [disabled]="businessCategoryForm.invalid || saving">
+                  @if (saving) {
+                    Saving...
+                  } @else {
+                    Confirm &amp; Proceed →
+                  }
                 </button>
               </div>
             </form>

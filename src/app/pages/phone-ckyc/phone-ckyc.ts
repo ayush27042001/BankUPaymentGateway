@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -10,6 +10,8 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
+import { PhoneCkycService } from '../../services/phone-ckyc/phone-ckyc.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-phone-ckyc',
@@ -18,7 +20,7 @@ import { OnboardingHeaderComponent } from '../../components/onboarding-header/on
   templateUrl: './phone-ckyc.html',
   styleUrl: './phone-ckyc.scss',
 })
-export class PhoneCkycComponent implements OnDestroy {
+export class PhoneCkycComponent implements OnInit, OnDestroy {
   ckycForm: FormGroup;
 
   otpVisible = false;
@@ -28,6 +30,10 @@ export class PhoneCkycComponent implements OnDestroy {
   showSkipPopup = false;
 
   isMobileEditable = false;
+  loading = false;
+  sendingOtp = false;
+  verifyingOtp = false;
+  saving = false;
 
   otpDigits: string[] = ['', '', '', '', '', ''];
 
@@ -36,7 +42,9 @@ export class PhoneCkycComponent implements OnDestroy {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private phoneCkycService: PhoneCkycService,
+    private authService: AuthService
   ) {
     this.ckycForm = this.fb.group({
       mobileNumber: ['9907866754', [Validators.required, this.mobileValidator]],
@@ -48,6 +56,37 @@ export class PhoneCkycComponent implements OnDestroy {
     });
 
     this.ckycForm.get('mobileNumber')?.markAsTouched();
+  }
+
+  ngOnInit(): void {
+    this.loadExistingPhoneCkyc();
+  }
+
+  loadExistingPhoneCkyc(): void {
+    this.loading = true;
+    this.phoneCkycService.getPhoneCkyc().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const mobileNumber = response.data.mobileNumber.replace('+91', '');
+          this.ckycForm.patchValue({
+            mobileNumber: mobileNumber,
+            consent: response.data.consentGiven,
+          });
+        }
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        // 404 is expected if phone CKYC not set yet
+        if (err.status === 404) {
+          console.log('No existing phone CKYC found (404)');
+        } else {
+          console.error('Error loading phone CKYC:', err);
+        }
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   get f() {
@@ -149,21 +188,37 @@ export class PhoneCkycComponent implements OnDestroy {
       return;
     }
 
-    this.otpVisible = true;
-    this.otpSent = true;
-    this.canResendOtp = false;
+    this.sendingOtp = true;
+    this.phoneCkycService.sendOtp().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.otpVisible = true;
+          this.otpSent = true;
+          this.canResendOtp = false;
 
-    this.resetOtpBoxes();
-    this.ckycForm.get('otp')?.enable();
-    this.ckycForm.get('otp')?.setValue('');
-    this.ckycForm.get('otp')?.markAsUntouched();
+          this.resetOtpBoxes();
+          this.ckycForm.get('otp')?.enable();
+          this.ckycForm.get('otp')?.setValue('');
+          this.ckycForm.get('otp')?.markAsUntouched();
 
-    this.startTimer();
+          // Use remaining seconds from API response
+          this.timer = response.data.remainingSeconds || 30;
+          this.startTimer();
 
-    setTimeout(() => {
-      const firstOtpInput = document.getElementById('otp-0') as HTMLInputElement | null;
-      firstOtpInput?.focus();
-    }, 0);
+          setTimeout(() => {
+            const firstOtpInput = document.getElementById('otp-0') as HTMLInputElement | null;
+            firstOtpInput?.focus();
+          }, 0);
+        }
+        this.sendingOtp = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error sending OTP:', err);
+        this.sendingOtp = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   onOtpDigitInput(event: Event, index: number): void {
@@ -259,7 +314,7 @@ export class PhoneCkycComponent implements OnDestroy {
   }
 
   resendOtp(): void {
-    if (!this.canResendOtp) {
+    if (!this.canResendOtp || this.sendingOtp) {
       return;
     }
 
@@ -268,7 +323,11 @@ export class PhoneCkycComponent implements OnDestroy {
 
   startTimer(): void {
     this.clearTimer();
-    this.timer = 30;
+    // Don't reset timer here - it's set from API response in sendOtp()
+    // Default to 30 only if not already set
+    if (this.timer === 0 || this.timer === 30) {
+      this.timer = 30;
+    }
     this.canResendOtp = false;
     this.cdr.detectChanges();
 
@@ -312,7 +371,64 @@ export class PhoneCkycComponent implements OnDestroy {
       return;
     }
 
-    this.router.navigate(['/business-category']);
+    this.verifyingOtp = true;
+    const mobileNumber = this.ckycForm.get('mobileNumber')?.value || '';
+    const otp = this.otpDigits.join('');
+
+    this.phoneCkycService.verifyOtp({ mobileNumber, otp }).subscribe({
+      next: (response) => {
+        if (response.success && response.data?.isVerified) {
+          // OTP verified successfully, now save CKYC details
+          this.savePhoneCkyc();
+        } else {
+          // OTP verification failed
+          console.error('OTP verification failed:', response.message);
+          this.verifyingOtp = false;
+          this.cdr.markForCheck();
+        }
+      },
+      error: (err) => {
+        console.error('Error verifying OTP:', err);
+        this.verifyingOtp = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  savePhoneCkyc(): void {
+    this.saving = true;
+    const consentControl = this.ckycForm.get('consent');
+
+    this.phoneCkycService.savePhoneCkyc({
+      ckycIdentifier: '',
+      consentGiven: consentControl?.value || false,
+    }).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          // Update auth service with new onboarding status
+          this.authService.setAuthData(
+            this.authService.getToken() || '',
+            this.authService.getUserId() || '',
+            this.authService.getMid() || '',
+            this.authService.getUserData(),
+            this.authService.getRefreshToken() || undefined,
+            this.authService.getTokenExpiration() || undefined,
+            this.authService.getRefreshTokenExpiration() || undefined,
+            response.data.onboardingStatus
+          );
+          console.log('Onboarding status updated');
+          this.router.navigate(['/business-category']);
+        }
+        this.saving = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error saving phone CKYC:', err);
+        this.verifyingOtp = false;
+        this.saving = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   goBack(): void {
@@ -325,7 +441,39 @@ export class PhoneCkycComponent implements OnDestroy {
 
   confirmSkip(): void {
     this.showSkipPopup = false;
-    this.router.navigate(['/business-category']);
+    // Skip by saving with empty ckycIdentifier
+    this.saving = true;
+    const consentControl = this.ckycForm.get('consent');
+
+    this.phoneCkycService.savePhoneCkyc({
+      ckycIdentifier: '',
+      consentGiven: consentControl?.value || false,
+    }).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          // Update auth service with new onboarding status
+          this.authService.setAuthData(
+            this.authService.getToken() || '',
+            this.authService.getUserId() || '',
+            this.authService.getMid() || '',
+            this.authService.getUserData(),
+            this.authService.getRefreshToken() || undefined,
+            this.authService.getTokenExpiration() || undefined,
+            this.authService.getRefreshTokenExpiration() || undefined,
+            response.data.onboardingStatus
+          );
+          console.log('Onboarding status updated');
+          this.router.navigate(['/business-category']);
+        }
+        this.saving = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error saving phone CKYC on skip:', err);
+        this.saving = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   closeSkipPopup(): void {

@@ -1,8 +1,7 @@
 <div class="onboarding-page">
   <app-onboarding-header
     [title]="'Account Creation'"
-    [currentStep]="1"
-    [merchantId]="'13574280'">
+    [currentStep]="1">
   </app-onboarding-header>
 
   <section class="main-section">
@@ -21,22 +20,23 @@
             <div class="entity-block">
               <label class="entity-label">Select your business entity type</label>
 
-              <div class="entity-options">
+              <div class="entity-options" *ngIf="!loading && !error">
                 <button
                   type="button"
                   class="entity-chip"
-                  [class.active]="selectedType === 'Individual'"
-                  (click)="selectType('Individual')">
-                  Individual
+                  [class.active]="selectedType?.businessEntityTypeId === type.businessEntityTypeId"
+                  (click)="selectType(type)"
+                  *ngFor="let type of businessEntityTypes">
+                  {{ type.entityName }}
                 </button>
+              </div>
 
-                <button
-                  type="button"
-                  class="entity-chip"
-                  [class.active]="selectedType === 'Sole Proprietorship'"
-                  (click)="selectType('Sole Proprietorship')">
-                  Sole Proprietorship
-                </button>
+              <div class="loading-message" *ngIf="loading">
+                Loading business entity types...
+              </div>
+
+              <div class="error-message" *ngIf="error">
+                {{ error }}
               </div>
             </div>
           </div>

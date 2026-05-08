@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-onboarding-header',
@@ -9,6 +10,8 @@ import { CommonModule, NgClass } from '@angular/common';
   styleUrl: './onboarding-header.scss',
 })
 export class OnboardingHeaderComponent {
+  private authService = inject(AuthService);
+
   // Header title displayed in the center
   @Input() title: string = 'Account Creation';
 
@@ -16,7 +19,17 @@ export class OnboardingHeaderComponent {
   @Input() currentStep: number = 1;
 
   // Merchant id displayed on the left side
-  @Input() merchantId: string = '13574280';
+  @Input() set merchantId(value: string | undefined) {
+    if (value && value.trim() !== '') {
+      this._merchantId = value;
+    }
+  }
+  
+  get merchantId(): string {
+    return this._merchantId || this.authService.getMid() || '';
+  }
+  
+  private _merchantId: string = '';
 
   // Controls action buttons visibility
   @Input() showActions: boolean = true;

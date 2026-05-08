@@ -1,8 +1,7 @@
 <div class="ckyc-page">
   <app-onboarding-header
     [title]="'Account Creation'"
-    [currentStep]="2"
-    [merchantId]="'13574280'">
+    [currentStep]="2">
   </app-onboarding-header>
 
   <section class="main-section">
@@ -16,6 +15,9 @@
             </p>
 
             <form [formGroup]="ckycForm" novalidate>
+              @if (loading) {
+                <div class="loading-message">Loading phone CKYC details...</div>
+              } @else {
               <div class="form-row">
                 <label for="mobileNumber">Mobile Number <span>*</span></label>
 
@@ -44,7 +46,6 @@
                       (input)="onMobileInput()" />
 
                     <button
-  *ngIf="otpVisible"
   type="button"
   class="edit-label"
   (click)="enableEdit()">
@@ -109,8 +110,13 @@
                           <button
                             type="button"
                             class="resend-btn"
+                            [disabled]="sendingOtp"
                             (click)="resendOtp()">
-                            Resend OTP
+                            @if (sendingOtp) {
+                              Sending...
+                            } @else {
+                              Resend OTP
+                            }
                           </button>
                         }
                       </div>
@@ -137,8 +143,16 @@
                 </button>
 
                 <div class="action-group">
-                  <button type="button" class="skip-btn" (click)="openSkipPopup()">
-                    Skip CKYC
+                  <button
+                    type="button"
+                    class="skip-btn"
+                    [disabled]="saving"
+                    (click)="openSkipPopup()">
+                    @if (saving) {
+                      Skipping...
+                    } @else {
+                      Skip CKYC
+                    }
                   </button>
 
                   <button
@@ -147,13 +161,25 @@
                     [disabled]="
                       f['mobileNumber'].invalid ||
                       f['consent'].invalid ||
-                      (otpVisible && !isOtpComplete)
+                      (otpVisible && !isOtpComplete) ||
+                      sendingOtp ||
+                      verifyingOtp ||
+                      saving
                     "
                     (click)="onProceedClick()">
-                    {{ actionButtonLabel }}
+                    @if (sendingOtp) {
+                      Sending OTP...
+                    } @else if (verifyingOtp) {
+                      Verifying...
+                    } @else if (saving) {
+                      Saving...
+                    } @else {
+                      {{ actionButtonLabel }}
+                    }
                   </button>
                 </div>
               </div>
+              }
             </form>
           </div>
         </div>
@@ -177,8 +203,16 @@
               Cancel
             </button>
 
-            <button type="button" class="skip-confirm-btn" (click)="confirmSkip()">
-              Yes, Continue
+            <button
+              type="button"
+              class="skip-confirm-btn"
+              [disabled]="saving"
+              (click)="confirmSkip()">
+              @if (saving) {
+                Skipping...
+              } @else {
+                Yes, Continue
+              }
             </button>
           </div>
         </div>

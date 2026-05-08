@@ -1,3 +1,5 @@
+<app-loader [isVisible]="isSubmitting || isSendingOtp || isVerifyingOtp"></app-loader>
+
 <div class="login-page">
   <div class="bg-glow bg-glow-left"></div>
   <div class="bg-glow bg-glow-right"></div>
@@ -89,6 +91,10 @@
               </div>
             </div>
 
+            <div class="api-error" *ngIf="loginError">
+              {{ loginError }}
+            </div>
+
             <div class="form-options">
               <button
                 type="button"
@@ -102,8 +108,9 @@
               </a>
             </div>
 
-            <button type="submit" class="login-btn" [disabled]="loginForm.invalid">
-              <span>LOGIN</span>
+            <button type="submit" class="login-btn" [disabled]="loginForm.invalid || isSubmitting">
+              <span *ngIf="!isSubmitting">LOGIN</span>
+              <span *ngIf="isSubmitting">Logging in...</span>
             </button>
 
             <p class="bottom-text">
@@ -148,13 +155,18 @@
                 </div>
               </div>
 
+              <div class="api-error" *ngIf="otpError">
+                {{ otpError }}
+              </div>
+
               <button
                 *ngIf="!otpSent"
                 type="button"
                 class="login-btn otp-send-btn"
-                [disabled]="otpLoginForm.invalid"
+                [disabled]="otpLoginForm.invalid || isSendingOtp"
                 (click)="sendOtp()">
-                <span>SEND OTP</span>
+                <span *ngIf="!isSendingOtp">SEND OTP</span>
+                <span *ngIf="isSendingOtp">Sending...</span>
               </button>
 
               <ng-container *ngIf="otpSent">
@@ -186,13 +198,16 @@
                     type="button"
                     class="resend-btn"
                     [class.active]="canResendOtp"
-                    [disabled]="!canResendOtp"
+                    [disabled]="!canResendOtp || isSendingOtp"
                     (click)="resendOtp()">
-                    <ng-container *ngIf="!canResendOtp">
+                    <ng-container *ngIf="!canResendOtp && !isSendingOtp">
                       Resend OTP in {{ formatTimer(otpTimer) }}
                     </ng-container>
-                    <ng-container *ngIf="canResendOtp">
+                    <ng-container *ngIf="canResendOtp && !isSendingOtp">
                       Resend OTP
+                    </ng-container>
+                    <ng-container *ngIf="isSendingOtp">
+                      Sending...
                     </ng-container>
                   </button>
                 </div>
@@ -200,9 +215,10 @@
                 <button
                   type="button"
                   class="verify-btn"
-                  [disabled]="!isOtpComplete"
+                  [disabled]="!isOtpComplete || isVerifyingOtp"
                   (click)="verifyOtp()">
-                  <span>VERIFY OTP</span>
+                  <span *ngIf="!isVerifyingOtp">VERIFY OTP</span>
+                  <span *ngIf="isVerifyingOtp">Verifying...</span>
                 </button>
               </ng-container>
             </form>

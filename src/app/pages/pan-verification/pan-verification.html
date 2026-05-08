@@ -1,8 +1,9 @@
+<app-loader [isVisible]="isValidatingPan || isSubmitting"></app-loader>
+
 <div class="pan-page">
   <app-onboarding-header
     [title]="'Account Creation'"
-    [currentStep]="1"
-    [merchantId]="'13574280'">
+    [currentStep]="1">
   </app-onboarding-header>
 
   <section class="main-section">
@@ -39,6 +40,14 @@
 
                   @if (f['panNumber'].touched && f['panNumber'].errors?.['invalidPan']) {
                     <small class="error-text">Enter valid PAN. Example: ABCDE1234F</small>
+                  }
+
+                  @if (panError) {
+                    <small class="error-text">{{ panError }}</small>
+                  }
+
+                  @if (apiError) {
+                    <small class="error-text">{{ apiError }}</small>
                   }
                 </div>
               </div>
@@ -97,13 +106,12 @@
     }
   </div>
 </div>
-               
               }
 
               <div class="footer-action">
-                
-                <button type="submit" class="proceed-btn" [disabled]="panForm.invalid">
-                  Confirm &amp; Proceed
+                <button type="submit" class="proceed-btn" [disabled]="panForm.invalid || isSubmitting">
+                  <span *ngIf="!isSubmitting">Confirm &amp; Proceed</span>
+                  <span *ngIf="isSubmitting">Submitting...</span>
                 </button>
               </div>
             </form>

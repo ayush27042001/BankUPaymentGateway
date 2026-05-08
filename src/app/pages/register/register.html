@@ -1,4 +1,6 @@
 <div class="register-page">
+  <app-loader [isVisible]="isSubmitting || isVerifyingOtp || isResendingOtp"></app-loader>
+
   <div class="register-shell">
     <div class="visual-panel">
       <div class="visual-overlay"></div>
@@ -34,6 +36,7 @@
                 formControlName="email"
                 placeholder="Enter your email"
                 [class.invalid]="email?.invalid && email?.touched"
+                (input)="clearServerError('email')"
               />
 
               <p class="field-error" *ngIf="email?.touched && email?.errors?.['required']">
@@ -42,6 +45,10 @@
 
               <p class="field-error" *ngIf="email?.touched && email?.errors?.['email']">
                 Please enter a valid email.
+              </p>
+
+              <p class="field-error" *ngIf="serverErrors['email']">
+                {{ serverErrors['email'] }}
               </p>
             </div>
 
@@ -55,6 +62,7 @@
                   formControlName="password"
                   placeholder="Create password"
                   [class.invalid]="password?.invalid && password?.touched"
+                  (input)="clearServerError('password')"
                 />
 
                 <button
@@ -110,6 +118,10 @@
               >
                 Please enter a strong password.
               </p>
+
+              <p class="field-error" *ngIf="serverErrors['password']">
+                {{ serverErrors['password'] }}
+              </p>
             </div>
 
             <div class="form-group">
@@ -122,6 +134,7 @@
                 formControlName="mobileNumber"
                 placeholder="Enter mobile number"
                 [class.invalid]="mobileNumber?.invalid && mobileNumber?.touched"
+                (input)="clearServerError('mobileNumber')"
               />
 
               <p
@@ -137,6 +150,10 @@
               >
                 Please enter a valid 10-digit mobile number.
               </p>
+
+              <p class="field-error" *ngIf="serverErrors['mobileNumber']">
+                {{ serverErrors['mobileNumber'] }}
+              </p>
             </div>
 
             <div class="form-group">
@@ -147,6 +164,7 @@
                 formControlName="companyWebsite"
                 placeholder="Enter company website"
                 [class.invalid]="companyWebsite?.invalid && companyWebsite?.touched"
+                (input)="clearServerError('companyWebsite')"
               />
 
               <p
@@ -162,11 +180,50 @@
               >
                 Please enter a valid website URL.
               </p>
+
+              <p class="field-error" *ngIf="serverErrors['companyWebsite']">
+                {{ serverErrors['companyWebsite'] }}
+              </p>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="businessName">Business Name<span>*</span></label>
+              <input
+                id="businessName"
+                type="text"
+                formControlName="businessName"
+                placeholder="Enter your business name"
+                [class.invalid]="businessName?.invalid && businessName?.touched"
+                (input)="clearServerError('businessName')"
+              />
+
+              <p
+                class="field-error"
+                *ngIf="businessName?.touched && businessName?.errors?.['required']"
+              >
+                Business name is required.
+              </p>
+
+              <p
+                class="field-error"
+                *ngIf="businessName?.touched && businessName?.errors?.['minlength']"
+              >
+                Business name must be at least 2 characters.
+              </p>
+
+              <p class="field-error" *ngIf="serverErrors['businessName']">
+                {{ serverErrors['businessName'] }}
+              </p>
             </div>
           </div>
 
-          <button type="submit" class="submit-btn">
-            SEND OTP &amp; CREATE ACCOUNT
+          <div class="api-error" *ngIf="apiError">
+            <p>{{ apiError }}</p>
+          </div>
+
+          <button type="submit" class="submit-btn" [disabled]="isSubmitting">
+            <span *ngIf="!isSubmitting">SEND OTP &amp; CREATE ACCOUNT</span>
+            <span *ngIf="isSubmitting">SENDING OTP...</span>
           </button>
         </form>
       </div>
@@ -257,8 +314,12 @@
           />
         </div>
 
-        <p class="field-error otp-error" *ngIf="otpForm.touched && otpForm.invalid">
+        <p class="field-error otp-error" *ngIf="otpForm.touched && otpForm.invalid" style="color: red !important;">
           Please enter a valid 6-digit OTP.
+        </p>
+
+        <p class="field-error otp-error" *ngIf="otpError" style="color: red !important;">
+          {{ otpError }}
         </p>
 
         <div class="otp-meta">
@@ -269,15 +330,17 @@
           <button
             type="button"
             class="resend-btn"
-            [disabled]="otpTimer > 0"
+            [disabled]="otpTimer > 0 || isResendingOtp"
             (click)="resendOtp()"
           >
-            Resend OTP
+            <span *ngIf="!isResendingOtp">Resend OTP</span>
+            <span *ngIf="isResendingOtp">Sending...</span>
           </button>
         </div>
 
-        <button type="submit" class="submit-btn otp-btn">
-          VERIFY &amp; PROCEED
+        <button type="submit" class="submit-btn otp-btn" [disabled]="isVerifyingOtp">
+          <span *ngIf="!isVerifyingOtp">VERIFY &amp; PROCEED</span>
+          <span *ngIf="isVerifyingOtp">VERIFYING...</span>
         </button>
       </form>
     </div>

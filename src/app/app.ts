@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ChatSupportComponent } from './pages/chat-support/chat-support';
+import { ToastComponent } from './components/toast/toast';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, ChatSupportComponent],
+  imports: [CommonModule, RouterOutlet, ChatSupportComponent, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
