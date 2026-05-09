@@ -86,6 +86,16 @@ export class BusinessCategoryComponent implements OnInit {
           this.businessCategoryForm.patchValue({
             businessCategory: existingCategory.subCategoryName,
           });
+
+          // Check onboarding status and redirect if needed
+          if (existingCategory.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+          if (existingCategory.isServiceAgreementSubmitted && !existingCategory.isOnboardingCompleted && !existingCategory.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
         }
       },
       error: (err) => {
@@ -187,8 +197,22 @@ export class BusinessCategoryComponent implements OnInit {
             this.authService.getRefreshToken() || undefined,
             this.authService.getTokenExpiration() || undefined,
             this.authService.getRefreshTokenExpiration() || undefined,
-            response.data.onboardingStatus
+            response.data.onboardingStatus,
+            response.data.isOnboardingCompleted,
+            response.data.isServiceAgreementSubmitted,
+            response.data.isOnboardingRejected
           );
+
+          // Check onboarding status and redirect if needed
+          if (response.data.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+          if (response.data.isServiceAgreementSubmitted && !response.data.isOnboardingCompleted && !response.data.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
+
           this.router.navigate(['/share-business-details']);
         }
         this.saving = false;

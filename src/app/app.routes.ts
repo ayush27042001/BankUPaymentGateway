@@ -8,6 +8,8 @@ import { BusinessCategoryComponent } from './pages/business-category/business-ca
 import { ShareBusinessDetailsComponent } from './pages/share-business-details/share-business-details';
 import { ConnectPlatformComponent } from './pages/connect-platform/connect-platform';
 import { RegisterComponent } from './pages/register/register';
+import { StatusTrackerComponent } from './pages/status-tracker/status-tracker';
+import { OnboardingRejectedComponent } from './pages/onboarding-rejected/onboarding-rejected';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -27,6 +29,8 @@ export const routes: Routes = [
   { path: 'business-category', component: BusinessCategoryComponent, canActivate: [authGuard] },
   { path: 'share-business-details', component: ShareBusinessDetailsComponent, canActivate: [authGuard] },
   { path: 'connect-platform', component: ConnectPlatformComponent, canActivate: [authGuard] },
+  { path: 'status-tracker', component: StatusTrackerComponent, canActivate: [authGuard] },
+  { path: 'onboarding-rejected', component: OnboardingRejectedComponent, canActivate: [authGuard] },
 
   // ✅ optional fallback (recommended)
   { path: '**', redirectTo: 'login' }

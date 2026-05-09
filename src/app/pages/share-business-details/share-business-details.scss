@@ -273,3 +273,102 @@ $page-bg: #fafafa;
     cursor: not-allowed;
   }
 }
+
+/* ================= LOADERS ================= */
+.page-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(128, 1, 128, 0.2);
+  border-top-color: $brand-primary;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: $white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* ================= GST BORDER STATUS ================= */
+.gstin-invalid {
+  border: 1.5px solid #dc3545 !important;
+  box-shadow: 0 0 0 0.18rem rgba(220, 53, 69, 0.15) !important;
+
+  &:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.18rem rgba(220, 53, 69, 0.2) !important;
+  }
+}
+
+.gstin-valid {
+  border: 1.5px solid #28a745 !important;
+  box-shadow: 0 0 0 0.18rem rgba(40, 167, 69, 0.15) !important;
+
+  &:focus {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.18rem rgba(40, 167, 69, 0.2) !important;
+  }
+}
+
+/* ================= GST VALIDATION ================= */
+.input-with-validation {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-validation .custom-input {
+  padding-right: 48px;
+}
+
+.validation-spinner {
+  position: absolute;
+  right: 16px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(128, 1, 128, 0.2);
+  border-top-color: $brand-primary;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.validation-icon {
+  position: absolute;
+  right: 16px;
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  &.valid {
+    color: #28a745;
+  }
+
+  &.invalid {
+    color: #dc3545;
+  }
+}

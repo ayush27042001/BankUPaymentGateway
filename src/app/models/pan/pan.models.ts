@@ -22,8 +22,11 @@ export interface OnboardingStatus {
   stepNumber: number;
   stepName: string;
   isCompleted: boolean;
+  isOnboardingCompleted: boolean;
+  isServiceAgreementSubmitted: boolean;
+  isOnboardingRejected: boolean;
   steps: OnboardingStep[];
-  connectPlatformSteps: ConnectPlatformSteps;
+  connectPlatformSteps?: ConnectPlatformSteps;
 }
 
 export interface CompletePanData {
@@ -36,6 +39,9 @@ export interface CompletePanData {
   userName: string;
   formStep: string;
   step: number;
+  isOnboardingCompleted: boolean;
+  isServiceAgreementSubmitted: boolean;
+  isOnboardingRejected: boolean;
   onboardingStatus: OnboardingStatus;
 }
 
@@ -53,6 +59,9 @@ export interface PanDetailsData {
   dateOfBirthOrIncorporation: string;
   verificationStatus: string;
   merchantId: number;
+  isOnboardingCompleted?: boolean;
+  isServiceAgreementSubmitted?: boolean;
+  isOnboardingRejected?: boolean;
 }
 
 export interface PanDetailsResponse {

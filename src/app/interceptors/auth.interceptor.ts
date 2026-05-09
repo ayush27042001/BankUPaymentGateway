@@ -56,8 +56,12 @@ export const authInterceptor = (
       }
     }),
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && authService.getRefreshToken()) {
-        return handle401Error(request, next, authService);
+      if (error.status === 401) {
+        if (authService.getRefreshToken()) {
+          return handle401Error(request, next, authService);
+        }
+        authService.logout();
+        return throwError(() => error);
       }
       return throwError(() => error);
     })
@@ -71,7 +75,7 @@ function handleApiSuccess(body: any, toastService: ToastService, request: HttpRe
   // Only show toast if response has success field and message
   if (body?.success && body?.message) {
     // Skip certain endpoints that don't need toast notifications
-    const skipEndpoints = ['/Auth/refresh-token', '/Registration/get-pan-details'];
+    const skipEndpoints = ['/Auth/refresh-token', '/Registration/get-pan-details', '/BusinessDetails/validate-gst', '/ConnectPlatform/save', '/BankAccountDetail/save', '/SigningAuthorityDetail/save', '/BusinessAddress/save'];
     if (skipEndpoints.some((endpoint) => request.url.includes(endpoint))) {
       return;
     }
@@ -80,7 +84,11 @@ function handleApiSuccess(body: any, toastService: ToastService, request: HttpRe
 }
 
 function handleApiError(error: any, toastService: ToastService, request: HttpRequest<unknown>): void {
-  // Show error toast if error has message
+  // 401 is handled by the auth flow (token refresh / logout redirect)
+  if (error?.status === 401) return;
+  // GET errors are background loads — components handle their own error UI
+  if (request.method === 'GET') return;
+
   const message = error?.error?.message || error?.message || 'An error occurred';
   toastService.error(message);
 }

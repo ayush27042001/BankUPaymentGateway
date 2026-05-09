@@ -1,0 +1,214 @@
+<div class="status-tracker-page">
+  <app-onboarding-header
+    [title]="'Onboarding Status'"
+    [currentStep]="3">
+  </app-onboarding-header>
+
+  @if (loading) {
+    <div class="page-loader">
+      <div class="spinner"></div>
+    </div>
+  }
+
+  @if (!loading) {
+    <section class="main-section">
+      <div class="page-shell">
+        <aside class="left-panel">
+          <button type="button" class="summary-link">
+            ← Back to Dashboard
+          </button>
+
+          <nav class="step-nav">
+            <button type="button" class="nav-item active">
+              <span>Status Tracker</span>
+              <span class="nav-status">
+                <span class="arrow">›</span>
+              </span>
+            </button>
+
+            <button type="button" class="nav-item">
+              <span>Application Details</span>
+              <span class="nav-status">
+                <span class="arrow">›</span>
+              </span>
+            </button>
+
+            <button type="button" class="nav-item">
+              <span>Support</span>
+              <span class="nav-status">
+                <span class="arrow">›</span>
+              </span>
+            </button>
+          </nav>
+        </aside>
+
+        <div class="content-panel">
+          <div class="content-card">
+            <div class="card-body-custom">
+              <!-- Header Section -->
+              <div class="tracker-header">
+                <div class="header-content">
+                  <h2>Onboarding Status</h2>
+                  <p class="subtitle">
+                    Track your account activation progress in real-time
+                  </p>
+                  @if (lastUpdated) {
+                    <div class="last-updated">
+                      <span class="update-icon">🔄</span>
+                      <span class="update-text">Last updated: {{ getLastUpdatedTime() }}</span>
+                    </div>
+                  }
+                </div>
+                <div class="application-id">
+                  <span class="id-label">Application ID:</span>
+                  <span class="id-value">{{ applicationId }}</span>
+                </div>
+              </div>
+
+              @if (errorMessage) {
+                <div class="error-banner">
+                  <span class="error-icon">⚠️</span>
+                  <span class="error-message">{{ errorMessage }}</span>
+                  <button type="button" class="error-dismiss" (click)="clearError()">×</button>
+                </div>
+              }
+
+              <!-- Progress Overview -->
+              <div class="progress-overview">
+                <div class="progress-card">
+                  <div class="progress-circle">
+                    <svg class="progress-svg" viewBox="0 0 100 100">
+                      <circle
+                        class="progress-bg"
+                        cx="50"
+                        cy="50"
+                        r="42"
+                        fill="none"
+                        stroke="#e7ecef"
+                        stroke-width="8"
+                      />
+                      <circle
+                        class="progress-fill"
+                        cx="50"
+                        cy="50"
+                        r="42"
+                        fill="none"
+                        stroke="#81007e"
+                        stroke-width="8"
+                        stroke-linecap="round"
+                        [attr.stroke-dasharray]="264"
+                        [attr.stroke-dashoffset]="264 - (264 * overallProgress / 100)"
+                        style="transform: rotate(-90deg); transform-origin: center;"
+                      />
+                    </svg>
+                    <div class="progress-text">
+                      <span class="progress-percentage">{{ overallProgress }}%</span>
+                      <span class="progress-label">Complete</span>
+                    </div>
+                  </div>
+                  <div class="progress-stats">
+                    <div class="stat-item">
+                      <span class="stat-value approved">{{ statusSteps.filter(s => s.status === 'approved').length }}</span>
+                      <span class="stat-label">Approved</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-value in-progress">{{ statusSteps.filter(s => s.status === 'in-progress').length }}</span>
+                      <span class="stat-label">In Progress</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-value pending">{{ statusSteps.filter(s => s.status === 'pending').length }}</span>
+                      <span class="stat-label">Pending</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Status Timeline -->
+              <div class="status-timeline">
+                <h3>Verification Steps</h3>
+                
+                <div class="timeline-container">
+                  @for (step of statusSteps; track step.id; let i = $index) {
+                    <div class="timeline-item" [class.completed]="isStepCompleted(step)" [class.current]="isStepCurrent(step)" [class.pending]="isStepPending(step)">
+                      <div class="timeline-marker">
+                        @if (isStepCompleted(step)) {
+                          <div class="marker-icon approved">✓</div>
+                        } @else if (isStepCurrent(step)) {
+                          <div class="marker-icon in-progress">
+                            <div class="pulse-ring"></div>
+                            <span>{{ getStepNumber(i) }}</span>
+                          </div>
+                        } @else {
+                          <div class="marker-icon pending">{{ getStepNumber(i) }}</div>
+                        }
+                      </div>
+
+                      <div class="timeline-content">
+                        <div class="timeline-header">
+                          <div class="step-icon">{{ step.icon }}</div>
+                          <div class="step-info">
+                            <h4>{{ step.title }}</h4>
+                            <p class="step-description">{{ step.description }}</p>
+                          </div>
+                          <div class="step-status">
+                            <span class="status-badge {{ getStatusClass(step.status) }}">
+                              {{ getStatusLabel(step.status) }}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div class="timeline-details">
+                          @if (step.completedDate) {
+                            <div class="detail-item">
+                              <span class="detail-label">Completed:</span>
+                              <span class="detail-value">{{ step.completedDate }}</span>
+                            </div>
+                          }
+                          @if (step.remarks) {
+                            <div class="detail-item">
+                              <span class="detail-label">Remarks:</span>
+                              <span class="detail-value">{{ step.remarks }}</span>
+                            </div>
+                          }
+                        </div>
+                      </div>
+
+                      @if (i < statusSteps.length - 1) {
+                        <div class="timeline-connector"></div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Info Section -->
+              <div class="info-section">
+                <div class="info-card">
+                  <div class="info-icon">ℹ️</div>
+                  <div class="info-content">
+                    <h4>Need Help?</h4>
+                    <p>If you have any questions about your onboarding status, please contact our support team.</p>
+                    <button type="button" class="support-btn">
+                      Contact Support
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Footer Actions -->
+              <div class="footer-action">
+                <div class="auto-refresh-info">
+                  <span class="refresh-icon">⏱️</span>
+                  <span class="refresh-text">Auto-refreshes every 30 seconds</span>
+                </div>
+                <button type="button" class="refresh-btn" (click)="refreshStatus()" [disabled]="loading">
+                  {{ loading ? 'Refreshing...' : '🔄 Refresh Now' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+</div>

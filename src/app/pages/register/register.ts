@@ -233,13 +233,21 @@ export class RegisterComponent implements OnDestroy {
                 email: response.data.email,
                 mobileNumber: response.data.mobileNumber,
                 companyWebsite: response.data.companyWebsite
-              }
+              },
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              response.data.isOnboardingCompleted,
+              response.data.isServiceAgreementSubmitted,
+              response.data.isOnboardingRejected
             );
           }
 
           this.stopOtpTimer();
           this.showOtpModal = false;
-          this.router.navigate(['/pan-verification']);
+          const redirectRoute = this.authService.getActiveRouteBasedOnOnboarding();
+          this.router.navigate([redirectRoute]);
         } else {
           this.otpError = response.data.message || response.message;
           this.cdr.detectChanges();

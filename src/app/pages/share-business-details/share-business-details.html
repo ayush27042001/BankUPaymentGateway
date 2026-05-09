@@ -4,6 +4,14 @@
     [currentStep]="2">
   </app-onboarding-header>
 
+  <app-toast></app-toast>
+
+  @if (loading) {
+    <div class="page-loader">
+      <div class="spinner"></div>
+    </div>
+  }
+
   <section class="main-section">
     <div class="container">
       <div class="form-layout">
@@ -69,15 +77,31 @@
                   <label for="gstin">GSTIN <span>*</span></label>
 
                   <div class="field-wrap">
-                    <input
-                      id="gstin"
-                      type="text"
-                      class="form-control custom-input"
-                      formControlName="gstin"
-                      placeholder="Enter your GSTIN"
-                      maxlength="15"
-                      (input)="onGstinInput()"
-                    />
+                    <div class="input-with-validation">
+                      <input
+                        id="gstin"
+                        type="text"
+                        class="form-control custom-input"
+                        [class.gstin-invalid]="gstValidationStatus === 'invalid'"
+                        [class.gstin-valid]="gstValidationStatus === 'valid'"
+                        formControlName="gstin"
+                        placeholder="Enter your GSTIN"
+                        maxlength="15"
+                        (input)="onGstinInput()"
+                      />
+
+                      @if (validatingGst) {
+                        <div class="validation-spinner"></div>
+                      }
+
+                      @if (gstValidationStatus === 'valid') {
+                        <span class="validation-icon valid">✓</span>
+                      }
+
+                      @if (gstValidationStatus === 'invalid') {
+                        <span class="validation-icon invalid">✕</span>
+                      }
+                    </div>
 
                     @if (f['gstin'].touched && f['gstin'].errors?.['required']) {
                       <small class="error-text">GSTIN is required.</small>
@@ -86,20 +110,27 @@
                     @if (f['gstin'].touched && f['gstin'].errors?.['invalidGstin']) {
                       <small class="error-text">Enter a valid GSTIN.</small>
                     }
+
+                    @if (gstValidationStatus === 'invalid' && !f['gstin'].errors?.['invalidGstin']) {
+                      <small class="error-text">GSTIN verification failed. Please check your GSTIN.</small>
+                    }
                   </div>
                 </div>
               }
 
               <div class="footer-action">
-                <button type="button" class="back-btn" (click)="goBack()">
+                <button type="button" class="back-btn" (click)="goBack()" [disabled]="saving">
                   ← Back
                 </button>
 
                 <button
                   type="submit"
                   class="proceed-btn"
-                  [disabled]="businessForm.invalid">
-                  Confirm &amp; Proceed →
+                  [disabled]="businessForm.invalid || saving || validatingGst">
+                  @if (saving) {
+                    <span class="btn-spinner"></span>
+                  }
+                  {{ saving ? 'Saving...' : 'Confirm & Proceed →' }}
                 </button>
               </div>
             </form>

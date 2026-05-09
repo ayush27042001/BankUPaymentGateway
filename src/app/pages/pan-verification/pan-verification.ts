@@ -110,6 +110,16 @@ export class PanVerificationComponent implements OnInit {
 
           this.panName = panDetails.nameOnPanCard;
           this.cdr.detectChanges();
+
+          // Check onboarding status and redirect if needed
+          if (panDetails.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+          if (panDetails.isServiceAgreementSubmitted && !panDetails.isOnboardingCompleted && !panDetails.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
         }
       },
       error: (error) => {
@@ -205,10 +215,25 @@ export class PanVerificationComponent implements OnInit {
               {
                 userName: response.data.userName,
                 email: response.data.email,
-              }
+              },
+              undefined,
+              undefined,
+              undefined,
+              response.data.onboardingStatus,
+              response.data.isOnboardingCompleted,
+              response.data.isServiceAgreementSubmitted,
+              response.data.isOnboardingRejected
             );
           }
-          this.router.navigate(['/business-entity']);
+
+          // Check onboarding status and redirect if needed
+          if (typeof response.data === 'object' && response.data.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+          } else if (typeof response.data === 'object' && response.data.isServiceAgreementSubmitted && !response.data.isOnboardingCompleted && !response.data.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+          } else {
+            this.router.navigate(['/business-entity']);
+          }
         } else {
           this.apiError = response.message || 'Failed to save PAN details';
           this.cdr.detectChanges();

@@ -17,6 +17,9 @@ export interface BusinessEntity {
   businessEntityTypeId: number;
   entityName: string;
   description: string;
+  isOnboardingCompleted?: boolean;
+  isServiceAgreementSubmitted?: boolean;
+  isOnboardingRejected?: boolean;
 }
 
 export interface BusinessEntityResponse {
@@ -43,6 +46,9 @@ export interface OnboardingStatus {
   stepNumber: number;
   stepName: string;
   isCompleted: boolean;
+  isOnboardingCompleted: boolean;
+  isServiceAgreementSubmitted: boolean;
+  isOnboardingRejected: boolean;
   steps: OnboardingStep[];
 }
 
@@ -56,6 +62,9 @@ export interface SaveBusinessEntityResponse {
     message: string;
     formStep: string;
     step: number;
+    isOnboardingCompleted: boolean;
+    isServiceAgreementSubmitted: boolean;
+    isOnboardingRejected: boolean;
     onboardingStatus: OnboardingStatus;
   };
   errors: any[];
@@ -91,6 +100,9 @@ export interface BusinessCategoryData {
   categoryName: string;
   businessSubCategoryId: number;
   subCategoryName: string;
+  isOnboardingCompleted?: boolean;
+  isServiceAgreementSubmitted?: boolean;
+  isOnboardingRejected?: boolean;
 }
 
 export interface BusinessCategoryResponse {
@@ -118,6 +130,9 @@ export interface SaveBusinessCategoryResponse {
     message: string;
     formStep: string;
     step: number;
+    isOnboardingCompleted: boolean;
+    isServiceAgreementSubmitted: boolean;
+    isOnboardingRejected: boolean;
     onboardingStatus: OnboardingStatus;
   };
   errors: any[];

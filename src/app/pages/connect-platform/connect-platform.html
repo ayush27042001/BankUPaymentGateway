@@ -4,6 +4,12 @@
     [currentStep]="2">
   </app-onboarding-header>
 
+  @if (loading) {
+    <div class="page-loader">
+      <div class="spinner"></div>
+    </div>
+  }
+
   <section class="main-section">
     <div class="page-shell">
       <aside class="left-panel">
@@ -158,6 +164,10 @@
                     @if (f['websiteUrl'].touched && f['websiteUrl'].errors?.['invalidUrl']) {
                       <small class="error-text">Enter a valid URL.</small>
                     }
+
+                    @if (f['websiteUrl'].touched && f['websiteUrl'].errors?.['serverError']) {
+                      <small class="error-text">{{ f['websiteUrl'].errors?.['serverError'] }}</small>
+                    }
                   </div>
 
                   <div class="form-block">
@@ -175,6 +185,10 @@
 
                     @if (f['androidAppUrl'].touched && f['androidAppUrl'].errors?.['invalidUrl']) {
                       <small class="error-text">Enter a valid Android app URL.</small>
+                    }
+
+                    @if (f['androidAppUrl'].touched && f['androidAppUrl'].errors?.['serverError']) {
+                      <small class="error-text">{{ f['androidAppUrl'].errors?.['serverError'] }}</small>
                     }
                   </div>
 
@@ -194,6 +208,10 @@
                     @if (f['iosAppUrl'].touched && f['iosAppUrl'].errors?.['invalidUrl']) {
                       <small class="error-text">Enter a valid iOS app URL.</small>
                     }
+
+                    @if (f['iosAppUrl'].touched && f['iosAppUrl'].errors?.['serverError']) {
+                      <small class="error-text">{{ f['iosAppUrl'].errors?.['serverError'] }}</small>
+                    }
                   </div>
                 }
 
@@ -205,8 +223,8 @@
                   <button
                     type="submit"
                     class="proceed-btn"
-                    [disabled]="platformForm.invalid">
-                    Confirm &amp; Proceed→
+                    [disabled]="platformForm.invalid || saving">
+                    {{ saving ? 'Saving...' : 'Confirm & Proceed →' }}
                   </button>
                 </div>
               </form>
@@ -218,6 +236,13 @@
     We need your bank account details to process transactions seamlessly into your account.
   </p>
 
+  @if (showBankApiMessage) {
+    <div class="api-message-box" [ngClass]="'api-message-' + bankApiMessageType">
+      <span class="api-message-text">{{ bankApiMessage }}</span>
+      <button type="button" class="api-message-close" (click)="hideBankApiMessage()">×</button>
+    </div>
+  }
+
   <form [formGroup]="bankForm" (ngSubmit)="submitBankDetails()" novalidate>
     <div class="bank-form-grid">
       <div class="form-block">
@@ -225,37 +250,22 @@
           Bank Holder Name <span>*</span>
         </label>
 
-        <ng-select
+        <input
           id="bankHolderName"
-          class="custom-ng-select"
-          [items]="holderNamesWithAddOption"
-          bindLabel="label"
-          bindValue="value"
-          [searchable]="true"
-          [clearable]="false"
-          [placeholder]="'Select Bank Holder Name'"
+          type="text"
+          class="form-control custom-input"
+          [class.verified-input]="isBankVerified"
           formControlName="bankHolderName"
-          (change)="onHolderChange($event)">
-        </ng-select>
+          placeholder="Enter Bank Holder Name"
+          [readonly]="isBankVerified"
+        />
 
-        @if (showNewHolderInput) {
-          <div class="mt-2">
-            <input
-              type="text"
-              class="form-control custom-input"
-              placeholder="Enter Bank Holder Name"
-              formControlName="newBankHolderName"
-              (input)="onNewBankHolderInput()"
-            />
-
-            @if (bankControls['newBankHolderName'].touched && bankControls['newBankHolderName'].errors?.['required']) {
-              <small class="error-text">New bank holder name is required.</small>
-            }
-          </div>
+        @if (bankControls['bankHolderName'].touched && bankControls['bankHolderName'].errors?.['required']) {
+          <small class="error-text">Bank holder name is required.</small>
         }
 
-        @if (!showNewHolderInput && bankControls['bankHolderName'].touched && bankControls['bankHolderName'].errors?.['required']) {
-          <small class="error-text">Bank holder name is required.</small>
+        @if (bankControls['bankHolderName'].touched && bankControls['bankHolderName'].errors?.['serverError']) {
+          <small class="error-text">{{ bankControls['bankHolderName'].errors?.['serverError'] }}</small>
         }
       </div>
 
@@ -281,6 +291,10 @@
         @if (bankControls['bankAccountNumber'].touched && bankControls['bankAccountNumber'].errors?.['pattern']) {
           <small class="error-text">Enter a valid account number.</small>
         }
+
+        @if (bankControls['bankAccountNumber'].touched && bankControls['bankAccountNumber'].errors?.['serverError']) {
+          <small class="error-text">{{ bankControls['bankAccountNumber'].errors?.['serverError'] }}</small>
+        }
       </div>
 
       <div class="form-block ifsc-block">
@@ -288,15 +302,25 @@
           IFSC Code <span>*</span>
         </label>
 
-        <input
-          id="ifscCode"
-          type="text"
-          class="form-control custom-input"
-          formControlName="ifscCode"
-          placeholder="Enter IFSC Code"
-          maxlength="11"
-          (input)="onIfscInput()"
-        />
+        <div class="ifsc-input-wrapper">
+          <input
+            id="ifscCode"
+            type="text"
+            class="form-control custom-input"
+            formControlName="ifscCode"
+            placeholder="Enter IFSC Code"
+            maxlength="11"
+            (input)="onIfscInput()"
+          />
+
+          <button
+            type="button"
+            class="verify-btn"
+            (click)="verifyBankDetails()"
+            [disabled]="verifyingBank || !bankForm.get('bankAccountNumber')?.value || !bankForm.get('ifscCode')?.value">
+            {{ verifyingBank ? 'Verifying...' : 'Verify' }}
+          </button>
+        </div>
 
         @if (bankControls['ifscCode'].touched && bankControls['ifscCode'].errors?.['required']) {
           <small class="error-text">IFSC code is required.</small>
@@ -304,6 +328,10 @@
 
         @if (bankControls['ifscCode'].touched && bankControls['ifscCode'].errors?.['invalidIfsc']) {
           <small class="error-text">Enter a valid IFSC code.</small>
+        }
+
+        @if (bankControls['ifscCode'].touched && bankControls['ifscCode'].errors?.['serverError']) {
+          <small class="error-text">{{ bankControls['ifscCode'].errors?.['serverError'] }}</small>
         }
       </div>
     </div>
@@ -316,8 +344,8 @@
       <button
         type="submit"
         class="proceed-btn"
-        [disabled]="bankForm.invalid">
-        Confirm &amp; Proceed →
+        [disabled]="bankForm.invalid || saving || !isBankVerified">
+        {{ saving ? 'Saving...' : 'Confirm &amp; Proceed →' }}
       </button>
     </div>
   </form>
@@ -458,6 +486,10 @@
                     @if (addressControls['address'].touched && addressControls['address'].errors?.['required']) {
                       <small class="error-text">Address is required.</small>
                     }
+
+                    @if (addressControls['address'].touched && addressControls['address'].errors?.['serverError']) {
+                      <small class="error-text">{{ addressControls['address'].errors?.['serverError'] }}</small>
+                    }
                   </div>
 
                   <div class="form-block">
@@ -482,6 +514,10 @@
                     @if (addressControls['postalCode'].touched && addressControls['postalCode'].errors?.['pattern']) {
                       <small class="error-text">Enter a valid 6 digit postal code.</small>
                     }
+
+                    @if (addressControls['postalCode'].touched && addressControls['postalCode'].errors?.['serverError']) {
+                      <small class="error-text">{{ addressControls['postalCode'].errors?.['serverError'] }}</small>
+                    }
                   </div>
 
                   <div class="form-block">
@@ -500,6 +536,10 @@
                     @if (addressControls['state'].touched && addressControls['state'].errors?.['required']) {
                       <small class="error-text">State is required.</small>
                     }
+
+                    @if (addressControls['state'].touched && addressControls['state'].errors?.['serverError']) {
+                      <small class="error-text">{{ addressControls['state'].errors?.['serverError'] }}</small>
+                    }
                   </div>
 
                   <div class="form-block">
@@ -517,6 +557,10 @@
 
                     @if (addressControls['city'].touched && addressControls['city'].errors?.['required']) {
                       <small class="error-text">City is required.</small>
+                    }
+
+                    @if (addressControls['city'].touched && addressControls['city'].errors?.['serverError']) {
+                      <small class="error-text">{{ addressControls['city'].errors?.['serverError'] }}</small>
                     }
                   </div>
                 </div>
@@ -539,6 +583,107 @@
                   </div>
                 </div>
 
+                @if (businessAddressForm.get('hasDifferentAddress')?.value === 'yes') {
+                  <div class="operating-address-section">
+
+                    <div class="bank-form-grid">
+                      <div class="form-block">
+                        <label for="operatingAddress" class="block-label">
+                          Operating Address <span>*</span>
+                        </label>
+
+                        <input
+                          id="operatingAddress"
+                          type="text"
+                          class="form-control custom-input"
+                          formControlName="operatingAddress"
+                          placeholder="Enter operating address"
+                        />
+
+                        @if (addressControls['operatingAddress'].touched && addressControls['operatingAddress'].errors?.['required']) {
+                          <small class="error-text">Operating address is required.</small>
+                        }
+
+                        @if (addressControls['operatingAddress'].touched && addressControls['operatingAddress'].errors?.['serverError']) {
+                          <small class="error-text">{{ addressControls['operatingAddress'].errors?.['serverError'] }}</small>
+                        }
+                      </div>
+
+                      <div class="form-block">
+                        <label for="operatingPostalCode" class="block-label">
+                          Operating Postal Code <span>*</span>
+                        </label>
+
+                        <input
+                          id="operatingPostalCode"
+                          type="text"
+                          class="form-control custom-input"
+                          formControlName="operatingPostalCode"
+                          placeholder="Enter postal code"
+                          maxlength="6"
+                          inputmode="numeric"
+                        />
+
+                        @if (addressControls['operatingPostalCode'].touched && addressControls['operatingPostalCode'].errors?.['required']) {
+                          <small class="error-text">Postal code is required.</small>
+                        }
+
+                        @if (addressControls['operatingPostalCode'].touched && addressControls['operatingPostalCode'].errors?.['pattern']) {
+                          <small class="error-text">Enter a valid 6 digit postal code.</small>
+                        }
+
+                        @if (addressControls['operatingPostalCode'].touched && addressControls['operatingPostalCode'].errors?.['serverError']) {
+                          <small class="error-text">{{ addressControls['operatingPostalCode'].errors?.['serverError'] }}</small>
+                        }
+                      </div>
+
+                      <div class="form-block">
+                        <label for="operatingState" class="block-label">
+                          Operating State <span>*</span>
+                        </label>
+
+                        <input
+                          id="operatingState"
+                          type="text"
+                          class="form-control custom-input"
+                          formControlName="operatingState"
+                          placeholder="Enter state"
+                        />
+
+                        @if (addressControls['operatingState'].touched && addressControls['operatingState'].errors?.['required']) {
+                          <small class="error-text">State is required.</small>
+                        }
+
+                        @if (addressControls['operatingState'].touched && addressControls['operatingState'].errors?.['serverError']) {
+                          <small class="error-text">{{ addressControls['operatingState'].errors?.['serverError'] }}</small>
+                        }
+                      </div>
+
+                      <div class="form-block">
+                        <label for="operatingCity" class="block-label">
+                          Operating City <span>*</span>
+                        </label>
+
+                        <input
+                          id="operatingCity"
+                          type="text"
+                          class="form-control custom-input"
+                          formControlName="operatingCity"
+                          placeholder="Enter city"
+                        />
+
+                        @if (addressControls['operatingCity'].touched && addressControls['operatingCity'].errors?.['required']) {
+                          <small class="error-text">City is required.</small>
+                        }
+
+                        @if (addressControls['operatingCity'].touched && addressControls['operatingCity'].errors?.['serverError']) {
+                          <small class="error-text">{{ addressControls['operatingCity'].errors?.['serverError'] }}</small>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+
                 <div class="footer-action">
                   <button type="button" class="back-btn" (click)="goBack()">
                     ← Back
@@ -547,8 +692,8 @@
                   <button
                     type="submit"
                     class="proceed-btn"
-                    [disabled]="businessAddressForm.invalid">
-                    Confirm &amp; Proceed →
+                    [disabled]="businessAddressForm.invalid || saving">
+                    {{ saving ? 'Saving...' : 'Confirm &amp; Proceed →' }}
                   </button>
                 </div>
               </form>
