@@ -100,7 +100,10 @@ export class LoginComponent implements OnDestroy {
             response.data.refreshToken,
             response.data.expiration,
             response.data.refreshTokenExpiration,
-            response.data.onboardingStatus
+            response.data.onboardingStatus,
+            response.data.isOnboardingCompleted,
+            response.data.isServiceAgreementSubmitted,
+            response.data.isOnboardingRejected
           );
           const redirectRoute = this.authService.getActiveRouteBasedOnOnboarding();
           this.router.navigate([redirectRoute]);
@@ -250,7 +253,10 @@ export class LoginComponent implements OnDestroy {
             response.data.refreshToken,
             response.data.expiration,
             response.data.refreshTokenExpiration,
-            response.data.onboardingStatus
+            response.data.onboardingStatus,
+            response.data.isOnboardingCompleted,
+            response.data.isServiceAgreementSubmitted,
+            response.data.isOnboardingRejected
           );
           const redirectRoute = this.authService.getActiveRouteBasedOnOnboarding();
           this.router.navigate([redirectRoute]);

@@ -82,6 +82,16 @@ export class BusinessEntityComponent implements OnInit {
             console.log('Pre-selected existing entity type:', this.selectedType);
             this.cdr.markForCheck();
           }
+
+          // Check onboarding status and redirect if needed
+          if (existingEntity.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+          if (existingEntity.isServiceAgreementSubmitted && !existingEntity.isOnboardingCompleted && !existingEntity.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
         }
       },
       error: (err) => {
@@ -117,9 +127,23 @@ export class BusinessEntityComponent implements OnInit {
               this.authService.getRefreshToken() || undefined,
               this.authService.getTokenExpiration() || undefined,
               this.authService.getRefreshTokenExpiration() || undefined,
-              response.data.onboardingStatus
+              response.data.onboardingStatus,
+              response.data.isOnboardingCompleted,
+              response.data.isServiceAgreementSubmitted,
+              response.data.isOnboardingRejected
             );
             console.log('Onboarding status updated');
+
+            // Check onboarding status and redirect if needed
+            if (response.data.isOnboardingRejected) {
+              this.router.navigate(['/onboarding-rejected']);
+              return;
+            }
+            if (response.data.isServiceAgreementSubmitted && !response.data.isOnboardingCompleted && !response.data.isOnboardingRejected) {
+              this.router.navigate(['/status-tracker']);
+              return;
+            }
+
             this.router.navigate(['/phone-ckyc']);
           }
         },

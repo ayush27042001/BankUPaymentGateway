@@ -80,7 +80,7 @@
                             type="text"
                             class="otp-box"
                             [ngClass]="{
-                              'error-state': f['otp'].invalid && f['otp'].touched
+                              'error-state': (f['otp'].invalid && f['otp'].touched) || otpError
                             }"
                             maxlength="1"
                             inputmode="numeric"
@@ -91,11 +91,15 @@
                         }
                       </div>
 
-                      @if (f['otp'].touched && f['otp'].errors?.['required']) {
+                      @if (otpError) {
+                        <small class="error-text">{{ otpError }}</small>
+                      }
+
+                      @if (f['otp'].touched && f['otp'].errors?.['required'] && !otpError) {
                         <small class="error-text">OTP is required.</small>
                       }
 
-                      @if (f['otp'].touched && f['otp'].errors?.['pattern']) {
+                      @if (f['otp'].touched && f['otp'].errors?.['pattern'] && !otpError) {
                         <small class="error-text">Enter valid 6 digit OTP.</small>
                       }
 

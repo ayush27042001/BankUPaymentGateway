@@ -16,6 +16,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
+  // On client, check authentication
   const isAuth = authService.isAuthenticated();
   console.log('Auth Guard - isAuthenticated:', isAuth);
 

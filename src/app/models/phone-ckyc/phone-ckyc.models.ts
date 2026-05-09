@@ -2,6 +2,9 @@ export interface PhoneCkycData {
   mid: number;
   mobileNumber: string;
   consentGiven: boolean;
+  isOnboardingCompleted?: boolean;
+  isServiceAgreementSubmitted?: boolean;
+  isOnboardingRejected?: boolean;
 }
 
 export interface PhoneCkycResponse {
@@ -44,6 +47,10 @@ export interface VerifyOtpData {
   tokenExpiration?: string;
   formStep?: string;
   step?: number;
+  isOnboardingCompleted?: boolean;
+  isServiceAgreementSubmitted?: boolean;
+  isOnboardingRejected?: boolean;
+  onboardingStatus?: OnboardingStatus;
 }
 
 export interface VerifyOtpResponse {
@@ -71,6 +78,9 @@ export interface OnboardingStatus {
   stepNumber: number;
   stepName: string;
   isCompleted: boolean;
+  isOnboardingCompleted: boolean;
+  isServiceAgreementSubmitted: boolean;
+  isOnboardingRejected: boolean;
   steps: OnboardingStep[];
 }
 
@@ -86,6 +96,9 @@ export interface SavePhoneCkycResponse {
     message: string;
     formStep: string;
     step: number;
+    isOnboardingCompleted: boolean;
+    isServiceAgreementSubmitted: boolean;
+    isOnboardingRejected: boolean;
     onboardingStatus: OnboardingStatus;
   };
   errors: any[];

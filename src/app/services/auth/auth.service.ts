@@ -21,6 +21,9 @@ export class AuthService {
   private readonly USER_DATA_KEY = 'userData';
   private readonly REGISTRATION_TOKEN_KEY = 'registrationToken';
   private readonly ONBOARDING_STATUS_KEY = 'onboardingStatus';
+  private readonly IS_ONBOARDING_COMPLETED_KEY = 'isOnboardingCompleted';
+  private readonly IS_SERVICE_AGREEMENT_SUBMITTED_KEY = 'isServiceAgreementSubmitted';
+  private readonly IS_ONBOARDING_REJECTED_KEY = 'isOnboardingRejected';
 
   private isBrowser(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
@@ -34,7 +37,10 @@ export class AuthService {
     refreshToken?: string,
     tokenExpiration?: string,
     refreshTokenExpiration?: string,
-    onboardingStatus?: any
+    onboardingStatus?: any,
+    isOnboardingCompleted?: boolean,
+    isServiceAgreementSubmitted?: boolean,
+    isOnboardingRejected?: boolean
   ): void {
     try {
       console.log('setAuthData - Storing auth data...');
@@ -58,6 +64,15 @@ export class AuthService {
       }
       if (onboardingStatus) {
         localStorage.setItem(this.ONBOARDING_STATUS_KEY, JSON.stringify(onboardingStatus));
+      }
+      if (isOnboardingCompleted !== undefined) {
+        localStorage.setItem(this.IS_ONBOARDING_COMPLETED_KEY, JSON.stringify(isOnboardingCompleted));
+      }
+      if (isServiceAgreementSubmitted !== undefined) {
+        localStorage.setItem(this.IS_SERVICE_AGREEMENT_SUBMITTED_KEY, JSON.stringify(isServiceAgreementSubmitted));
+      }
+      if (isOnboardingRejected !== undefined) {
+        localStorage.setItem(this.IS_ONBOARDING_REJECTED_KEY, JSON.stringify(isOnboardingRejected));
       }
       console.log('setAuthData - Data stored successfully');
     } catch (e) {
@@ -107,6 +122,24 @@ export class AuthService {
     return onboardingStatus ? JSON.parse(onboardingStatus) : null;
   }
 
+  isOnboardingCompleted(): boolean {
+    if (!this.isBrowser()) return false;
+    const isCompleted = localStorage.getItem(this.IS_ONBOARDING_COMPLETED_KEY);
+    return isCompleted ? JSON.parse(isCompleted) : false;
+  }
+
+  isServiceAgreementSubmitted(): boolean {
+    if (!this.isBrowser()) return false;
+    const isSubmitted = localStorage.getItem(this.IS_SERVICE_AGREEMENT_SUBMITTED_KEY);
+    return isSubmitted ? JSON.parse(isSubmitted) : false;
+  }
+
+  isOnboardingRejected(): boolean {
+    if (!this.isBrowser()) return false;
+    const isRejected = localStorage.getItem(this.IS_ONBOARDING_REJECTED_KEY);
+    return isRejected ? JSON.parse(isRejected) : false;
+  }
+
   isTokenExpired(): boolean {
     const expiration = this.getTokenExpiration();
     if (!expiration) return true;
@@ -135,6 +168,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
+    if (!this.isBrowser()) return false;
     try {
       const token = localStorage.getItem(this.TOKEN_KEY);
       const userId = localStorage.getItem(this.USER_ID_KEY);
@@ -162,6 +196,9 @@ export class AuthService {
     localStorage.removeItem(this.USER_DATA_KEY);
     localStorage.removeItem(this.REGISTRATION_TOKEN_KEY);
     localStorage.removeItem(this.ONBOARDING_STATUS_KEY);
+    localStorage.removeItem(this.IS_ONBOARDING_COMPLETED_KEY);
+    localStorage.removeItem(this.IS_SERVICE_AGREEMENT_SUBMITTED_KEY);
+    localStorage.removeItem(this.IS_ONBOARDING_REJECTED_KEY);
     this.router.navigate(['/login']);
   }
 
@@ -176,14 +213,45 @@ export class AuthService {
     localStorage.removeItem(this.USER_DATA_KEY);
     localStorage.removeItem(this.REGISTRATION_TOKEN_KEY);
     localStorage.removeItem(this.ONBOARDING_STATUS_KEY);
+    localStorage.removeItem(this.IS_ONBOARDING_COMPLETED_KEY);
+    localStorage.removeItem(this.IS_SERVICE_AGREEMENT_SUBMITTED_KEY);
+    localStorage.removeItem(this.IS_ONBOARDING_REJECTED_KEY);
   }
 
   getActiveRouteBasedOnOnboarding(): string {
+    // Check if onboarding is rejected
+    if (this.isOnboardingRejected()) {
+      return '/onboarding-rejected';
+    }
+
+    // Check if service agreement is submitted but onboarding is not completed
+    if (this.isServiceAgreementSubmitted() && !this.isOnboardingCompleted() && !this.isOnboardingRejected()) {
+      return '/status-tracker';
+    }
+
     const onboardingStatus = this.getOnboardingStatus();
     if (!onboardingStatus || !onboardingStatus.steps) {
       return '/pan-verification';
     }
 
+    // First, check if CONNECT_PLATFORM has connectPlatformSteps with an active sub-step
+    const connectPlatformStep = onboardingStatus.steps.find((step: any) => step.stepKey === 'CONNECT_PLATFORM');
+    if (connectPlatformStep && connectPlatformStep.connectPlatformSteps) {
+      const activeSubStep = connectPlatformStep.connectPlatformSteps.steps.find((subStep: any) => subStep.isActive);
+      if (activeSubStep) {
+        const subStepRouteMap: { [key: string]: string } = {
+          'CONNECT_MOBILE_APP_OR_WEBSITE': '/connect-platform',
+          'SHARE_BANK_ACCOUNT_DETAILS': '/connect-platform',
+          'SIGNING_AUTHORITY_DETAILS': '/connect-platform',
+          'VERIFY_BUSINESS_ADDRESS': '/connect-platform',
+          'COMPLETE_VIDEO_KYC': '/connect-platform',
+          'SERVICE_AGREEMENT': '/connect-platform',
+        };
+        return subStepRouteMap[activeSubStep.stepKey] || '/connect-platform';
+      }
+    }
+
+    // If no CONNECT_PLATFORM sub-step is active, check for an active outer step
     const activeStep = onboardingStatus.steps.find((step: any) => step.isActive);
     if (!activeStep) {
       return '/pan-verification';
@@ -197,8 +265,8 @@ export class AuthService {
       'BUSINESS_CATEGORY': '/business-category',
       'SHARE_BUSINESS_DETAILS': '/share-business-details',
       'CONNECT_PLATFORM': '/connect-platform',
-      'UPLOAD_DOCUMENTS': '/upload-documents',
-      'SERVICE_AGREEMENT': '/service-agreement',
+      'UPLOAD_DOCUMENTS': '/connect-platform',
+      'SERVICE_AGREEMENT': '/connect-platform',
     };
 
     return stepRouteMap[activeStep.stepKey] || '/pan-verification';

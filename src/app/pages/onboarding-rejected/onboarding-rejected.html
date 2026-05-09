@@ -1,0 +1,75 @@
+<div class="rejected-page">
+  <section class="main-section">
+    <div class="bg-glow left-glow"></div>
+    <div class="bg-glow right-glow"></div>
+
+    <div class="container">
+      <div class="rejected-layout">
+        <div class="rejected-card">
+          <div class="card-body">
+            <div class="icon-wrapper">
+              <svg class="rejected-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <h1>We're Sorry</h1>
+
+            <p class="subtitle">
+              Your onboarding application could not be completed at this time.
+            </p>
+
+            <div class="reason-box">
+              <div class="reason-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" fill="currentColor" fill-opacity="0.1"/>
+                  <path d="M12 8V12M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="reason-content">
+                <h3>Reason for Rejection</h3>
+                <p>
+                  Due to mismatch or incorrect details provided during the onboarding process, we were unable to verify your information. This could be due to discrepancies in your business details, PAN card information, or other required documents.
+                </p>
+              </div>
+            </div>
+
+            <div class="contact-section">
+              <h2>Need Help?</h2>
+              <p>
+                If you believe this is an error or need assistance with your application, please reach out to our support team.
+              </p>
+
+              <div class="contact-box">
+                <div class="contact-icon">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 8L12 15L21 8V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 7L12 14L21 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="contact-details">
+                  <span class="contact-label">Email us at</span>
+                  <a href="mailto:{{ contactEmail }}" class="contact-email">{{ contactEmail }}</a>
+                </div>
+              </div>
+
+              <p class="note">
+                Our team will review your case and get back to you within 24-48 business hours.
+              </p>
+            </div>
+
+            <div class="action-buttons">
+              <button class="secondary-btn" (click)="goToLogin()">
+                Back to Login
+              </button>
+              <a href="mailto:{{ contactEmail }}" class="primary-btn">
+                Contact Support
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

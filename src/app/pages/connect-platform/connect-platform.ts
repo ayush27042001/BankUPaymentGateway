@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -21,6 +21,11 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
+import { ToastService } from '../../services/toast/toast.service';
+import { ConnectPlatformService, SaveConnectPlatformRequest } from '../../services/connect-platform/connect-platform.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { BankAccountDetailsService, SaveBankAccountDetailRequest } from '../../services/bank-account-details/bank-account-details.service';
+import { BusinessAddressService, SaveBusinessAddressRequest } from '../../services/business-address/business-address.service';
 
 type StepKey =
   | 'platform'
@@ -49,6 +54,15 @@ type SectionKey = 'business' | 'kyc' | 'documents' | 'agreement';
 export class ConnectPlatformComponent implements OnInit, OnDestroy {
   currentStep: StepKey = 'platform';
 
+  loading = true;
+  saving = false;
+  verifyingBank = false;
+  bankApiMessage = '';
+  bankApiMessageType: 'success' | 'error' | 'info' = 'info';
+  showBankApiMessage = false;
+  nameAtBank = '';
+  isBankVerified = false;
+
   platformForm!: FormGroup;
   bankForm!: FormGroup;
   signingAuthorityForm!: FormGroup;
@@ -56,15 +70,6 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   uploadDocumentsForm!: FormGroup;
 
   imageUrl = '../../../assets/images/website-illustration.png';
-
-  holderNamesWithAddOption = [
-    { label: 'AYUSH KUMAR AWASTHI', value: 'AYUSH KUMAR AWASTHI' },
-    { label: 'RISHABH PAL', value: 'RISHABH PAL' },
-    { label: 'BUSINESS NAME', value: 'BUSINESS NAME' },
-    { label: 'Add New Bank Holder Name', value: 'add_new_holder' },
-  ];
-
-  showNewHolderInput = false;
 
   showBankConfirmModal = false;
   showUploadDocumentsModal = false;
@@ -92,14 +97,94 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   private fb: FormBuilder,
   private router: Router,
   private renderer: Renderer2,
-  @Inject(PLATFORM_ID) private platformId: Object
+  @Inject(PLATFORM_ID) private platformId: Object,
+  private toastService: ToastService,
+  private connectPlatformService: ConnectPlatformService,
+  private cdr: ChangeDetectorRef,
+  private authService: AuthService,
+  private bankAccountDetailsService: BankAccountDetailsService,
+  private businessAddressService: BusinessAddressService
 ) {
   this.initializeForms();
 }
 
   ngOnInit(): void {
+    this.determineInitialStep();
     this.setupCollectionModeWatcher();
+    this.setupDifferentAddressWatcher();
     this.applyPlatformValidators(this.platformForm.get('collectionMode')?.value);
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadConnectPlatform();
+      this.loadBankAccountDetails();
+      this.loadBusinessAddress();
+    } else {
+      this.loading = false;
+    }
+  }
+
+  private determineInitialStep(): void {
+    const onboardingStatus = this.authService.getOnboardingStatus();
+    if (!onboardingStatus || !onboardingStatus.steps) {
+      return;
+    }
+
+    const connectPlatformStep = onboardingStatus.steps.find((step: any) => step.stepKey === 'CONNECT_PLATFORM');
+    if (connectPlatformStep && connectPlatformStep.connectPlatformSteps) {
+      const activeSubStep = connectPlatformStep.connectPlatformSteps.steps.find((subStep: any) => subStep.isActive);
+      if (activeSubStep) {
+        const stepKeyMap: { [key: string]: StepKey } = {
+          'CONNECT_MOBILE_APP_OR_WEBSITE': 'platform',
+          'SHARE_BANK_ACCOUNT_DETAILS': 'bank-details',
+          'SIGNING_AUTHORITY_DETAILS': 'signing-authority',
+          'VERIFY_BUSINESS_ADDRESS': 'business-address',
+          'COMPLETE_VIDEO_KYC': 'video-kyc',
+          'SERVICE_AGREEMENT': 'service-agreement',
+        };
+        this.currentStep = stepKeyMap[activeSubStep.stepKey] || 'platform';
+      }
+    }
+  }
+
+  loadConnectPlatform(): void {
+    this.connectPlatformService.getConnectPlatform().subscribe({
+      next: (response) => {
+        this.loading = false;
+        if (response.success && response.data) {
+          const data = response.data;
+          const pref = data.paymentCollectionPreference || '';
+          const collectionMode =
+            pref === 'WEBSITE' || pref === 'ON_MY_WEBSITE_APP'
+              ? 'website-app'
+              : 'without-website-app';
+          this.platformForm.patchValue(
+            {
+              collectionMode,
+              websiteUrl: data.websiteAppUrl || '',
+              androidAppUrl: data.androidAppUrl || '',
+              iosAppUrl: data.iosAppUrl || '',
+            },
+            { emitEvent: false }
+          );
+          this.applyPlatformValidators(collectionMode);
+
+          // Check onboarding status and redirect if needed
+          if (data.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+          if (data.isServiceAgreementSubmitted && !data.isOnboardingCompleted && !data.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.loading = false;
+        this.cdr.detectChanges();
+        console.error('Error loading connect platform:', err);
+      },
+    });
   }
 
   ngOnDestroy(): void {
@@ -174,7 +259,6 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
 
     this.bankForm = this.fb.group({
       bankHolderName: ['', Validators.required],
-      newBankHolderName: [''],
       bankAccountNumber: [
         '',
         [Validators.required, Validators.pattern(/^[0-9]{9,18}$/)],
@@ -193,11 +277,15 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     });
 
     this.businessAddressForm = this.fb.group({
-      address: ['BAMBHAURA SITAPUR SITAPUR, ...', Validators.required],
-      postalCode: ['261141', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
-      state: ['UTTAR PRADESH', Validators.required],
-      city: ['Sitapur', Validators.required],
+      address: ['', Validators.required],
+      postalCode: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
+      state: ['', Validators.required],
+      city: ['', Validators.required],
       hasDifferentAddress: ['no', Validators.required],
+      operatingAddress: [''],
+      operatingPostalCode: ['', Validators.pattern(/^[0-9]{6}$/)],
+      operatingState: [''],
+      operatingCity: [''],
     });
 
     this.uploadDocumentsForm = this.fb.group({
@@ -262,6 +350,50 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     this.platformForm.get('collectionMode')?.valueChanges.subscribe((mode) => {
       this.applyPlatformValidators(mode);
     });
+  }
+
+  private setupDifferentAddressWatcher(): void {
+    this.businessAddressForm.get('hasDifferentAddress')?.valueChanges.subscribe((value) => {
+      this.applyOperatingAddressValidators(value);
+    });
+  }
+
+  private applyOperatingAddressValidators(hasDifferent: string): void {
+    const operatingAddressControl = this.businessAddressForm.get('operatingAddress');
+    const operatingPostalCodeControl = this.businessAddressForm.get('operatingPostalCode');
+    const operatingStateControl = this.businessAddressForm.get('operatingState');
+    const operatingCityControl = this.businessAddressForm.get('operatingCity');
+
+    if (!operatingAddressControl || !operatingPostalCodeControl || !operatingStateControl || !operatingCityControl) {
+      return;
+    }
+
+    if (hasDifferent === 'yes') {
+      operatingAddressControl.setValidators([Validators.required]);
+      operatingPostalCodeControl.setValidators([Validators.required, Validators.pattern(/^[0-9]{6}$/)]);
+      operatingStateControl.setValidators([Validators.required]);
+      operatingCityControl.setValidators([Validators.required]);
+    } else {
+      operatingAddressControl.clearValidators();
+      operatingPostalCodeControl.setValidators([Validators.pattern(/^[0-9]{6}$/)]);
+      operatingStateControl.clearValidators();
+      operatingCityControl.clearValidators();
+
+      operatingAddressControl.setValue('', { emitEvent: false });
+      operatingPostalCodeControl.setValue('', { emitEvent: false });
+      operatingStateControl.setValue('', { emitEvent: false });
+      operatingCityControl.setValue('', { emitEvent: false });
+
+      operatingAddressControl.markAsUntouched();
+      operatingPostalCodeControl.markAsUntouched();
+      operatingStateControl.markAsUntouched();
+      operatingCityControl.markAsUntouched();
+    }
+
+    operatingAddressControl.updateValueAndValidity({ emitEvent: false });
+    operatingPostalCodeControl.updateValueAndValidity({ emitEvent: false });
+    operatingStateControl.updateValueAndValidity({ emitEvent: false });
+    operatingCityControl.updateValueAndValidity({ emitEvent: false });
   }
 
   private applyPlatformValidators(mode: string): void {
@@ -364,6 +496,10 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
         this.currentStep = 'business-address';
         break;
 
+        case 'platform':
+        this.router.navigate(['/share-business-details']);
+        break;
+
      // Navigate back from service agreement to video KYC.
 case 'service-agreement':
   this.currentStep = 'video-kyc';
@@ -406,62 +542,71 @@ case 'thank-you':
       return;
     }
 
-    this.currentStep = 'bank-details';
-  }
+    const mode = this.platformForm.get('collectionMode')?.value;
+    const payload: SaveConnectPlatformRequest = {
+      paymentCollectionPreference:
+        mode === 'website-app' ? 'ON_MY_WEBSITE_APP' : 'WITHOUT_WEBSITE_APP',
+      websiteAppUrl: this.platformForm.get('websiteUrl')?.value?.trim() || '',
+      androidAppUrl: this.platformForm.get('androidAppUrl')?.value?.trim() || '',
+      iosAppUrl: this.platformForm.get('iosAppUrl')?.value?.trim() || '',
+    };
 
-  onHolderChange(selectedValue: string | null): void {
-    if (selectedValue === 'add_new_holder') {
-      this.showNewHolderInput = true;
-
-      this.bankForm.patchValue({
-        bankHolderName: '',
-        newBankHolderName: '',
-      });
-
-      this.bankForm.get('newBankHolderName')?.setValidators([Validators.required]);
-      this.bankForm.get('newBankHolderName')?.updateValueAndValidity();
-
-      this.bankForm.get('bankHolderName')?.clearValidators();
-      this.bankForm.get('bankHolderName')?.updateValueAndValidity();
-      return;
-    }
-
-    this.showNewHolderInput = false;
-
-    this.bankForm.get('bankHolderName')?.setValidators([Validators.required]);
-    this.bankForm.get('bankHolderName')?.updateValueAndValidity();
-
-    this.bankForm.get('newBankHolderName')?.clearValidators();
-    this.bankForm.get('newBankHolderName')?.setValue('');
-    this.bankForm.get('newBankHolderName')?.updateValueAndValidity();
-  }
-
-  onNewBankHolderInput(): void {
-    const control = this.bankForm.get('newBankHolderName');
-    if (!control) return;
-
-    const formattedValue = (control.value || '')
-      .replace(/\s+/g, ' ')
-      .trimStart();
-
-    control.setValue(formattedValue, { emitEvent: false });
+    this.saving = true;
+    this.connectPlatformService.saveConnectPlatform(payload).subscribe({
+      next: (response) => {
+        this.saving = false;
+        if (response.success) {
+          this.toastService.success(
+            response.message || 'Platform details saved successfully'
+          );
+          this.currentStep = 'bank-details';
+        } else {
+          const errorMsg =
+            response.errors?.[0] ||
+            response.message ||
+            'Failed to save platform details';
+          this.toastService.error(errorMsg);
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.saving = false;
+        if (err.status === 400 && err.error?.errors) {
+          const apiErrors = err.error.errors;
+          if (apiErrors['WebsiteAppUrl']?.[0]) {
+            this.platformForm
+              .get('websiteUrl')
+              ?.setErrors({ serverError: apiErrors['WebsiteAppUrl'][0] });
+            this.platformForm.get('websiteUrl')?.markAsTouched();
+          }
+          if (apiErrors['AndroidAppUrl']?.[0]) {
+            this.platformForm
+              .get('androidAppUrl')
+              ?.setErrors({ serverError: apiErrors['AndroidAppUrl'][0] });
+            this.platformForm.get('androidAppUrl')?.markAsTouched();
+          }
+          if (apiErrors['IosAppUrl']?.[0]) {
+            this.platformForm
+              .get('iosAppUrl')
+              ?.setErrors({ serverError: apiErrors['IosAppUrl'][0] });
+            this.platformForm.get('iosAppUrl')?.markAsTouched();
+          }
+          this.toastService.error(
+            'Please fix the validation errors and try again'
+          );
+        } else {
+          const errorMsg =
+            err.error?.errors?.[0] ||
+            err.error?.message ||
+            'An error occurred. Please try again.';
+          this.toastService.error(errorMsg);
+        }
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   submitBankDetails(): void {
-    if (this.showNewHolderInput) {
-      const enteredHolderName =
-        this.bankForm.get('newBankHolderName')?.value?.trim() || '';
-
-      if (!enteredHolderName) {
-        this.bankForm.get('newBankHolderName')?.markAsTouched();
-        return;
-      }
-
-      this.bankForm.patchValue({
-        bankHolderName: enteredHolderName,
-      });
-    }
-
     if (this.bankForm.invalid) {
       this.bankForm.markAllAsTouched();
       return;
@@ -480,6 +625,92 @@ case 'thank-you':
     this.unlockBodyScroll();
   }
 
+  loadBankAccountDetails(): void {
+    this.bankAccountDetailsService.getBankAccountDetail().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const data = response.data;
+          this.bankForm.patchValue({
+            bankHolderName: data.bankHolderName,
+            bankAccountNumber: data.bankAccountNumber,
+            ifscCode: data.ifsccode,
+          });
+          if (data.isVerified) {
+            this.isBankVerified = true;
+            this.nameAtBank = data.bankHolderName;
+          }
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          // Bank account details not found - this is expected for new users
+          console.log('Bank account details not found, user needs to enter them');
+        } else {
+          console.error('Error loading bank account details:', err);
+        }
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  verifyBankDetails(): void {
+    const accountNumber = this.bankForm.get('bankAccountNumber')?.value;
+    const ifscCode = this.bankForm.get('ifscCode')?.value;
+
+    if (!accountNumber || !ifscCode) {
+      this.bankForm.markAllAsTouched();
+      return;
+    }
+
+    this.verifyingBank = true;
+    this.bankAccountDetailsService.verifyBankDetails(accountNumber, ifscCode).subscribe({
+      next: (response) => {
+        this.verifyingBank = false;
+        if (response.success && response.data) {
+          const data = response.data;
+          // Bank is valid if accountStatus is "VALID"
+          if (data.accountStatus === 'VALID' && data.nameAtBank) {
+            this.nameAtBank = data.nameAtBank;
+            this.isBankVerified = true;
+            this.bankForm.patchValue({
+              bankHolderName: data.nameAtBank,
+            });
+            this.setBankApiMessage(data.message || 'Bank account verified successfully', 'success');
+            this.toastService.success(data.message || 'Bank account verified successfully');
+          } else {
+            this.isBankVerified = false;
+            this.setBankApiMessage(data.message || 'Bank account verification failed', 'error');
+            this.toastService.error(data.message || 'Bank account verification failed');
+          }
+        } else {
+          this.isBankVerified = false;
+          this.setBankApiMessage(response.message || 'Bank account verification failed', 'error');
+          this.toastService.error(response.message || 'Bank account verification failed');
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.verifyingBank = false;
+        const errorMsg = err.error?.message || err.error?.errors?.[0] || 'An error occurred during verification';
+        this.setBankApiMessage(errorMsg, 'error');
+        this.toastService.error(errorMsg);
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  setBankApiMessage(message: string, type: 'success' | 'error' | 'info'): void {
+    this.bankApiMessage = message;
+    this.bankApiMessageType = type;
+    this.showBankApiMessage = true;
+  }
+
+  hideBankApiMessage(): void {
+    this.showBankApiMessage = false;
+    this.bankApiMessage = '';
+  }
+
   reEnterBankDetails(): void {
     this.showBankConfirmModal = false;
     this.unlockBodyScroll();
@@ -491,12 +722,103 @@ case 'thank-you':
 
     this.bankForm.get('bankAccountNumber')?.markAsUntouched();
     this.bankForm.get('ifscCode')?.markAsUntouched();
+    this.hideBankApiMessage();
+    this.isBankVerified = false;
+    this.nameAtBank = '';
   }
 
   confirmAndConnectBank(): void {
     this.showBankConfirmModal = false;
     this.unlockBodyScroll();
-    this.currentStep = 'signing-authority';
+    this.saveBankAccountDetails();
+  }
+
+  saveBankAccountDetails(): void {
+    if (this.bankForm.invalid) {
+      this.bankForm.markAllAsTouched();
+      return;
+    }
+
+    const accountNumber = this.bankForm.get('bankAccountNumber')?.value || '';
+    const ifscCode = this.bankForm.get('ifscCode')?.value || '';
+    const bankHolderName = this.bankForm.get('bankHolderName')?.value || '';
+
+    // Extract bank name from IFSC or use default
+    const bankName = 'BOI'; // This should ideally come from verification or a lookup
+    const accountType = 'CURRENT'; // Default account type
+
+    const payload: SaveBankAccountDetailRequest = {
+      bankHolderName,
+      bankAccountNumber: accountNumber,
+      ifsccode: ifscCode,
+      bankName,
+      accountType,
+    };
+
+    this.saving = true;
+    this.bankAccountDetailsService.saveBankAccountDetail(payload).subscribe({
+      next: (response) => {
+        this.saving = false;
+        if (response.success && response.data) {
+          const data = response.data;
+          const onboardingStatus = data.onboardingStatus;
+
+          this.toastService.success(response.message || 'Bank account details saved successfully');
+
+          // Handle redirection based on onboarding status
+          if (onboardingStatus.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+
+          if (onboardingStatus.isServiceAgreementSubmitted && !onboardingStatus.isOnboardingCompleted && !onboardingStatus.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
+
+          // Proceed to next step normally
+          this.currentStep = 'signing-authority';
+        } else {
+          const errorMsg = response.errors?.[0] || response.message || 'Failed to save bank account details';
+          this.setBankApiMessage(errorMsg, 'error');
+          this.toastService.error(errorMsg);
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.saving = false;
+        if (err.status === 400 && err.error?.errors) {
+          const apiErrors = err.error.errors;
+          if (apiErrors['Ifsccode']?.[0]) {
+            this.bankForm
+              .get('ifscCode')
+              ?.setErrors({ serverError: apiErrors['Ifsccode'][0] });
+            this.bankForm.get('ifscCode')?.markAsTouched();
+            this.setBankApiMessage(apiErrors['Ifsccode'][0], 'error');
+          }
+          if (apiErrors['BankAccountNumber']?.[0]) {
+            this.bankForm
+              .get('bankAccountNumber')
+              ?.setErrors({ serverError: apiErrors['BankAccountNumber'][0] });
+            this.bankForm.get('bankAccountNumber')?.markAsTouched();
+            this.setBankApiMessage(apiErrors['BankAccountNumber'][0], 'error');
+          }
+          if (apiErrors['BankHolderName']?.[0]) {
+            this.bankForm
+              .get('bankHolderName')
+              ?.setErrors({ serverError: apiErrors['BankHolderName'][0] });
+            this.bankForm.get('bankHolderName')?.markAsTouched();
+            this.setBankApiMessage(apiErrors['BankHolderName'][0], 'error');
+          }
+          this.toastService.error('Please fix the validation errors and try again');
+        } else {
+          const errorMsg = err.error?.errors?.[0] || err.error?.message || 'An error occurred. Please try again.';
+          this.setBankApiMessage(errorMsg, 'error');
+          this.toastService.error(errorMsg);
+        }
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   submitSigningAuthorityDetails(): void {
@@ -514,7 +836,155 @@ case 'thank-you':
       return;
     }
 
-    this.currentStep = 'video-kyc';
+    const hasDifferentAddress = this.businessAddressForm.get('hasDifferentAddress')?.value === 'yes';
+    const payload: SaveBusinessAddressRequest = {
+      addressLine1: this.businessAddressForm.get('address')?.value?.trim() || '',
+      addressLine2: '',
+      city: this.businessAddressForm.get('city')?.value?.trim() || '',
+      state: this.businessAddressForm.get('state')?.value?.trim() || '',
+      postalCode: this.businessAddressForm.get('postalCode')?.value?.trim() || '',
+      country: 'India',
+      hasDifferentOperatingAddress: hasDifferentAddress,
+      operatingAddressLine1: hasDifferentAddress ? this.businessAddressForm.get('operatingAddress')?.value?.trim() || '' : '',
+      operatingAddressLine2: '',
+      operatingCity: hasDifferentAddress ? this.businessAddressForm.get('operatingCity')?.value?.trim() || '' : '',
+      operatingState: hasDifferentAddress ? this.businessAddressForm.get('operatingState')?.value?.trim() || '' : '',
+      operatingPostalCode: hasDifferentAddress ? this.businessAddressForm.get('operatingPostalCode')?.value?.trim() || '' : '',
+      operatingCountry: 'India',
+    };
+
+    this.saving = true;
+    this.businessAddressService.saveBusinessAddress(payload).subscribe({
+      next: (response) => {
+        this.saving = false;
+        if (response.success && response.data) {
+          const data = response.data;
+          const onboardingStatus = data.onboardingStatus;
+
+          this.toastService.success(response.message || 'Business address saved successfully');
+
+          // Handle redirection based on onboarding status
+          if (onboardingStatus.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+
+          if (onboardingStatus.isServiceAgreementSubmitted && !onboardingStatus.isOnboardingCompleted && !onboardingStatus.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
+
+          // Proceed to next step normally
+          this.currentStep = 'video-kyc';
+        } else {
+          const errorMsg = response.errors?.[0] || response.message || 'Failed to save business address';
+          this.toastService.error(errorMsg);
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.saving = false;
+        if (err.status === 400 && err.error?.errors) {
+          const apiErrors = err.error.errors;
+          if (apiErrors['AddressLine1']?.[0]) {
+            this.businessAddressForm
+              .get('address')
+              ?.setErrors({ serverError: apiErrors['AddressLine1'][0] });
+            this.businessAddressForm.get('address')?.markAsTouched();
+          }
+          if (apiErrors['PostalCode']?.[0]) {
+            this.businessAddressForm
+              .get('postalCode')
+              ?.setErrors({ serverError: apiErrors['PostalCode'][0] });
+            this.businessAddressForm.get('postalCode')?.markAsTouched();
+          }
+          if (apiErrors['State']?.[0]) {
+            this.businessAddressForm
+              .get('state')
+              ?.setErrors({ serverError: apiErrors['State'][0] });
+            this.businessAddressForm.get('state')?.markAsTouched();
+          }
+          if (apiErrors['City']?.[0]) {
+            this.businessAddressForm
+              .get('city')
+              ?.setErrors({ serverError: apiErrors['City'][0] });
+            this.businessAddressForm.get('city')?.markAsTouched();
+          }
+          if (apiErrors['OperatingAddressLine1']?.[0]) {
+            this.businessAddressForm
+              .get('operatingAddress')
+              ?.setErrors({ serverError: apiErrors['OperatingAddressLine1'][0] });
+            this.businessAddressForm.get('operatingAddress')?.markAsTouched();
+          }
+          if (apiErrors['OperatingPostalCode']?.[0]) {
+            this.businessAddressForm
+              .get('operatingPostalCode')
+              ?.setErrors({ serverError: apiErrors['OperatingPostalCode'][0] });
+            this.businessAddressForm.get('operatingPostalCode')?.markAsTouched();
+          }
+          if (apiErrors['OperatingState']?.[0]) {
+            this.businessAddressForm
+              .get('operatingState')
+              ?.setErrors({ serverError: apiErrors['OperatingState'][0] });
+            this.businessAddressForm.get('operatingState')?.markAsTouched();
+          }
+          if (apiErrors['OperatingCity']?.[0]) {
+            this.businessAddressForm
+              .get('operatingCity')
+              ?.setErrors({ serverError: apiErrors['OperatingCity'][0] });
+            this.businessAddressForm.get('operatingCity')?.markAsTouched();
+          }
+          this.toastService.error('Please fix the validation errors and try again');
+        } else {
+          const errorMsg = err.error?.errors?.[0] || err.error?.message || 'An error occurred. Please try again.';
+          this.toastService.error(errorMsg);
+        }
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  loadBusinessAddress(): void {
+    this.businessAddressService.getBusinessAddress().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const data = response.data;
+          const hasDifferentAddress = data.hasDifferentOperatingAddress ? 'yes' : 'no';
+          this.businessAddressForm.patchValue({
+            address: data.addressLine1,
+            postalCode: data.postalCode,
+            state: data.state,
+            city: data.city,
+            hasDifferentAddress: hasDifferentAddress,
+            operatingAddress: data.operatingAddressLine1,
+            operatingPostalCode: data.operatingPostalCode,
+            operatingState: data.operatingState,
+            operatingCity: data.operatingCity,
+          });
+          this.applyOperatingAddressValidators(hasDifferentAddress);
+
+          // Check onboarding status and redirect if needed
+          if (data.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+          if (data.isServiceAgreementSubmitted && !data.isOnboardingCompleted && !data.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          // Business address not found - this is expected for new users
+          console.log('Business address not found, user needs to enter it');
+        } else {
+          console.error('Error loading business address:', err);
+        }
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   scheduleVideoKyc(): void {

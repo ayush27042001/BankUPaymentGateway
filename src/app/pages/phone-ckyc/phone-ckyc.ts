@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
 import { PhoneCkycService } from '../../services/phone-ckyc/phone-ckyc.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { ToastService } from '../../services/toast/toast.service';
 
 @Component({
   selector: 'app-phone-ckyc',
@@ -36,6 +37,7 @@ export class PhoneCkycComponent implements OnInit, OnDestroy {
   saving = false;
 
   otpDigits: string[] = ['', '', '', '', '', ''];
+  otpError: string | null = null;
 
   private timerInterval: ReturnType<typeof setInterval> | null = null;
 
@@ -44,7 +46,8 @@ export class PhoneCkycComponent implements OnInit, OnDestroy {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private phoneCkycService: PhoneCkycService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastService: ToastService
   ) {
     this.ckycForm = this.fb.group({
       mobileNumber: ['9907866754', [Validators.required, this.mobileValidator]],
@@ -228,6 +231,12 @@ export class PhoneCkycComponent implements OnInit, OnDestroy {
     this.otpDigits[index] = value;
     input.value = value;
 
+    // Clear OTP error when user starts typing
+    if (value && this.otpError) {
+      this.otpError = null;
+      this.cdr.markForCheck();
+    }
+
     this.updateOtpFormValue();
 
     if (value && index < 5) {
@@ -357,6 +366,7 @@ export class PhoneCkycComponent implements OnInit, OnDestroy {
     this.otpSent = false;
     this.canResendOtp = false;
     this.timer = 30;
+    this.otpError = null;
     this.clearTimer();
 
     this.resetOtpBoxes();
@@ -372,6 +382,7 @@ export class PhoneCkycComponent implements OnInit, OnDestroy {
     }
 
     this.verifyingOtp = true;
+    this.otpError = null;
     const mobileNumber = this.ckycForm.get('mobileNumber')?.value || '';
     const otp = this.otpDigits.join('');
 
@@ -382,13 +393,18 @@ export class PhoneCkycComponent implements OnInit, OnDestroy {
           this.savePhoneCkyc();
         } else {
           // OTP verification failed
-          console.error('OTP verification failed:', response.message);
+          const errorMessage = response.message || response.data?.message || 'Invalid OTP or OTP expired';
+          this.otpError = errorMessage;
+          this.toastService.error(errorMessage);
           this.verifyingOtp = false;
           this.cdr.markForCheck();
         }
       },
       error: (err) => {
-        console.error('Error verifying OTP:', err);
+        const errorMessage = err.error?.message || err.error?.data?.message || 'Invalid OTP or OTP expired';
+        console.log('OTP Verification Error:', errorMessage);
+        this.otpError = errorMessage;
+        this.toastService.error(errorMessage);
         this.verifyingOtp = false;
         this.cdr.markForCheck();
       }

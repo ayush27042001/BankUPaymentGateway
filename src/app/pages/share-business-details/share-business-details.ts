@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -10,19 +10,35 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
+import { ToastComponent } from '../../components/toast/toast';
+import { BusinessDetailsService } from '../../services/business-details/business-details.service';
+import { ToastService } from '../../services/toast/toast.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-share-business-details',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, OnboardingHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, OnboardingHeaderComponent, ToastComponent],
   templateUrl: './share-business-details.html',
   styleUrl: './share-business-details.scss',
 })
-export class ShareBusinessDetailsComponent {
+export class ShareBusinessDetailsComponent implements OnInit {
   businessForm: FormGroup;
   salesInWords = '';
+  loading = false;
+  saving = false;
+  validatingGst = false;
+  gstValidationStatus: 'valid' | 'invalid' | 'pending' | null = null;
+  private gstDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private businessDetailsService: BusinessDetailsService,
+    private toastService: ToastService,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.businessForm = this.fb.group({
       expectedSales: ['', [Validators.required, this.expectedSalesValidator]],
       hasGstin: [false],
@@ -44,6 +60,58 @@ export class ShareBusinessDetailsComponent {
       }
 
       gstinControl?.updateValueAndValidity();
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadBusinessDetails();
+  }
+
+  loadBusinessDetails(): void {
+    this.loading = true;
+    this.cdr.detectChanges();
+    
+    this.businessDetailsService.getBusinessDetails().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const data = response.data;
+          this.businessForm.patchValue({
+            hasGstin: data.hasGstin,
+            gstin: data.gstin || '',
+          });
+
+          if (data.hasGstin && data.gstin && data.gstin.length === 15) {
+            this.validateGstSilent(data.gstin);
+          }
+
+          if (data.expectedSalesPerMonth) {
+            // Convert from lakhs to rupees for display
+            const salesInRupees = Math.round(data.expectedSalesPerMonth * 100);
+            const formattedSales = this.formatIndianNumber(salesInRupees.toString());
+            this.businessForm.patchValue({
+              expectedSales: formattedSales,
+            });
+            this.updateSalesWords(salesInRupees.toString());
+          }
+
+          // Check onboarding status and redirect if needed
+          if (data.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+          if (data.isServiceAgreementSubmitted && !data.isOnboardingCompleted && !data.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
+        }
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading business details:', err);
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -98,6 +166,68 @@ export class ShareBusinessDetailsComponent {
     if (rawValue !== formattedValue) {
       control?.setValue(formattedValue, { emitEvent: false });
     }
+
+    if (this.gstDebounceTimer) {
+      clearTimeout(this.gstDebounceTimer);
+    }
+
+    if (formattedValue.length === 15) {
+      this.gstDebounceTimer = setTimeout(() => {
+        this.validateGst(formattedValue);
+      }, 600);
+    } else {
+      this.gstValidationStatus = null;
+      this.validatingGst = false;
+    }
+  }
+
+  validateGstSilent(gstin: string): void {
+    this.validatingGst = true;
+    this.gstValidationStatus = 'pending';
+    this.cdr.detectChanges();
+
+    this.businessDetailsService.validateGst({ gstin, businessName: '' }).subscribe({
+      next: (response) => {
+        this.gstValidationStatus = (response.success && response.data?.legalName) ? 'valid' : 'invalid';
+        this.validatingGst = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.gstValidationStatus = 'invalid';
+        this.validatingGst = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  validateGst(gstin: string): void {
+    this.validatingGst = true;
+    this.gstValidationStatus = 'pending';
+
+    this.businessDetailsService.validateGst({
+      gstin: gstin,
+      businessName: ''
+    }).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const isValid = !!response.data.legalName;
+          if (isValid) {
+            this.gstValidationStatus = 'valid';
+            this.toastService.success(`GSTIN verified: ${response.data.legalName}`);
+          } else {
+            this.gstValidationStatus = 'invalid';
+            this.toastService.error('GSTIN verification failed. Please check your GSTIN.');
+          }
+        }
+        this.validatingGst = false;
+      },
+      error: (err) => {
+        console.error('Error validating GST:', err);
+        this.gstValidationStatus = 'invalid';
+        this.toastService.error('Failed to validate GSTIN');
+        this.validatingGst = false;
+      }
+    });
   }
 
   updateSalesWords(value: string): void {
@@ -108,7 +238,8 @@ export class ShareBusinessDetailsComponent {
       return;
     }
 
-    this.salesInWords = this.convertNumberToWordsIndian(numericValue);
+    const words = this.convertNumberToWordsIndian(numericValue);
+    this.salesInWords = words || '';
   }
 
   formatIndianNumber(value: string): string {
@@ -171,15 +302,65 @@ export class ShareBusinessDetailsComponent {
       return;
     }
 
+    // Check if GST validation is in progress
+    if (this.validatingGst) {
+      this.toastService.warning('Please wait for GST validation to complete');
+      return;
+    }
+
+    // Check if GST is invalid
+    if (this.businessForm.get('hasGstin')?.value && this.gstValidationStatus === 'invalid') {
+      this.toastService.error('Please enter a valid GSTIN before proceeding');
+      return;
+    }
+
+    const expectedSalesRaw = (this.businessForm.get('expectedSales')?.value || '').toString().replace(/,/g, '').trim();
+    const expectedSalesPerMonth = Number(expectedSalesRaw) / 100; // Convert to lakhs as per API
+
     const payload = {
-      expectedSales: this.businessForm.get('expectedSales')?.value,
+      expectedSalesPerMonth: expectedSalesPerMonth,
       hasGstin: this.businessForm.get('hasGstin')?.value,
-      gstin: this.businessForm.get('gstin')?.value,
+      gstin: this.businessForm.get('hasGstin')?.value ? this.businessForm.get('gstin')?.value : undefined,
     };
 
-    console.log('Business details payload:', payload);
+    this.saving = true;
+    this.businessDetailsService.saveBusinessDetails(payload).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          // Update auth data with onboarding status
+          this.authService.setAuthData(
+            this.authService.getToken() || '',
+            this.authService.getUserId() || '',
+            this.authService.getMid() || '',
+            this.authService.getUserData(),
+            this.authService.getRefreshToken() || undefined,
+            this.authService.getTokenExpiration() || undefined,
+            this.authService.getRefreshTokenExpiration() || undefined,
+            response.data.onboardingStatus,
+            response.data.isOnboardingCompleted,
+            response.data.isServiceAgreementSubmitted,
+            response.data.isOnboardingRejected
+          );
 
-    this.router.navigate(['/connect-platform']);
+          // Check onboarding status and redirect if needed
+          if (response.data.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+          if (response.data.isServiceAgreementSubmitted && !response.data.isOnboardingCompleted && !response.data.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
+
+          this.router.navigate(['/connect-platform']);
+        }
+        this.saving = false;
+      },
+      error: (err) => {
+        console.error('Error saving business details:', err);
+        this.saving = false;
+      }
+    });
   }
 
   goBack(): void {

@@ -228,7 +228,7 @@ $error-color: #ff0000;
   transition: all 0.25s ease;
   background: $white;
 
-  &:focus {
+  &:focus:not(.error-state) {
     border-color: $brand-primary;
     box-shadow: 0 0 0 0.18rem rgba(128, 1, 128, 0.12);
   }

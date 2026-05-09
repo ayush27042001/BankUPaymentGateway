@@ -3,7 +3,7 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface OnboardingStep {
+export interface ConnectPlatformSubStep {
   stepNumber: number;
   stepName: string;
   stepKey: string;
@@ -11,11 +11,30 @@ export interface OnboardingStep {
   isActive: boolean;
 }
 
+export interface ConnectPlatformSteps {
+  currentStep: number;
+  totalSteps: number;
+  steps: ConnectPlatformSubStep[];
+}
+
+export interface OnboardingStep {
+  stepNumber: number;
+  stepName: string;
+  stepKey: string;
+  isCompleted: boolean;
+  isActive: boolean;
+  connectPlatformSteps?: ConnectPlatformSteps;
+}
+
 export interface OnboardingStatus {
   stepNumber: number;
   stepName: string;
   isCompleted: boolean;
+  isOnboardingCompleted: boolean;
+  isServiceAgreementSubmitted: boolean;
+  isOnboardingRejected: boolean;
   steps: OnboardingStep[];
+  connectPlatformSteps?: ConnectPlatformSteps;
 }
 
 export interface LoginResponseData {
@@ -32,6 +51,9 @@ export interface LoginResponseData {
   currentStepName: string;
   formStep: string;
   step: number;
+  isOnboardingCompleted: boolean;
+  isServiceAgreementSubmitted: boolean;
+  isOnboardingRejected: boolean;
   onboardingStatus: OnboardingStatus;
 }
 
@@ -81,6 +103,9 @@ export interface VerifyOtpData {
   currentStepName: string;
   formStep: string;
   step: number;
+  isOnboardingCompleted: boolean;
+  isServiceAgreementSubmitted: boolean;
+  isOnboardingRejected: boolean;
   onboardingStatus: OnboardingStatus;
 }
 

@@ -53,6 +53,9 @@ export interface VerifyOtpResponse {
     tokenExpiration?: string;
     formStep?: string;
     step: number;
+    isOnboardingCompleted?: boolean;
+    isServiceAgreementSubmitted?: boolean;
+    isOnboardingRejected?: boolean;
   };
   errors: any[];
   timestamp: string;
