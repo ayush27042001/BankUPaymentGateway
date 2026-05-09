@@ -278,6 +278,8 @@
           id="bankAccountNumber"
           type="text"
           class="form-control custom-input"
+          [class.verified-input]="isBankVerified"
+          [style.border]="isBankVerified ? '1px solid green' : ''"
           formControlName="bankAccountNumber"
           placeholder="Enter Account Number"
           inputmode="numeric"
@@ -307,6 +309,7 @@
             id="ifscCode"
             type="text"
             class="form-control custom-input"
+            [class.verified-input]="isIfscMatchesOriginal"
             formControlName="ifscCode"
             placeholder="Enter IFSC Code"
             maxlength="11"
@@ -317,7 +320,7 @@
             type="button"
             class="verify-btn"
             (click)="verifyBankDetails()"
-            [disabled]="verifyingBank || !bankForm.get('bankAccountNumber')?.value || !bankForm.get('ifscCode')?.value">
+            [disabled]="verifyingBank || !bankForm.get('bankAccountNumber')?.value || !bankForm.get('ifscCode')?.value || isIfscMatchesOriginal">
             {{ verifyingBank ? 'Verifying...' : 'Verify' }}
           </button>
         </div>
@@ -357,6 +360,13 @@
                 Kindly provide the representative details for KYC verification. This contact will receive all key communications moving forward.
               </p>
 
+              @if (showSigningApiMessage) {
+                <div class="api-message-box" [ngClass]="'api-message-' + signingApiMessageType">
+                  <span class="api-message-text">{{ signingApiMessage }}</span>
+                  <button type="button" class="api-message-close" (click)="hideSigningApiMessage()">×</button>
+                </div>
+              }
+
               <form [formGroup]="signingAuthorityForm" (ngSubmit)="submitSigningAuthorityDetails()" novalidate>
                 <div class="bank-form-grid">
                   <div class="form-block">
@@ -368,8 +378,10 @@
                       id="signingAuthorityName"
                       type="text"
                       class="form-control custom-input"
+                      [class.verified-input]="isPanVerified"
                       formControlName="signingAuthorityName"
                       placeholder="Enter signing authority name"
+                      [readonly]="isPanVerified"
                     />
 
                     @if (signingControls['signingAuthorityName'].touched && signingControls['signingAuthorityName'].errors?.['required']) {
@@ -399,20 +411,31 @@
                     }
                   </div>
 
-                  <div class="form-block">
+                  <div class="form-block ifsc-block">
                     <label for="signingAuthorityPan" class="block-label">
                       Signing Authority's PAN card number <span>*</span>
                     </label>
 
-                    <input
-                      id="signingAuthorityPan"
-                      type="text"
-                      class="form-control custom-input"
-                      formControlName="signingAuthorityPan"
-                      placeholder="Enter PAN number"
-                      maxlength="10"
-                      (input)="onPanInput()"
-                    />
+                    <div class="ifsc-input-wrapper">
+                      <input
+                        id="signingAuthorityPan"
+                        type="text"
+                        class="form-control custom-input"
+                        [class.verified-input]="isPanVerified"
+                        formControlName="signingAuthorityPan"
+                        placeholder="Enter PAN number"
+                        maxlength="10"
+                        (input)="onPanInput()"
+                      />
+
+                      <button
+                        type="button"
+                        class="verify-btn"
+                        (click)="verifyPan()"
+                        [disabled]="verifyingPan || !signingAuthorityForm.get('signingAuthorityPan')?.value || signingAuthorityForm.get('signingAuthorityPan')?.value.length !== 10 || isPanMatchesOriginal">
+                        {{ verifyingPan ? 'Verifying...' : 'Verify' }}
+                      </button>
+                    </div>
 
                     @if (signingControls['signingAuthorityPan'].touched && signingControls['signingAuthorityPan'].errors?.['required']) {
                       <small class="error-text">PAN number is required.</small>
@@ -420,6 +443,10 @@
 
                     @if (signingControls['signingAuthorityPan'].touched && signingControls['signingAuthorityPan'].errors?.['pattern']) {
                       <small class="error-text">Enter a valid PAN number.</small>
+                    }
+
+                    @if (signingControls['signingAuthorityPan'].touched && signingControls['signingAuthorityPan'].errors?.['serverError']) {
+                      <small class="error-text">{{ signingControls['signingAuthorityPan'].errors?.['serverError'] }}</small>
                     }
                   </div>
                 </div>
@@ -430,20 +457,12 @@
                   </label>
 
                   <div class="radio-group pep-radio-group">
-                    <label class="radio-option">
-                      <input type="radio" formControlName="pepStatus" value="i-am-pep" />
-                      <span>I am a PEP</span>
-                    </label>
-
-                    <label class="radio-option">
-                      <input type="radio" formControlName="pepStatus" value="related-to-pep" />
-                      <span>I am related to a PEP</span>
-                    </label>
-
-                    <label class="radio-option">
-                      <input type="radio" formControlName="pepStatus" value="not-applicable" />
-                      <span>Not Applicable</span>
-                    </label>
+                    @for (status of pepStatuses; track status.pepstatusId) {
+                      <label class="radio-option">
+                        <input type="radio" formControlName="pepstatusId" [value]="status.pepstatusId" />
+                        <span>{{ status.statusName }}</span>
+                      </label>
+                    }
                   </div>
                 </div>
 
@@ -455,7 +474,7 @@
                   <button
                     type="submit"
                     class="proceed-btn"
-                    [disabled]="signingAuthorityForm.invalid">
+                    [disabled]="signingAuthorityForm.invalid || (!isPanVerified && !isPanMatchesOriginal)">
                     Confirm &amp; Proceed →
                   </button>
                 </div>

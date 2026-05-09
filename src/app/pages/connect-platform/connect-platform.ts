@@ -25,6 +25,7 @@ import { ToastService } from '../../services/toast/toast.service';
 import { ConnectPlatformService, SaveConnectPlatformRequest } from '../../services/connect-platform/connect-platform.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { BankAccountDetailsService, SaveBankAccountDetailRequest } from '../../services/bank-account-details/bank-account-details.service';
+import { SigningAuthorityService, PepStatus, SigningAuthorityDetail, SaveSigningAuthorityRequest } from '../../services/signing-authority/signing-authority.service';
 import { BusinessAddressService, SaveBusinessAddressRequest } from '../../services/business-address/business-address.service';
 
 type StepKey =
@@ -49,7 +50,7 @@ type SectionKey = 'business' | 'kyc' | 'documents' | 'agreement';
   NgSelectModule,
 ],
   templateUrl: './connect-platform.html',
-  styleUrl: './connect-platform.scss',
+  styleUrls: ['./connect-platform.scss'],
 })
 export class ConnectPlatformComponent implements OnInit, OnDestroy {
   currentStep: StepKey = 'platform';
@@ -57,11 +58,17 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   loading = true;
   saving = false;
   verifyingBank = false;
+  verifyingPan = false;
   bankApiMessage = '';
   bankApiMessageType: 'success' | 'error' | 'info' = 'info';
   showBankApiMessage = false;
+  signingApiMessage = '';
+  signingApiMessageType: 'success' | 'error' | 'info' = 'info';
+  showSigningApiMessage = false;
   nameAtBank = '';
   isBankVerified = false;
+  isPanVerified = false;
+  originalIfscCode = '';
 
   platformForm!: FormGroup;
   bankForm!: FormGroup;
@@ -69,13 +76,17 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   businessAddressForm!: FormGroup;
   uploadDocumentsForm!: FormGroup;
 
+  pepStatuses: PepStatus[] = [];
+  signingAuthorityDetail: SigningAuthorityDetail | null = null;
+  originalSigningAuthorityPan: string = '';
+
   imageUrl = '../../../assets/images/website-illustration.png';
 
   showBankConfirmModal = false;
   showUploadDocumentsModal = false;
 
-  matchedBankName = 'BANK OF INDIA | SITAPUR';
   maskedAccountNumber = '';
+  matchedBankName = '';
 
   selectedDocumentNames = {
     aadhaarCard: '',
@@ -103,6 +114,7 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   private cdr: ChangeDetectorRef,
   private authService: AuthService,
   private bankAccountDetailsService: BankAccountDetailsService,
+  private signingAuthorityService: SigningAuthorityService,
   private businessAddressService: BusinessAddressService
 ) {
   this.initializeForms();
@@ -116,6 +128,9 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.loadConnectPlatform();
       this.loadBankAccountDetails();
+      this.loadPepStatuses();
+      this.loadSigningAuthorityDetails();
+      this.autoFetchEmailFromAuth();
       this.loadBusinessAddress();
     } else {
       this.loading = false;
@@ -267,13 +282,13 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     });
 
     this.signingAuthorityForm = this.fb.group({
-      signingAuthorityName: ['AYUSH KUMAR AWASTHI', Validators.required],
+      signingAuthorityName: ['', Validators.required],
       signingAuthorityEmail: ['', [Validators.required, Validators.email]],
       signingAuthorityPan: [
-        'CMHPA4444B',
+        '',
         [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]$/)],
       ],
-      pepStatus: ['not-applicable', Validators.required],
+      pepstatusId: [1, Validators.required],
     });
 
     this.businessAddressForm = this.fb.group({
@@ -286,6 +301,11 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
       operatingPostalCode: ['', Validators.pattern(/^[0-9]{6}$/)],
       operatingState: [''],
       operatingCity: [''],
+    });
+
+    // Add conditional validation for operating address fields
+    this.businessAddressForm.get('hasDifferentAddress')?.valueChanges.subscribe((value) => {
+      this.updateOperatingAddressValidators(value);
     });
 
     this.uploadDocumentsForm = this.fb.group({
@@ -352,6 +372,47 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     });
   }
 
+  private updateOperatingAddressValidators(value: string): void {
+    const operatingAddressControl = this.businessAddressForm.get('operatingAddress');
+    const operatingPostalCodeControl = this.businessAddressForm.get('operatingPostalCode');
+    const operatingStateControl = this.businessAddressForm.get('operatingState');
+    const operatingCityControl = this.businessAddressForm.get('operatingCity');
+
+    if (!operatingAddressControl || !operatingPostalCodeControl || !operatingStateControl || !operatingCityControl) {
+      return;
+    }
+
+    if (value === 'yes') {
+      operatingAddressControl.setValidators([Validators.required]);
+      operatingPostalCodeControl.setValidators([Validators.required, Validators.pattern(/^[0-9]{6}$/)]);
+      operatingStateControl.setValidators([Validators.required]);
+      operatingCityControl.setValidators([Validators.required]);
+    } else {
+      operatingAddressControl.clearValidators();
+      operatingPostalCodeControl.clearValidators();
+      operatingStateControl.clearValidators();
+      operatingCityControl.clearValidators();
+
+      // Clear values when switching to "no"
+      operatingAddressControl.setValue('');
+      operatingPostalCodeControl.setValue('');
+      operatingStateControl.setValue('');
+      operatingCityControl.setValue('');
+
+      operatingAddressControl.markAsUntouched();
+      operatingPostalCodeControl.markAsUntouched();
+      operatingStateControl.markAsUntouched();
+      operatingCityControl.markAsUntouched();
+    }
+
+    operatingAddressControl.updateValueAndValidity({ emitEvent: false });
+    operatingPostalCodeControl.updateValueAndValidity({ emitEvent: false });
+    operatingStateControl.updateValueAndValidity({ emitEvent: false });
+    operatingCityControl.updateValueAndValidity({ emitEvent: false });
+
+    this.cdr.detectChanges();
+  }
+
   private setupDifferentAddressWatcher(): void {
     this.businessAddressForm.get('hasDifferentAddress')?.valueChanges.subscribe((value) => {
       this.applyOperatingAddressValidators(value);
@@ -395,6 +456,7 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
     operatingStateControl.updateValueAndValidity({ emitEvent: false });
     operatingCityControl.updateValueAndValidity({ emitEvent: false });
   }
+
 
   private applyPlatformValidators(mode: string): void {
     const websiteUrlControl = this.platformForm.get('websiteUrl');
@@ -635,7 +697,12 @@ case 'thank-you':
             bankAccountNumber: data.bankAccountNumber,
             ifscCode: data.ifsccode,
           });
-          if (data.isVerified) {
+          // Set original IFSC code if data exists (same logic as PAN)
+          if (data.ifsccode) {
+            this.originalIfscCode = data.ifsccode;
+          }
+          // Mark bank as verified if data exists (same logic as PAN)
+          if (data.bankHolderName || data.bankAccountNumber || data.ifsccode) {
             this.isBankVerified = true;
             this.nameAtBank = data.bankHolderName;
           }
@@ -673,6 +740,7 @@ case 'thank-you':
           if (data.accountStatus === 'VALID' && data.nameAtBank) {
             this.nameAtBank = data.nameAtBank;
             this.isBankVerified = true;
+            this.originalIfscCode = ifscCode;
             this.bankForm.patchValue({
               bankHolderName: data.nameAtBank,
             });
@@ -821,13 +889,257 @@ case 'thank-you':
     });
   }
 
+  loadPepStatuses(): void {
+    this.signingAuthorityService.getPepStatuses().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.pepStatuses = response.data;
+          // Set default to "Not Applicable" (pepstatusId: 1)
+          const notApplicable = this.pepStatuses.find(status => status.statusName === 'Not Applicable');
+          if (notApplicable) {
+            this.signingAuthorityForm.patchValue({ pepstatusId: notApplicable.pepstatusId });
+          }
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading PEP statuses:', err);
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  loadSigningAuthorityDetails(): void {
+    this.signingAuthorityService.getSigningAuthorityDetails().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.signingAuthorityDetail = response.data;
+          this.originalSigningAuthorityPan = response.data.signingAuthorityPan || '';
+          this.signingAuthorityForm.patchValue({
+            signingAuthorityName: response.data.signingAuthorityName,
+            signingAuthorityEmail: response.data.signingAuthorityEmail,
+            signingAuthorityPan: response.data.signingAuthorityPan,
+            pepstatusId: response.data.pepstatusId,
+          });
+          // Mark PAN as verified if data exists
+          if (response.data.signingAuthorityPan) {
+            this.isPanVerified = true;
+          }
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          console.log('Signing authority details not found, user needs to enter them');
+        } else {
+          console.error('Error loading signing authority details:', err);
+        }
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  autoFetchEmailFromAuth(): void {
+    const userData = this.authService.getUserData();
+    if (userData && userData.email) {
+      this.signingAuthorityForm.patchValue({
+        signingAuthorityEmail: userData.email,
+      });
+    }
+  }
+
+  onPanInput(): void {
+    const control = this.signingAuthorityForm.get('signingAuthorityPan');
+    if (!control) return;
+
+    const formattedValue = (control.value || '')
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '');
+
+    control.setValue(formattedValue, { emitEvent: false });
+    // Reset PAN verification when PAN changes from original
+    if (formattedValue !== this.originalSigningAuthorityPan) {
+      this.isPanVerified = false;
+    } else if (formattedValue === this.originalSigningAuthorityPan && this.originalSigningAuthorityPan !== '') {
+      // Restore verification and name when PAN matches original again
+      this.isPanVerified = true;
+      if (this.signingAuthorityDetail?.signingAuthorityName) {
+        this.signingAuthorityForm.patchValue({
+          signingAuthorityName: this.signingAuthorityDetail.signingAuthorityName,
+        });
+      }
+    }
+  }
+
+  get isPanMatchesOriginal(): boolean {
+    const currentPan = this.signingAuthorityForm.get('signingAuthorityPan')?.value || '';
+    return currentPan === this.originalSigningAuthorityPan && this.originalSigningAuthorityPan !== '';
+  }
+
+  get isIfscMatchesOriginal(): boolean {
+    const currentIfsc = this.bankForm.get('ifscCode')?.value || '';
+    return currentIfsc === this.originalIfscCode && this.originalIfscCode !== '';
+  }
+
+  verifyPan(): void {
+    const panNumber = this.signingAuthorityForm.get('signingAuthorityPan')?.value;
+
+    if (!panNumber || panNumber.length !== 10) {
+      this.signingAuthorityForm.get('signingAuthorityPan')?.markAsTouched();
+      this.setSigningApiMessage('Please enter a valid 10-character PAN number', 'error');
+      return;
+    }
+
+    // Clear any previous server errors
+    this.signingAuthorityForm.get('signingAuthorityPan')?.setErrors(null);
+
+    this.verifyingPan = true;
+    this.signingAuthorityService.verifyPan(panNumber).subscribe({
+      next: (response) => {
+        this.verifyingPan = false;
+        if (response.success && response.data) {
+          const data = response.data;
+          // Treat presence of name as primary success indicator
+          // API may return isValid: false even when name is provided
+          if (data.name && data.name.trim() !== '') {
+            this.isPanVerified = true;
+            this.signingAuthorityForm.patchValue({
+              signingAuthorityName: data.name,
+            });
+            this.setSigningApiMessage('PAN verified successfully', 'success');
+            this.toastService.success('PAN verified successfully');
+          } else {
+            this.isPanVerified = false;
+            const panMessage = response.data?.message || response.message || 'Invalid PAN - name not available';
+            this.setSigningApiMessage(panMessage, 'error');
+            this.toastService.error(panMessage);
+            // Set server error to trigger red border
+            this.signingAuthorityForm.get('signingAuthorityPan')?.setErrors({ serverError: panMessage });
+            this.signingAuthorityForm.get('signingAuthorityPan')?.markAsTouched();
+          }
+        } else {
+          this.isPanVerified = false;
+          const panMessage = response.message || 'PAN verification failed';
+          this.setSigningApiMessage(panMessage, 'error');
+          this.toastService.error(panMessage);
+          // Set server error to trigger red border
+          this.signingAuthorityForm.get('signingAuthorityPan')?.setErrors({ serverError: panMessage });
+          this.signingAuthorityForm.get('signingAuthorityPan')?.markAsTouched();
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.verifyingPan = false;
+        const errorMsg = err.error?.message || err.error?.errors?.[0] || 'An error occurred during PAN verification';
+        this.setSigningApiMessage(errorMsg, 'error');
+        this.toastService.error(errorMsg);
+        // Set server error to trigger red border
+        this.signingAuthorityForm.get('signingAuthorityPan')?.setErrors({ serverError: errorMsg });
+        this.signingAuthorityForm.get('signingAuthorityPan')?.markAsTouched();
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  setSigningApiMessage(message: string, type: 'success' | 'error' | 'info'): void {
+    this.signingApiMessage = message;
+    this.signingApiMessageType = type;
+    this.showSigningApiMessage = true;
+  }
+
+  hideSigningApiMessage(): void {
+    this.showSigningApiMessage = false;
+    this.signingApiMessage = '';
+  }
+
   submitSigningAuthorityDetails(): void {
+    if (this.saving) {
+      return;
+    }
+
     if (this.signingAuthorityForm.invalid) {
       this.signingAuthorityForm.markAllAsTouched();
       return;
     }
 
-    this.currentStep = 'business-address';
+    // Validate PAN before submission
+    if (!this.isPanVerified) {
+      this.setSigningApiMessage('Please verify your PAN before submitting', 'error');
+      this.toastService.error('Please verify your PAN before submitting');
+      return;
+    }
+
+    const payload: SaveSigningAuthorityRequest = {
+      signingAuthorityName: this.signingAuthorityForm.get('signingAuthorityName')?.value,
+      signingAuthorityEmail: this.signingAuthorityForm.get('signingAuthorityEmail')?.value,
+      signingAuthorityPan: this.signingAuthorityForm.get('signingAuthorityPan')?.value,
+      pepstatusId: this.signingAuthorityForm.get('pepstatusId')?.value,
+    };
+
+    this.saving = true;
+    this.signingAuthorityService.saveSigningAuthorityDetails(payload).subscribe({
+      next: (response) => {
+        this.saving = false;
+        if (response.success && response.data) {
+          const data = response.data;
+          const onboardingStatus = data.onboardingStatus;
+
+          this.toastService.success(response.message || 'Signing authority details saved successfully');
+
+          // Handle redirection based on onboarding status
+          if (onboardingStatus.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+
+          if (onboardingStatus.isServiceAgreementSubmitted && !onboardingStatus.isOnboardingCompleted && !onboardingStatus.isOnboardingRejected) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
+
+          // Proceed to next step normally
+          this.currentStep = 'business-address';
+        } else {
+          const errorMsg = response.errors?.[0] || response.message || 'Failed to save signing authority details';
+          this.setSigningApiMessage(errorMsg, 'error');
+          this.toastService.error(errorMsg);
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.saving = false;
+        if (err.status === 400 && err.error?.errors) {
+          const apiErrors = err.error.errors;
+          if (apiErrors['SigningAuthorityName']?.[0]) {
+            this.signingAuthorityForm
+              .get('signingAuthorityName')
+              ?.setErrors({ serverError: apiErrors['SigningAuthorityName'][0] });
+            this.signingAuthorityForm.get('signingAuthorityName')?.markAsTouched();
+            this.setSigningApiMessage(apiErrors['SigningAuthorityName'][0], 'error');
+          }
+          if (apiErrors['SigningAuthorityEmail']?.[0]) {
+            this.signingAuthorityForm
+              .get('signingAuthorityEmail')
+              ?.setErrors({ serverError: apiErrors['SigningAuthorityEmail'][0] });
+            this.signingAuthorityForm.get('signingAuthorityEmail')?.markAsTouched();
+            this.setSigningApiMessage(apiErrors['SigningAuthorityEmail'][0], 'error');
+          }
+          if (apiErrors['SigningAuthorityPan']?.[0]) {
+            this.signingAuthorityForm
+              .get('signingAuthorityPan')
+              ?.setErrors({ serverError: apiErrors['SigningAuthorityPan'][0] });
+            this.signingAuthorityForm.get('signingAuthorityPan')?.markAsTouched();
+            this.setSigningApiMessage(apiErrors['SigningAuthorityPan'][0], 'error');
+          }
+          this.toastService.error('Please fix the validation errors and try again');
+        } else {
+          const errorMsg = err.error?.errors?.[0] || err.error?.message || 'An error occurred. Please try again.';
+          this.setSigningApiMessage(errorMsg, 'error');
+          this.toastService.error(errorMsg);
+        }
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   submitBusinessAddressDetails(): void {
@@ -1036,8 +1348,8 @@ case 'thank-you':
 
     this.showUploadDocumentsModal = false;
     this.unlockBodyScroll();
-   // Navigate user to service agreement step.
-this.currentStep = 'service-agreement';
+    // Navigate user to service agreement step.
+    this.currentStep = 'service-agreement';
   }
 
   onAccountNumberInput(): void {
@@ -1057,17 +1369,18 @@ this.currentStep = 'service-agreement';
       .replace(/[^A-Z0-9]/g, '');
 
     control.setValue(formattedValue, { emitEvent: false });
-  }
-
-  onPanInput(): void {
-    const control = this.signingAuthorityForm.get('signingAuthorityPan');
-    if (!control) return;
-
-    const formattedValue = (control.value || '')
-      .toUpperCase()
-      .replace(/[^A-Z0-9]/g, '');
-
-    control.setValue(formattedValue, { emitEvent: false });
+    // Reset bank verification when IFSC changes from original
+    if (formattedValue !== this.originalIfscCode) {
+      this.isBankVerified = false;
+    } else if (formattedValue === this.originalIfscCode && this.originalIfscCode !== '') {
+      // Restore verification and bank holder name when IFSC matches original again
+      this.isBankVerified = true;
+      if (this.nameAtBank) {
+        this.bankForm.patchValue({
+          bankHolderName: this.nameAtBank,
+        });
+      }
+    }
   }
 
   getMaskedAccountNumber(accountNumber: string): string {
@@ -1176,15 +1489,15 @@ this.currentStep = 'service-agreement';
     return pattern.test(value) ? null : { invalidIfsc: true };
   }
 
- private lockBodyScroll(): void {
-  if (isPlatformBrowser(this.platformId)) {
-    this.renderer.setStyle(document.body, 'overflow', 'hidden');
+  private lockBodyScroll(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.renderer.setStyle(document.body, 'overflow', 'hidden');
+    }
   }
-}
 
-private unlockBodyScroll(): void {
-  if (isPlatformBrowser(this.platformId)) {
-    this.renderer.removeStyle(document.body, 'overflow');
+  private unlockBodyScroll(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.renderer.removeStyle(document.body, 'overflow');
+    }
   }
-}
 }
