@@ -40,7 +40,7 @@ export class BusinessProofTypeService {
 
   getBusinessProofTypes(): Observable<BusinessProofTypeResponse> {
     return this.http.get<BusinessProofTypeResponse>(
-      `${this.apiUrl}/BusinessProofTypeMaster`,
+      `${this.apiUrl}/Document/business-proof-types`,
       { headers: this.getAuthHeaders() }
     );
   }

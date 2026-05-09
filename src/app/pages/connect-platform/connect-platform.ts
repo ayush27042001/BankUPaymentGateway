@@ -28,6 +28,7 @@ import { BankAccountDetailsService, SaveBankAccountDetailRequest } from '../../s
 import { SigningAuthorityService, PepStatus, SigningAuthorityDetail, SaveSigningAuthorityRequest } from '../../services/signing-authority/signing-authority.service';
 import { BusinessAddressService, SaveBusinessAddressRequest } from '../../services/business-address/business-address.service';
 import { BusinessProofTypeService, BusinessProofType } from '../../services/business-proof-type/business-proof-type.service';
+import { DocumentService, DocumentType, UploadedDocument } from '../../services/document/document.service';
 
 type StepKey =
   | 'platform'
@@ -82,6 +83,11 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   originalSigningAuthorityPan: string = '';
   businessProofTypes: BusinessProofType[] = [];
 
+  documentTypes: DocumentType[] = [];
+  uploadedDocuments: { [key: number]: UploadedDocument } = {};
+  uploadingDocuments: { [key: number]: boolean } = {};
+  documentFiles: { [key: number]: File | undefined } = {};
+
   imageUrl = '../../../assets/images/website-illustration.png';
 
   showBankConfirmModal = false;
@@ -118,7 +124,8 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   private bankAccountDetailsService: BankAccountDetailsService,
   private signingAuthorityService: SigningAuthorityService,
   private businessAddressService: BusinessAddressService,
-  private businessProofTypeService: BusinessProofTypeService
+  private businessProofTypeService: BusinessProofTypeService,
+  private documentService: DocumentService
 ) {
   this.initializeForms();
 }
@@ -1313,12 +1320,14 @@ case 'thank-you':
         } else {
           console.error('Error loading business address:', err);
         }
+
         this.cdr.detectChanges();
       },
     });
   }
 
   scheduleVideoKyc(): void {
+    this.loadDocumentTypes();
     this.showUploadDocumentsModal = true;
     this.lockBodyScroll();
   }
@@ -1326,6 +1335,155 @@ case 'thank-you':
   closeUploadDocumentsModal(): void {
     this.showUploadDocumentsModal = false;
     this.unlockBodyScroll();
+  }
+
+  loadDocumentTypes(): void {
+    this.documentService.getDocumentTypes().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.documentTypes = response.data.filter(doc => doc.isActive);
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading document types:', err);
+        this.toastService.error('Failed to load document types');
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  onDocumentFileSelected(event: Event, documentTypeId: number): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files && input.files.length ? input.files[0] : null;
+
+    if (!file) {
+      return;
+    }
+
+    const documentType = this.documentTypes.find(doc => doc.documentTypeId === documentTypeId);
+    if (!documentType) return;
+
+    // Validate file size
+    const maxSizeInBytes = documentType.maxFileSizeMb * 1024 * 1024;
+    if (file.size > maxSizeInBytes) {
+      this.toastService.error(`File size exceeds maximum limit of ${documentType.maxFileSizeMb}MB`);
+      return;
+    }
+
+    // Validate file extension
+    const allowedExtensions = documentType.allowedExtensions.split(',').map(ext => ext.trim().toLowerCase());
+    const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
+    if (!allowedExtensions.includes(fileExtension)) {
+      this.toastService.error(`Invalid file type. Allowed types: ${documentType.allowedExtensions}`);
+      return;
+    }
+
+    this.documentFiles[documentTypeId] = file;
+    this.cdr.detectChanges();
+  }
+
+  uploadDocument(documentTypeId: number): void {
+    const file = this.documentFiles[documentTypeId];
+    if (!file) {
+      this.toastService.error('Please select a file first');
+      return;
+    }
+
+    this.uploadingDocuments[documentTypeId] = true;
+    this.documentService.uploadDocument(documentTypeId, file).subscribe({
+      next: (response) => {
+        this.uploadingDocuments[documentTypeId] = false;
+        if (response.success && response.data) {
+          this.uploadedDocuments[documentTypeId] = response.data;
+          delete this.documentFiles[documentTypeId];
+          this.toastService.success(response.message || 'Document uploaded successfully');
+        } else {
+          this.toastService.error(response.message || 'Failed to upload document');
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.uploadingDocuments[documentTypeId] = false;
+        const errorMsg = err.error?.message || err.error?.errors?.[0] || 'Failed to upload document';
+        this.toastService.error(errorMsg);
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  deleteDocument(documentTypeId: number): void {
+    if (!confirm('Are you sure you want to delete this document?')) {
+      return;
+    }
+
+    this.documentService.deleteDocument(documentTypeId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          delete this.uploadedDocuments[documentTypeId];
+          this.toastService.success(response.message || 'Document deleted successfully');
+        } else {
+          this.toastService.error(response.message || 'Failed to delete document');
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        const errorMsg = err.error?.message || err.error?.errors?.[0] || 'Failed to delete document';
+        this.toastService.error(errorMsg);
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  downloadDocument(documentTypeId: number): void {
+    this.documentService.downloadDocument(documentTypeId).subscribe({
+      next: (blob) => {
+        const documentType = this.documentTypes.find(doc => doc.documentTypeId === documentTypeId);
+        const fileName = documentType?.documentName || 'document';
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${fileName}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        this.toastService.error('Failed to download document');
+      },
+    });
+  }
+
+  editDocument(documentTypeId: number): void {
+    delete this.uploadedDocuments[documentTypeId];
+    this.cdr.detectChanges();
+  }
+
+  cancelDocumentSelection(documentTypeId: number): void {
+    this.documentFiles[documentTypeId] = undefined;
+    this.cdr.detectChanges();
+  }
+
+  isDocumentUploaded(documentTypeId: number): boolean {
+    return !!this.uploadedDocuments[documentTypeId];
+  }
+
+  isDocumentUploading(documentTypeId: number): boolean {
+    return this.uploadingDocuments[documentTypeId] || false;
+  }
+
+  getDocumentFile(documentTypeId: number): File | undefined {
+    return this.documentFiles[documentTypeId];
+  }
+
+  getUploadedDocument(documentTypeId: number): UploadedDocument | undefined {
+    return this.uploadedDocuments[documentTypeId];
+  }
+
+  areAllRequiredDocumentsUploaded(): boolean {
+    const requiredDocuments = this.documentTypes.filter(doc => doc.isRequired && doc.isActive);
+    return requiredDocuments.every(doc => this.isDocumentUploaded(doc.documentTypeId));
   }
 
   openCameraInput(fileInput: HTMLInputElement): void {
@@ -1354,8 +1512,8 @@ case 'thank-you':
   }
 
   submitKycDocuments(): void {
-    if (this.uploadDocumentsForm.invalid) {
-      this.uploadDocumentsForm.markAllAsTouched();
+    if (!this.areAllRequiredDocumentsUploaded()) {
+      this.toastService.error('Please upload all required documents');
       return;
     }
 
