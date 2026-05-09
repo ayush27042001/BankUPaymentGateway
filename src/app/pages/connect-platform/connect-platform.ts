@@ -21,6 +21,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
+import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog';
 import { ToastService } from '../../services/toast/toast.service';
 import { ConnectPlatformService, SaveConnectPlatformRequest } from '../../services/connect-platform/connect-platform.service';
 import { AuthService } from '../../services/auth/auth.service';
@@ -49,6 +50,7 @@ type SectionKey = 'business' | 'kyc' | 'documents' | 'agreement';
   ReactiveFormsModule,
   FormsModule,
   OnboardingHeaderComponent,
+  ConfirmationDialogComponent,
   NgSelectModule,
 ],
   templateUrl: './connect-platform.html',
@@ -67,6 +69,11 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   signingApiMessage = '';
   signingApiMessageType: 'success' | 'error' | 'info' = 'info';
   showSigningApiMessage = false;
+  documentApiMessage = '';
+  documentApiMessageType: 'success' | 'error' | 'info' = 'info';
+  showDocumentApiMessage = false;
+  showDeleteConfirmModal = false;
+  documentTypeToDelete: number | null = null;
   nameAtBank = '';
   isBankVerified = false;
   isPanVerified = false;
@@ -323,7 +330,7 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
       aadhaarCard: [null, Validators.required],
       panCard: [null, Validators.required],
       photoFile: [null, Validators.required],
-      businessProofType: ['', Validators.required],
+      businessProofType: [''],
       businessProofFile: [null, Validators.required],
       shopFrontPhoto: [null, Validators.required],
       shopInsidePhoto: [null, Validators.required],
@@ -788,6 +795,17 @@ case 'thank-you':
   hideBankApiMessage(): void {
     this.showBankApiMessage = false;
     this.bankApiMessage = '';
+  }
+
+  setDocumentApiMessage(message: string, type: 'success' | 'error' | 'info'): void {
+    this.documentApiMessage = message;
+    this.documentApiMessageType = type;
+    this.showDocumentApiMessage = true;
+  }
+
+  hideDocumentApiMessage(): void {
+    this.showDocumentApiMessage = false;
+    this.documentApiMessage = '';
   }
 
   reEnterBankDetails(): void {
@@ -1328,6 +1346,7 @@ case 'thank-you':
 
   scheduleVideoKyc(): void {
     this.loadDocumentTypes();
+    this.loadUploadedDocuments();
     this.showUploadDocumentsModal = true;
     this.lockBodyScroll();
   }
@@ -1348,6 +1367,24 @@ case 'thank-you':
       error: (err) => {
         console.error('Error loading document types:', err);
         this.toastService.error('Failed to load document types');
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  loadUploadedDocuments(): void {
+    this.uploadedDocuments = {};
+    this.documentService.getMerchantDocuments().subscribe({
+      next: (response) => {
+        if (response.success && response.data?.documents) {
+          response.data.documents.forEach(doc => {
+            this.uploadedDocuments[doc.documentTypeId] = doc;
+          });
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading uploaded documents:', err);
         this.cdr.detectChanges();
       },
     });
@@ -1386,64 +1423,140 @@ case 'thank-you':
   uploadDocument(documentTypeId: number): void {
     const file = this.documentFiles[documentTypeId];
     if (!file) {
+      this.setDocumentApiMessage('Please select a file first', 'error');
       this.toastService.error('Please select a file first');
       return;
     }
 
+    // Check if this is a business proof document and validate business proof type selection
+    const documentType = this.documentTypes.find(doc => doc.documentTypeId === documentTypeId);
+    if (documentType && documentType.documentCode === 'BUSINESS_PROOF') {
+      const businessProofTypeId = this.uploadDocumentsForm.get('businessProofType')?.value || 0;
+      if (!businessProofTypeId || businessProofTypeId === 0) {
+        this.setDocumentApiMessage('Please select a Business Proof Type', 'error');
+        this.toastService.error('Please select a Business Proof Type');
+        return;
+      }
+    }
+
+    const businessProofTypeId = this.uploadDocumentsForm.get('businessProofType')?.value || 0;
+
     this.uploadingDocuments[documentTypeId] = true;
-    this.documentService.uploadDocument(documentTypeId, file).subscribe({
+    this.hideDocumentApiMessage();
+    this.documentService.uploadDocument(documentTypeId, businessProofTypeId, file).subscribe({
       next: (response) => {
         this.uploadingDocuments[documentTypeId] = false;
         if (response.success && response.data) {
-          this.uploadedDocuments[documentTypeId] = response.data;
+          const uploadedDoc: UploadedDocument = {
+            documentUploadId: response.data.documentUploadId,
+            mid: 0,
+            documentTypeId: documentTypeId,
+            documentTypeName: '',
+            documentTypeCode: '',
+            documentFileName: response.data.documentFileName,
+            documentFilePath: response.data.documentFilePath,
+            documentSizeBytes: 0,
+            documentMimeType: '',
+            isVerified: false,
+            createdDate: '',
+            updatedDate: ''
+          };
+          this.uploadedDocuments[documentTypeId] = uploadedDoc;
           delete this.documentFiles[documentTypeId];
-          this.toastService.success(response.message || 'Document uploaded successfully');
+          this.setDocumentApiMessage(response.message || 'Document uploaded successfully', 'success');
+
+          // Handle onboarding status redirection
+          if (response.data.onboardingStatus) {
+            const onboardingStatus = response.data.onboardingStatus;
+            if (onboardingStatus.isOnboardingRejected) {
+              this.router.navigate(['/onboarding-rejected']);
+              return;
+            }
+            if (onboardingStatus.isServiceAgreementSubmitted && !onboardingStatus.isOnboardingCompleted && !onboardingStatus.isOnboardingRejected) {
+              this.router.navigate(['/status-tracker']);
+              return;
+            }
+          }
         } else {
-          this.toastService.error(response.message || 'Failed to upload document');
+          this.setDocumentApiMessage(response.message || 'Failed to upload document', 'error');
         }
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.uploadingDocuments[documentTypeId] = false;
         const errorMsg = err.error?.message || err.error?.errors?.[0] || 'Failed to upload document';
-        this.toastService.error(errorMsg);
+        this.setDocumentApiMessage(errorMsg, 'error');
         this.cdr.detectChanges();
       },
     });
   }
 
   deleteDocument(documentTypeId: number): void {
-    if (!confirm('Are you sure you want to delete this document?')) {
+    const uploadedDoc = this.uploadedDocuments[documentTypeId];
+    if (!uploadedDoc) {
+      this.toastService.error('Document not found');
       return;
     }
 
-    this.documentService.deleteDocument(documentTypeId).subscribe({
+    this.documentTypeToDelete = documentTypeId;
+    this.showDeleteConfirmModal = true;
+    this.lockBodyScroll();
+  }
+
+  closeDeleteConfirmModal(): void {
+    this.showDeleteConfirmModal = false;
+    this.documentTypeToDelete = null;
+    this.unlockBodyScroll();
+  }
+
+  confirmDeleteDocument(): void {
+    if (this.documentTypeToDelete === null) {
+      return;
+    }
+
+    const documentTypeId = this.documentTypeToDelete;
+    const uploadedDoc = this.uploadedDocuments[documentTypeId];
+    if (!uploadedDoc) {
+      this.toastService.error('Document not found');
+      this.closeDeleteConfirmModal();
+      return;
+    }
+
+    this.documentService.deleteDocument(uploadedDoc.documentUploadId).subscribe({
       next: (response) => {
         if (response.success) {
           delete this.uploadedDocuments[documentTypeId];
-          this.toastService.success(response.message || 'Document deleted successfully');
+          this.setDocumentApiMessage(response.message || 'Document deleted successfully', 'success');
         } else {
-          this.toastService.error(response.message || 'Failed to delete document');
+          this.setDocumentApiMessage(response.message || 'Failed to delete document', 'error');
         }
+        this.closeDeleteConfirmModal();
         this.cdr.detectChanges();
       },
       error: (err) => {
         const errorMsg = err.error?.message || err.error?.errors?.[0] || 'Failed to delete document';
+        this.setDocumentApiMessage(errorMsg, 'error');
         this.toastService.error(errorMsg);
+        this.closeDeleteConfirmModal();
         this.cdr.detectChanges();
       },
     });
   }
 
   downloadDocument(documentTypeId: number): void {
-    this.documentService.downloadDocument(documentTypeId).subscribe({
+    const uploadedDoc = this.uploadedDocuments[documentTypeId];
+    if (!uploadedDoc) {
+      this.toastService.error('Document not found');
+      return;
+    }
+
+    this.documentService.downloadDocument(uploadedDoc.documentUploadId).subscribe({
       next: (blob) => {
-        const documentType = this.documentTypes.find(doc => doc.documentTypeId === documentTypeId);
-        const fileName = documentType?.documentName || 'document';
+        const fileName = uploadedDoc.documentFileName || 'document';
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `${fileName}.pdf`;
+        link.download = fileName;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
