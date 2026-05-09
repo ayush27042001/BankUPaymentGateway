@@ -1036,11 +1036,9 @@
 
               <select class="custom-input upload-select" formControlName="businessProofType">
                 <option value="">Select Proof Type</option>
-                <option value="gst-certificate">GST Certificate</option>
-                <option value="shop-license">Shop License</option>
-                <option value="electricity-bill">Electricity Bill</option>
-                <option value="rent-agreement">Rent Agreement</option>
-                <option value="other">Other</option>
+                @for (proof of businessProofTypes; track proof.businessProofTypeId) {
+                  <option [value]="proof.businessProofTypeId">{{ proof.proofName }}</option>
+                }
               </select>
 
               @if (uploadControls['businessProofType'].touched && uploadControls['businessProofType'].errors?.['required']) {

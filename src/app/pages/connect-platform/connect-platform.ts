@@ -27,6 +27,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { BankAccountDetailsService, SaveBankAccountDetailRequest } from '../../services/bank-account-details/bank-account-details.service';
 import { SigningAuthorityService, PepStatus, SigningAuthorityDetail, SaveSigningAuthorityRequest } from '../../services/signing-authority/signing-authority.service';
 import { BusinessAddressService, SaveBusinessAddressRequest } from '../../services/business-address/business-address.service';
+import { BusinessProofTypeService, BusinessProofType } from '../../services/business-proof-type/business-proof-type.service';
 
 type StepKey =
   | 'platform'
@@ -79,6 +80,7 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   pepStatuses: PepStatus[] = [];
   signingAuthorityDetail: SigningAuthorityDetail | null = null;
   originalSigningAuthorityPan: string = '';
+  businessProofTypes: BusinessProofType[] = [];
 
   imageUrl = '../../../assets/images/website-illustration.png';
 
@@ -115,7 +117,8 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   private authService: AuthService,
   private bankAccountDetailsService: BankAccountDetailsService,
   private signingAuthorityService: SigningAuthorityService,
-  private businessAddressService: BusinessAddressService
+  private businessAddressService: BusinessAddressService,
+  private businessProofTypeService: BusinessProofTypeService
 ) {
   this.initializeForms();
 }
@@ -132,6 +135,7 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
       this.loadSigningAuthorityDetails();
       this.autoFetchEmailFromAuth();
       this.loadBusinessAddress();
+      this.loadBusinessProofTypes();
     } else {
       this.loading = false;
     }
@@ -904,6 +908,21 @@ case 'thank-you':
       },
       error: (err) => {
         console.error('Error loading PEP statuses:', err);
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  loadBusinessProofTypes(): void {
+    this.businessProofTypeService.getBusinessProofTypes().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.businessProofTypes = response.data;
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading business proof types:', err);
         this.cdr.detectChanges();
       },
     });
