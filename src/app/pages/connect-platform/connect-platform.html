@@ -278,6 +278,8 @@
           id="bankAccountNumber"
           type="text"
           class="form-control custom-input"
+          [class.verified-input]="isBankVerified"
+          [style.border]="isBankVerified ? '1px solid green' : ''"
           formControlName="bankAccountNumber"
           placeholder="Enter Account Number"
           inputmode="numeric"
@@ -307,6 +309,7 @@
             id="ifscCode"
             type="text"
             class="form-control custom-input"
+            [class.verified-input]="isIfscMatchesOriginal"
             formControlName="ifscCode"
             placeholder="Enter IFSC Code"
             maxlength="11"
@@ -317,7 +320,7 @@
             type="button"
             class="verify-btn"
             (click)="verifyBankDetails()"
-            [disabled]="verifyingBank || !bankForm.get('bankAccountNumber')?.value || !bankForm.get('ifscCode')?.value">
+            [disabled]="verifyingBank || !bankForm.get('bankAccountNumber')?.value || !bankForm.get('ifscCode')?.value || isIfscMatchesOriginal">
             {{ verifyingBank ? 'Verifying...' : 'Verify' }}
           </button>
         </div>
@@ -357,6 +360,13 @@
                 Kindly provide the representative details for KYC verification. This contact will receive all key communications moving forward.
               </p>
 
+              @if (showSigningApiMessage) {
+                <div class="api-message-box" [ngClass]="'api-message-' + signingApiMessageType">
+                  <span class="api-message-text">{{ signingApiMessage }}</span>
+                  <button type="button" class="api-message-close" (click)="hideSigningApiMessage()">×</button>
+                </div>
+              }
+
               <form [formGroup]="signingAuthorityForm" (ngSubmit)="submitSigningAuthorityDetails()" novalidate>
                 <div class="bank-form-grid">
                   <div class="form-block">
@@ -368,8 +378,10 @@
                       id="signingAuthorityName"
                       type="text"
                       class="form-control custom-input"
+                      [class.verified-input]="isPanVerified"
                       formControlName="signingAuthorityName"
                       placeholder="Enter signing authority name"
+                      [readonly]="isPanVerified"
                     />
 
                     @if (signingControls['signingAuthorityName'].touched && signingControls['signingAuthorityName'].errors?.['required']) {
@@ -399,20 +411,31 @@
                     }
                   </div>
 
-                  <div class="form-block">
+                  <div class="form-block ifsc-block">
                     <label for="signingAuthorityPan" class="block-label">
                       Signing Authority's PAN card number <span>*</span>
                     </label>
 
-                    <input
-                      id="signingAuthorityPan"
-                      type="text"
-                      class="form-control custom-input"
-                      formControlName="signingAuthorityPan"
-                      placeholder="Enter PAN number"
-                      maxlength="10"
-                      (input)="onPanInput()"
-                    />
+                    <div class="ifsc-input-wrapper">
+                      <input
+                        id="signingAuthorityPan"
+                        type="text"
+                        class="form-control custom-input"
+                        [class.verified-input]="isPanVerified"
+                        formControlName="signingAuthorityPan"
+                        placeholder="Enter PAN number"
+                        maxlength="10"
+                        (input)="onPanInput()"
+                      />
+
+                      <button
+                        type="button"
+                        class="verify-btn"
+                        (click)="verifyPan()"
+                        [disabled]="verifyingPan || !signingAuthorityForm.get('signingAuthorityPan')?.value || signingAuthorityForm.get('signingAuthorityPan')?.value.length !== 10 || isPanMatchesOriginal">
+                        {{ verifyingPan ? 'Verifying...' : 'Verify' }}
+                      </button>
+                    </div>
 
                     @if (signingControls['signingAuthorityPan'].touched && signingControls['signingAuthorityPan'].errors?.['required']) {
                       <small class="error-text">PAN number is required.</small>
@@ -420,6 +443,10 @@
 
                     @if (signingControls['signingAuthorityPan'].touched && signingControls['signingAuthorityPan'].errors?.['pattern']) {
                       <small class="error-text">Enter a valid PAN number.</small>
+                    }
+
+                    @if (signingControls['signingAuthorityPan'].touched && signingControls['signingAuthorityPan'].errors?.['serverError']) {
+                      <small class="error-text">{{ signingControls['signingAuthorityPan'].errors?.['serverError'] }}</small>
                     }
                   </div>
                 </div>
@@ -430,20 +457,12 @@
                   </label>
 
                   <div class="radio-group pep-radio-group">
-                    <label class="radio-option">
-                      <input type="radio" formControlName="pepStatus" value="i-am-pep" />
-                      <span>I am a PEP</span>
-                    </label>
-
-                    <label class="radio-option">
-                      <input type="radio" formControlName="pepStatus" value="related-to-pep" />
-                      <span>I am related to a PEP</span>
-                    </label>
-
-                    <label class="radio-option">
-                      <input type="radio" formControlName="pepStatus" value="not-applicable" />
-                      <span>Not Applicable</span>
-                    </label>
+                    @for (status of pepStatuses; track status.pepstatusId) {
+                      <label class="radio-option">
+                        <input type="radio" formControlName="pepstatusId" [value]="status.pepstatusId" />
+                        <span>{{ status.statusName }}</span>
+                      </label>
+                    }
                   </div>
                 </div>
 
@@ -455,7 +474,7 @@
                   <button
                     type="submit"
                     class="proceed-btn"
-                    [disabled]="signingAuthorityForm.invalid">
+                    [disabled]="signingAuthorityForm.invalid || (!isPanVerified && !isPanMatchesOriginal)">
                     Confirm &amp; Proceed →
                   </button>
                 </div>
@@ -947,7 +966,7 @@
       <div class="upload-modal-card" (click)="$event.stopPropagation()">
         <div class="upload-modal-header">
           <h3>Upload Documents</h3>
-
+          <p class="upload-modal-subtitle">Please upload all required documents to complete your KYC verification</p>
           <button
             type="button"
             class="upload-modal-close"
@@ -956,138 +975,189 @@
           </button>
         </div>
 
-        <div class="upload-modal-body">
-          <form [formGroup]="uploadDocumentsForm" (ngSubmit)="submitKycDocuments()" novalidate>
-            <div class="upload-field">
-              <label class="upload-label">Aadhaar Card <span>(JPG / PNG / PDF Only)</span></label>
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png,.pdf"
-                (change)="onFileSelected($event, 'aadhaarCard')" />
-              @if (selectedDocumentNames.aadhaarCard) {
-                <small class="file-name">{{ selectedDocumentNames.aadhaarCard }}</small>
-              }
-              @if (uploadControls['aadhaarCard'].touched && uploadControls['aadhaarCard'].errors?.['required']) {
-                <small class="error-text">Aadhaar card is required.</small>
-              }
-            </div>
+        @if (showDocumentApiMessage) {
+          <div class="api-message-box" [ngClass]="'api-message-' + documentApiMessageType">
+            <span class="api-message-text">{{ documentApiMessage }}</span>
+            <button type="button" class="api-message-close" (click)="hideDocumentApiMessage()">×</button>
+          </div>
+        }
 
-            <div class="upload-field">
-              <label class="upload-label">PAN Card <span>(JPG / PNG / PDF Only)</span></label>
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png,.pdf"
-                (change)="onFileSelected($event, 'panCard')" />
-              @if (selectedDocumentNames.panCard) {
-                <small class="file-name">{{ selectedDocumentNames.panCard }}</small>
-              }
-              @if (uploadControls['panCard'].touched && uploadControls['panCard'].errors?.['required']) {
-                <small class="error-text">PAN card is required.</small>
-              }
-            </div>
+        <div class="upload-modal-body" [formGroup]="uploadDocumentsForm">
+          <div class="documents-grid">
+            @for (docType of documentTypes; track docType.documentTypeId) {
+              <div class="document-card" [class.required]="docType.isRequired">
+                <div class="document-card-header">
+                  <div class="document-icon">
+                    @if (isDocumentUploaded(docType.documentTypeId)) {
+                      <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 6L9 17l-5-5"/>
+                      </svg>
+                    } @else {
+                      <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17,8 12,3 7,8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                      </svg>
+                    }
+                  </div>
+                  <div class="document-info">
+                    <h4>{{ docType.documentName }}</h4>
+                    <p class="document-meta">
+                      {{ docType.allowedExtensions }} • Max {{ docType.maxFileSizeMb }}MB
+                      @if (docType.isRequired) {
+                        <span class="required-badge">Required</span>
+                      } @else {
+                        <span class="optional-badge">Optional</span>
+                      }
+                    </p>
+                  </div>
+                </div>
+                <div class="document-card-body">
+                  @if (docType.documentCode === 'BUSINESS_PROOF' && !isDocumentUploaded(docType.documentTypeId)) {
+                    <div class="business-proof-select-wrapper">
+                      <label class="business-proof-label">Select Proof Type</label>
+                      <select
+                        class="custom-input business-proof-select"
+                        formControlName="businessProofType">
+                        <option value="">Select Proof Type</option>
+                        @for (proof of businessProofTypes; track proof.businessProofTypeId) {
+                          <option [value]="proof.businessProofTypeId">{{ proof.proofName }}</option>
+                        }
+                      </select>
+                    </div>
+                  }
 
-            <div class="upload-field">
-              <label class="upload-label">Photo</label>
+                  @if (isDocumentUploaded(docType.documentTypeId)) {
+                    <div class="uploaded-file-info">
+                      <div class="file-preview">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                          <polyline points="14,2 14,8 20,8"/>
+                        </svg>
+                        <span class="file-name">{{ getUploadedDocument(docType.documentTypeId)?.documentFileName }}</span>
+                      </div>
+                      <div class="file-actions">
+                        <button
+                          type="button"
+                          class="action-btn download-btn"
+                          (click)="downloadDocument(docType.documentTypeId)"
+                          title="Download">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7,10 12,15 17,10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="action-btn edit-btn"
+                          (click)="editDocument(docType.documentTypeId)"
+                          title="Change File">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="action-btn delete-btn"
+                          (click)="deleteDocument(docType.documentTypeId)"
+                          title="Delete">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3,6 5,6 21,6"/>
+                            <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6M8,6V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  } @else if (getDocumentFile(docType.documentTypeId)) {
+                    <div class="selected-file-info">
+                      <div class="file-preview">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                          <polyline points="14,2 14,8 20,8"/>
+                        </svg>
+                        <span class="file-name">{{ getDocumentFile(docType.documentTypeId)?.name }}</span>
+                      </div>
+                      <div class="file-actions">
+                        <button
+                          type="button"
+                          class="action-btn upload-btn"
+                          (click)="uploadDocument(docType.documentTypeId)"
+                          [disabled]="isDocumentUploading(docType.documentTypeId)">
+                          @if (isDocumentUploading(docType.documentTypeId)) {
+                            <span class="spinner"></span>
+                            Uploading...
+                          } @else {
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                              <polyline points="17,8 12,3 7,8"/>
+                              <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Upload
+                          }
+                        </button>
+                        <button
+                          type="button"
+                          class="action-btn cancel-btn"
+                          (click)="cancelDocumentSelection(docType.documentTypeId)">
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="upload-area">
+                      <input
+                        type="file"
+                        [id]="'file-' + docType.documentTypeId"
+                        [accept]="docType.allowedExtensions.split(',').map(ext => '.' + ext.trim()).join(',')"
+                        class="hidden-file-input"
+                        (change)="onDocumentFileSelected($event, docType.documentTypeId)" />
+                      <label [for]="'file-' + docType.documentTypeId" class="upload-label-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                          <polyline points="17,8 12,3 7,8"/>
+                          <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <span>Choose File</span>
+                      </label>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
 
-              <input
-                #cameraInput
-                type="file"
-                accept="image/*"
-                capture="environment"
-                class="hidden-file-input"
-                (change)="onFileSelected($event, 'photoFile')" />
-
-              <button
-                type="button"
-                class="camera-btn"
-                (click)="openCameraInput(cameraInput)">
-                Open Camera
-              </button>
-
-              @if (selectedDocumentNames.photoFile) {
-                <small class="file-name">{{ selectedDocumentNames.photoFile }}</small>
-              }
-              @if (uploadControls['photoFile'].touched && uploadControls['photoFile'].errors?.['required']) {
-                <small class="error-text">Photo is required.</small>
-              }
-            </div>
-
-            <div class="upload-field">
-              <label class="upload-label">Business Proof <span>(JPG / PNG / PDF Only)</span></label>
-
-              <select class="custom-input upload-select" formControlName="businessProofType">
-                <option value="">Select Proof Type</option>
-                <option value="gst-certificate">GST Certificate</option>
-                <option value="shop-license">Shop License</option>
-                <option value="electricity-bill">Electricity Bill</option>
-                <option value="rent-agreement">Rent Agreement</option>
-                <option value="other">Other</option>
-              </select>
-
-              @if (uploadControls['businessProofType'].touched && uploadControls['businessProofType'].errors?.['required']) {
-                <small class="error-text">Business proof type is required.</small>
-              }
-
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png,.pdf"
-                (change)="onFileSelected($event, 'businessProofFile')" />
-              @if (selectedDocumentNames.businessProofFile) {
-                <small class="file-name">{{ selectedDocumentNames.businessProofFile }}</small>
-              }
-              @if (uploadControls['businessProofFile'].touched && uploadControls['businessProofFile'].errors?.['required']) {
-                <small class="error-text">Business proof file is required.</small>
-              }
-            </div>
-
-            <div class="upload-field">
-              <label class="upload-label">Outlet/Shop GeoTag Photo (Front Side) <span>(JPG / PNG)</span></label>
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png"
-                (change)="onFileSelected($event, 'shopFrontPhoto')" />
-              @if (selectedDocumentNames.shopFrontPhoto) {
-                <small class="file-name">{{ selectedDocumentNames.shopFrontPhoto }}</small>
-              }
-              @if (uploadControls['shopFrontPhoto'].touched && uploadControls['shopFrontPhoto'].errors?.['required']) {
-                <small class="error-text">Front side photo is required.</small>
-              }
-            </div>
-
-            <div class="upload-field">
-              <label class="upload-label">Outlet/Shop GeoTag Photo (Inside) <span>(JPG / PNG)</span></label>
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png"
-                (change)="onFileSelected($event, 'shopInsidePhoto')" />
-              @if (selectedDocumentNames.shopInsidePhoto) {
-                <small class="file-name">{{ selectedDocumentNames.shopInsidePhoto }}</small>
-              }
-              @if (uploadControls['shopInsidePhoto'].touched && uploadControls['shopInsidePhoto'].errors?.['required']) {
-                <small class="error-text">Inside photo is required.</small>
-              }
-            </div>
-
-            <div class="upload-field">
-              <label class="upload-label">Application Form Upload</label>
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png,.pdf"
-                (change)="onFileSelected($event, 'applicationFormFile')" />
-              @if (selectedDocumentNames.applicationFormFile) {
-                <small class="file-name">{{ selectedDocumentNames.applicationFormFile }}</small>
-              }
-              @if (uploadControls['applicationFormFile'].touched && uploadControls['applicationFormFile'].errors?.['required']) {
-                <small class="error-text">Application form is required.</small>
-              }
-            </div>
-
-            <button type="submit" class="submit-kyc-btn">
-              Submit KYC
+          <div class="upload-modal-footer">
+            <button
+              type="button"
+              class="back-btn"
+              (click)="closeUploadDocumentsModal()">
+              Cancel
             </button>
-          </form>
+            <button
+              type="button"
+              class="proceed-btn"
+              [disabled]="!areAllRequiredDocumentsUploaded()"
+              (click)="submitKycDocuments()">
+              Submit & Proceed →
+            </button>
+          </div>
         </div>
       </div>
     </div>
   }
+
+  <app-confirmation-dialog
+    [visible]="showDeleteConfirmModal"
+    title="Confirm Deletion"
+    message="Are you sure you want to delete this document? This action cannot be undone."
+    confirmButtonText="Delete"
+    cancelButtonText="Cancel"
+    confirmButtonClass="btn-primary"
+    cancelButtonClass="btn-secondary"
+    [isDestructive]="true"
+    (confirm)="confirmDeleteDocument()"
+    (cancel)="closeDeleteConfirmModal()">
+  </app-confirmation-dialog>
 </div>
