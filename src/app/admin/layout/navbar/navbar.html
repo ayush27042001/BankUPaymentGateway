@@ -1,0 +1,64 @@
+<div class="admin-navbar">
+
+  <!-- Left Section -->
+  <div class="navbar-left">
+
+    <div class="page-info">
+      <h2>Dashboard</h2>
+      <span>Welcome back, Admin 👋</span>
+    </div>
+
+  </div>
+
+  <!-- Right Section -->
+  <div class="navbar-right">
+
+    <!-- Search -->
+    <div class="search-box">
+
+      <i class="bi bi-search"></i>
+
+      <input
+        type="text"
+        placeholder="Search here..."
+      />
+
+    </div>
+
+    <!-- Notification -->
+    <div class="navbar-icon notification-icon">
+
+      <i class="bi bi-bell"></i>
+
+      @if (notifications > 0) {
+        <span class="notification-badge">
+          {{ notifications }}
+        </span>
+      }
+
+    </div>
+
+    <!-- Settings -->
+    <div class="navbar-icon">
+      <i class="bi bi-gear"></i>
+    </div>
+
+    <!-- Profile -->
+    <div class="admin-profile-navbar">
+
+      <div class="profile-avatar">
+        A
+      </div>
+
+      <div class="profile-details">
+        <h4>Admin</h4>
+        <span>Super Admin</span>
+      </div>
+
+      <i class="bi bi-chevron-down"></i>
+
+    </div>
+
+  </div>
+
+</div>
