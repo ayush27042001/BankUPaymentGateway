@@ -1,0 +1,207 @@
+<div class="sidebar">
+
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      B
+    </div>
+
+    <div class="logo-text">
+      <h2>BankU</h2>
+      <span>Admin Panel</span>
+    </div>
+  </div>
+
+  <div class="sidebar-menu">
+
+    <!-- Dashboard -->
+    <a
+      routerLink="/admin/dashboard"
+      routerLinkActive="active-menu"
+      class="menu-item"
+    >
+      <div class="menu-left">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </div>
+    </a>
+
+    <!-- Masters -->
+    <div class="menu-group">
+
+      <div class="menu-item submenu-toggle" (click)="toggleMasters()">
+
+        <div class="menu-left">
+          <i class="bi bi-folder"></i>
+          <span>Masters</span>
+        </div>
+
+        <i
+          class="bi"
+          [class.bi-chevron-down]="mastersExpanded"
+          [class.bi-chevron-right]="!mastersExpanded"
+        ></i>
+
+      </div>
+
+      @if (mastersExpanded) {
+
+        <div class="submenu">
+
+          <a class="submenu-item">
+            Business Proof Types
+          </a>
+
+          <a class="submenu-item">
+            Business Categories
+          </a>
+
+          <a class="submenu-item">
+            Business Sub Categories
+          </a>
+
+          <a class="submenu-item">
+            Business Entity Types
+          </a>
+
+          <a class="submenu-item">
+            Document Types
+          </a>
+
+          <a class="submenu-item">
+            PEP Status
+          </a>
+
+        </div>
+
+      }
+
+    </div>
+
+    <!-- Merchants -->
+    <div class="menu-group">
+
+      <div class="menu-item submenu-toggle" (click)="toggleMerchant()">
+
+        <div class="menu-left">
+          <i class="bi bi-people"></i>
+          <span>Merchants</span>
+        </div>
+
+        <i
+          class="bi"
+          [class.bi-chevron-down]="merchantExpanded"
+          [class.bi-chevron-right]="!merchantExpanded"
+        ></i>
+
+      </div>
+
+      @if (merchantExpanded) {
+
+        <div class="submenu">
+
+          <a class="submenu-item">
+            Test One
+          </a>
+
+          <a class="submenu-item">
+            Test Two
+          </a>
+
+        </div>
+
+      }
+
+    </div>
+
+    <!-- Reports -->
+    <div class="menu-group">
+
+      <div class="menu-item submenu-toggle" (click)="toggleReport()">
+
+        <div class="menu-left">
+          <i class="bi bi-file-earmark-text"></i>
+          <span>Reports</span>
+        </div>
+
+        <i
+          class="bi"
+          [class.bi-chevron-down]="reportExpanded"
+          [class.bi-chevron-right]="!reportExpanded"
+        ></i>
+
+      </div>
+
+      @if (reportExpanded) {
+
+        <div class="submenu">
+
+          <a class="submenu-item">
+            Test One
+          </a>
+
+          <a class="submenu-item">
+            Test Two
+          </a>
+
+        </div>
+
+      }
+
+    </div>
+
+    <!-- Settings -->
+    <div class="menu-group">
+
+      <div class="menu-item submenu-toggle" (click)="toggleSettings()">
+
+        <div class="menu-left">
+          <i class="bi bi-gear"></i>
+          <span>Settings</span>
+        </div>
+
+        <i
+          class="bi"
+          [class.bi-chevron-down]="settingsExpanded"
+          [class.bi-chevron-right]="!settingsExpanded"
+        ></i>
+
+      </div>
+
+      @if (settingsExpanded) {
+
+        <div class="submenu">
+
+          <a class="submenu-item">
+            Test One
+          </a>
+
+          <a class="submenu-item">
+            Test Two
+          </a>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+  <div class="sidebar-footer">
+
+    <div class="admin-profile">
+
+      <div class="profile-avatar">
+        A
+      </div>
+
+      <div class="profile-info">
+        <h4>Admin</h4>
+        <span>Super Admin</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

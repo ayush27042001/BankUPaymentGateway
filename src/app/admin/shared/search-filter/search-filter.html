@@ -1,0 +1,125 @@
+<div class="common-filter-card">
+
+  <!-- Header -->
+  <div class="filter-header">
+    <i class="bi bi-funnel-fill"></i>
+    <span>Filter</span>
+  </div>
+
+  <!-- Body -->
+  <div class="filter-body">
+
+    <div class="row g-3 align-items-end">
+
+      <!-- Service Type -->
+      <div class="col-12 col-md-6 col-lg-3">
+
+        <label class="filter-label">
+          <i class="bi bi-phone"></i>
+          Service Type
+        </label>
+
+        <select
+          class="form-select custom-input"
+          [(ngModel)]="serviceType">
+
+          <option>All Service</option>
+          <option>Money Transfer</option>
+          <option>Recharge</option>
+          <option>Bill Payment</option>
+
+        </select>
+
+      </div>
+
+      <!-- From Date -->
+      <div class="col-12 col-md-6 col-lg-3">
+
+        <label class="filter-label">
+          <i class="bi bi-calendar-event"></i>
+          From Date
+        </label>
+
+        <input
+          type="date"
+          class="form-control custom-input"
+          [(ngModel)]="fromDate"
+        />
+
+      </div>
+
+      <!-- To Date -->
+      <div class="col-12 col-md-6 col-lg-3">
+
+        <label class="filter-label">
+          <i class="bi bi-calendar-event"></i>
+          To Date
+        </label>
+
+        <input
+          type="date"
+          class="form-control custom-input"
+          [(ngModel)]="toDate"
+        />
+
+      </div>
+
+      <!-- Status -->
+      <div class="col-12 col-md-6 col-lg-3">
+
+        <label class="filter-label">
+          <i class="bi bi-check-circle-fill"></i>
+          Status
+        </label>
+
+        <select
+          class="form-select custom-input"
+          [(ngModel)]="status">
+
+          <option>All</option>
+          <option>Success</option>
+          <option>Pending</option>
+          <option>Failed</option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <!-- Buttons -->
+
+    <div class="filter-btn-group">
+
+      <button
+        class="btn search-btn"
+        (click)="onSearch()">
+
+        <i class="bi bi-search"></i>
+        Search
+
+      </button>
+
+      <button
+        class="btn reset-btn"
+        (click)="onReset()">
+
+        <i class="bi bi-x-circle"></i>
+        Reset
+
+      </button>
+
+      <button
+        class="btn export-btn"
+        (click)="onExport()">
+
+        <i class="bi bi-download"></i>
+        Export
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

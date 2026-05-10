@@ -12,6 +12,13 @@ import { StatusTrackerComponent } from './pages/status-tracker/status-tracker';
 import { OnboardingRejectedComponent } from './pages/onboarding-rejected/onboarding-rejected';
 import { authGuard } from './guards/auth.guard';
 
+
+// ****************admin routes********
+
+import { AdminLayout } from './admin/layout/admin-layout/admin-layout';
+
+import { Dashboard } from './admin/pages/dashboard/dashboard';
+
 export const routes: Routes = [
   // ✅ default route → login
   { path: '', component: LoginComponent },
@@ -32,6 +39,23 @@ export const routes: Routes = [
   { path: 'status-tracker', component: StatusTrackerComponent, canActivate: [authGuard] },
   { path: 'onboarding-rejected', component: OnboardingRejectedComponent, canActivate: [authGuard] },
 
-  // ✅ optional fallback (recommended)
-  { path: '**', redirectTo: 'login' }
+  
+
+  {
+    path: 'admin',
+    component: AdminLayout,
+  children: [
+    {
+      path: 'dashboard',
+      component: Dashboard
+    },
+    {
+      path: '',
+      redirectTo: 'dashboard',
+      pathMatch: 'full'
+    },
+    // ✅ optional fallback (recommended)
+  { path: '**', redirectTo: 'login' },
+  ]
+}
 ];
