@@ -10,6 +10,13 @@ import { ConnectPlatformComponent } from './pages/connect-platform/connect-platf
 import { RegisterComponent } from './pages/register/register';
 import { authGuard } from './guards/auth.guard';
 
+
+// ****************admin routes********
+
+import { AdminLayout } from './admin/layout/admin-layout/admin-layout';
+
+import { Dashboard } from './admin/pages/dashboard/dashboard';
+
 export const routes: Routes = [
   // ✅ default route → login
   { path: '', component: LoginComponent },
@@ -28,6 +35,23 @@ export const routes: Routes = [
   { path: 'share-business-details', component: ShareBusinessDetailsComponent, canActivate: [authGuard] },
   { path: 'connect-platform', component: ConnectPlatformComponent, canActivate: [authGuard] },
 
-  // ✅ optional fallback (recommended)
-  { path: '**', redirectTo: 'login' }
+  
+
+  {
+    path: 'admin',
+    component: AdminLayout,
+  children: [
+    {
+      path: 'dashboard',
+      component: Dashboard
+    },
+    {
+      path: '',
+      redirectTo: 'dashboard',
+      pathMatch: 'full'
+    },
+    // ✅ optional fallback (recommended)
+  { path: '**', redirectTo: 'login' },
+  ]
+}
 ];
