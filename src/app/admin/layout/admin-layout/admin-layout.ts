@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 import { Sidebar } from '../sidebar/sidebar';
 import { Navbar } from '../navbar/navbar';
@@ -10,6 +11,7 @@ import { CommonSearchFilterComponent } from '../../shared/search-filter/search-f
   standalone: true,
   imports: [
     RouterOutlet,
+    CommonModule,
     Sidebar,
     Navbar,
     CommonSearchFilterComponent
@@ -18,5 +20,13 @@ import { CommonSearchFilterComponent } from '../../shared/search-filter/search-f
   styleUrl: './admin-layout.scss'
 })
 export class AdminLayout {
+  isMobileSidebarOpen = signal(false);
 
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen.update(state => !state);
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen.set(false);
+  }
 }

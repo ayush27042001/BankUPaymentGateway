@@ -322,6 +322,51 @@
 }
 
 /* =========================================
+   PAGINATION
+========================================= */
+
+.pagination-wrapper {
+  width: 100%;
+  padding: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  background: #ffffff;
+  border-top: 1px solid #edf2f7;
+}
+
+.pagination-btn {
+  min-width: 120px;
+  height: 48px;
+  border: 1px solid #dce4ee;
+  background: #ffffff;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #334155;
+  transition: 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: #f3e8ff;
+    border-color: #c084fc;
+    color: #7e22ce;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.pagination-info {
+  font-size: 16px;
+  font-weight: 700;
+  color: #475569;
+}
+
+/* =========================================
    MODAL BACKDROP
 ========================================= */
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,7 +11,12 @@ import { CommonModule } from '@angular/common';
   styleUrl: './navbar.scss',
 })
 export class Navbar {
+  @Output() toggleMobileMenu = new EventEmitter<void>();
 
   notifications = 3;
+
+  onMenuToggle(): void {
+    this.toggleMobileMenu.emit();
+  }
 
 }

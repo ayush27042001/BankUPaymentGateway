@@ -15,6 +15,13 @@ import { FormsModule } from '@angular/forms';
 export class BusinessProofTypes {
 
   /* =========================================
+     PAGINATION
+  ========================================= */
+
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+
+  /* =========================================
      SEARCH
   ========================================= */
 
@@ -149,6 +156,40 @@ export class BusinessProofTypes {
   ];
 
   /* =========================================
+     PAGINATED DATA
+  ========================================= */
+
+  get paginatedProofTypes() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.filteredProofTypes.slice(startIndex, endIndex);
+  }
+
+  /* =========================================
+     TOTAL PAGES
+  ========================================= */
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredProofTypes.length / this.itemsPerPage);
+  }
+
+  /* =========================================
+     PAGINATION CONTROLS
+  ========================================= */
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  /* =========================================
      FILTER PROOF TYPES
   ========================================= */
 
@@ -158,6 +199,8 @@ export class BusinessProofTypes {
       this.searchTerm
         .toLowerCase()
         .trim();
+
+    this.currentPage = 1;
 
     if (!search) {
 

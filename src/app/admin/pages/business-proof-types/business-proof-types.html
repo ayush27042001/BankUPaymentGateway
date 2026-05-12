@@ -120,7 +120,7 @@
         <tbody>
 
           @for (
-            proofType of filteredProofTypes;
+            proofType of paginatedProofTypes;
             track proofType.businessProofTypeID
           ) {
 
@@ -229,6 +229,36 @@
       </table>
 
     </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- PAGINATION -->
+  <!-- ========================= -->
+
+  <div class="pagination-wrapper">
+
+    <button
+      class="pagination-btn"
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+    >
+      Previous
+    </button>
+
+    <div class="pagination-info">
+      Page {{ currentPage }}
+      of
+      {{ totalPages }}
+    </div>
+
+    <button
+      class="pagination-btn"
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+    >
+      Next
+    </button>
 
   </div>
 
