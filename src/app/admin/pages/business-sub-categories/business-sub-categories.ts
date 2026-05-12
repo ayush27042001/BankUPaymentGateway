@@ -21,6 +21,13 @@ export class BusinessSubCategories {
   searchTerm: string = '';
 
   /* =========================================
+     PAGINATION
+  ========================================= */
+
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+
+  /* =========================================
      VIEW MODAL
   ========================================= */
 
@@ -217,6 +224,40 @@ export class BusinessSubCategories {
   ];
 
   /* =========================================
+     PAGINATED DATA
+  ========================================= */
+
+  get paginatedSubCategories() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.filteredSubCategories.slice(startIndex, endIndex);
+  }
+
+  /* =========================================
+     TOTAL PAGES
+  ========================================= */
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredSubCategories.length / this.itemsPerPage);
+  }
+
+  /* =========================================
+     PAGINATION CONTROLS
+  ========================================= */
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  /* =========================================
      FILTER SUB CATEGORIES
   ========================================= */
 
@@ -226,6 +267,8 @@ export class BusinessSubCategories {
       this.searchTerm
         .toLowerCase()
         .trim();
+
+    this.currentPage = 1;
 
     if (!search) {
 

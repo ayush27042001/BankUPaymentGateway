@@ -122,7 +122,7 @@
         <tbody>
 
           @for (
-            subCategory of filteredSubCategories;
+            subCategory of paginatedSubCategories;
             track subCategory.businessSubCategoryID
           ) {
 
@@ -241,6 +241,36 @@
       </table>
 
     </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- PAGINATION -->
+  <!-- ========================= -->
+
+  <div class="pagination-wrapper">
+
+    <button
+      class="pagination-btn"
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+    >
+      Previous
+    </button>
+
+    <div class="pagination-info">
+      Page {{ currentPage }}
+      of
+      {{ totalPages }}
+    </div>
+
+    <button
+      class="pagination-btn"
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+    >
+      Next
+    </button>
 
   </div>
 
