@@ -1,1 +1,691 @@
-<p>merchants works!</p>
+<!-- =========================================
+     MERCHANTS PAGE
+========================================= -->
+
+<div class="merchants-page">
+
+  <!-- =========================================
+       PAGE HEADER
+  ========================================= -->
+
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <h1>Merchants Management</h1>
+
+      <p>
+        Manage all merchants and business details
+      </p>
+
+    </div>
+
+    <button
+      class="add-btn"
+      (click)="openAddModal()"
+    >
+      <i class="bi bi-plus-circle"></i>
+      Add Merchant
+    </button>
+
+  </div>
+
+  <!-- =========================================
+       SEARCH SECTION
+  ========================================= -->
+
+  <div class="search-card">
+
+    <div class="search-wrapper">
+
+      <!-- SEARCH -->
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          placeholder="Search by MID, User ID, Business Name or GSTIN..."
+          [(ngModel)]="searchText"
+        />
+
+      </div>
+
+      <!-- EXPORT -->
+
+      <button
+  class="export-btn"
+  (click)="exportCSV()"
+>
+
+  <i class="bi bi-download"></i>
+
+  Export CSV
+
+</button>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       TABLE CARD
+  ========================================= -->
+
+  <div class="table-card">
+
+    <!-- TABLE HEADER -->
+
+    <div class="table-header">
+
+      <div class="table-title">
+        Merchant Master List
+      </div>
+
+      <div class="table-count">
+        Total Records :
+        {{ filteredMerchants().length }}
+      </div>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-responsive">
+
+      <table class="custom-table">
+
+        <thead>
+
+          <tr>
+
+            <th>MID</th>
+
+            <th>User ID</th>
+
+            <th>Business Name</th>
+
+            <th>Entity Type</th>
+
+            <th>Onboarding</th>
+
+            <th>CKYC ID</th>
+
+            <th>Expected Sales</th>
+
+            <th>GSTIN</th>
+
+            <th>Status</th>
+
+            <th>Created Date</th>
+
+            <th>Updated Date</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (
+            merchant of paginatedMerchants();
+            track merchant.mid
+          ) {
+
+            <tr>
+
+              <!-- MID -->
+
+              <td>
+
+                <div class="id-badge">
+                  {{ merchant.mid }}
+                </div>
+
+              </td>
+
+              <!-- USER ID -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ merchant.userId }}
+                </div>
+
+              </td>
+
+              <!-- BUSINESS NAME -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ merchant.businessName }}
+                </div>
+
+              </td>
+
+              <!-- ENTITY TYPE -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ merchant.businessEntityTypeID }}
+                </div>
+
+              </td>
+
+              <!-- ONBOARDING -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ merchant.onboardingStatusID }}
+                </div>
+
+              </td>
+
+              <!-- CKYC -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ merchant.ckycIdentifier }}
+                </div>
+
+              </td>
+
+              <!-- SALES -->
+
+              <td>
+
+                <div class="table-pill">
+                  ₹{{ merchant.expectedSalesPerMonth }}
+                </div>
+
+              </td>
+
+              <!-- GSTIN -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ merchant.gstin }}
+                </div>
+
+              </td>
+
+              <!-- STATUS -->
+
+              <td>
+
+                <div
+                  class="status-badge"
+                  [ngClass]="
+                    merchant.isActive
+                      ? 'active'
+                      : 'inactive'
+                  "
+                >
+                  {{
+                    merchant.isActive
+                      ? 'Active'
+                      : 'Inactive'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- CREATED -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ merchant.createdDate }}
+                </div>
+
+              </td>
+
+              <!-- UPDATED -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ merchant.updatedDate }}
+                </div>
+
+              </td>
+
+              <!-- ACTION -->
+
+              <td>
+
+                <button
+                  class="action-btn"
+                  title="View"
+                  (click)="openViewModal(merchant)"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       PAGINATION
+  ========================================= -->
+
+  <div class="pagination-wrapper">
+
+    <button
+      class="pagination-btn"
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+    >
+      Previous
+    </button>
+
+    <div class="pagination-info">
+
+      Page {{ currentPage }}
+      of
+      {{ totalPages }}
+
+    </div>
+
+    <button
+      class="pagination-btn"
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+    >
+      Next
+    </button>
+
+  </div>
+
+</div>
+
+<!-- =========================================
+     ADD MERCHANT MODAL
+========================================= -->
+
+@if (isAddModalOpen) {
+
+<div
+  class="custom-modal-backdrop"
+  (click)="closeAddModal()"
+>
+
+  <div
+    class="custom-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- HEADER -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <h3>Add Merchant</h3>
+
+        <p>
+          Create a new merchant record
+        </p>
+
+      </div>
+
+      <button
+        class="close-btn"
+        (click)="closeAddModal()"
+      >
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+    </div>
+
+    <!-- BODY -->
+
+    <div class="modal-body">
+
+      <div class="details-grid">
+
+        <div class="form-group">
+
+          <label>User ID</label>
+
+          <input
+            type="text"
+            [(ngModel)]="newMerchant.userId"
+            placeholder="Enter user ID"
+          />
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Business Name</label>
+
+          <input
+            type="text"
+            [(ngModel)]="newMerchant.businessName"
+            placeholder="Enter business name"
+          />
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Business Entity Type</label>
+
+          <input
+            type="text"
+            [(ngModel)]="newMerchant.businessEntityTypeID"
+            placeholder="Enter entity type"
+          />
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Onboarding Status</label>
+
+          <input
+            type="text"
+            [(ngModel)]="newMerchant.onboardingStatusID"
+            placeholder="Enter onboarding status"
+          />
+
+        </div>
+
+        <div class="form-group">
+
+          <label>CKYC Identifier</label>
+
+          <input
+            type="text"
+            [(ngModel)]="newMerchant.ckycIdentifier"
+            placeholder="Enter CKYC ID"
+          />
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Expected Sales</label>
+
+          <input
+            type="text"
+            [(ngModel)]="newMerchant.expectedSalesPerMonth"
+            placeholder="Enter expected sales"
+          />
+
+        </div>
+
+        <div class="form-group">
+
+          <label>GSTIN</label>
+
+          <input
+            type="text"
+            [(ngModel)]="newMerchant.gstin"
+            placeholder="Enter GSTIN"
+          />
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="closeAddModal()"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="approve-btn"
+        (click)="addMerchant()"
+      >
+
+        @if (!isSaving) {
+
+          <span>Save Merchant</span>
+
+        } @else {
+
+          <span>Saving...</span>
+
+        }
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
+
+<!-- =========================================
+     VIEW MODAL
+========================================= -->
+
+@if (isViewModalOpen) {
+
+<div
+  class="custom-modal-backdrop"
+  (click)="closeViewModal()"
+>
+
+  <div
+    class="custom-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- HEADER -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <h3>Merchant Details</h3>
+
+        <p>
+          Complete merchant information
+        </p>
+
+      </div>
+
+      <button
+        class="close-btn"
+        (click)="closeViewModal()"
+      >
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+    </div>
+
+    <!-- BODY -->
+
+    <div class="modal-body">
+
+      <div class="details-grid">
+
+        <div class="detail-card">
+
+          <label>MID</label>
+
+          <h4>
+            {{ selectedMerchant.mid }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>User ID</label>
+
+          <h4>
+            {{ selectedMerchant.userId }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Business Name</label>
+
+          <h4>
+            {{ selectedMerchant.businessName }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Entity Type</label>
+
+          <h4>
+            {{ selectedMerchant.businessEntityTypeID }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Onboarding Status</label>
+
+          <h4>
+            {{ selectedMerchant.onboardingStatusID }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>CKYC ID</label>
+
+          <h4>
+            {{ selectedMerchant.ckycIdentifier }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Expected Sales</label>
+
+          <h4>
+            ₹{{ selectedMerchant.expectedSalesPerMonth }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>GSTIN</label>
+
+          <h4>
+            {{ selectedMerchant.gstin }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Status</label>
+
+          <div
+            class="status-badge"
+            [ngClass]="
+              selectedMerchant.isActive
+                ? 'active'
+                : 'inactive'
+            "
+          >
+            {{
+              selectedMerchant.isActive
+                ? 'Active'
+                : 'Inactive'
+            }}
+          </div>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Created Date</label>
+
+          <h4>
+            {{ selectedMerchant.createdDate }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Updated Date</label>
+
+          <h4>
+            {{ selectedMerchant.updatedDate }}
+          </h4>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+   <div class="modal-footer">
+
+  <button
+    class="reject-btn"
+    (click)="rejectMerchant()"
+  >
+    Reject
+  </button>
+
+  <button
+    class="cancel-btn"
+    (click)="closeViewModal()"
+  >
+    Cancel
+  </button>
+
+  <button
+    class="approve-btn"
+    (click)="approveMerchant()"
+  >
+    Approve
+  </button>
+
+</div>
+
+  </div>
+
+</div>
+
+}

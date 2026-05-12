@@ -1,0 +1,796 @@
+<div class="users-page">
+
+  <!-- =========================================
+       PAGE HEADER
+  ========================================= -->
+
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <h1>Users Management</h1>
+
+      <p>
+        Manage all users and account details
+      </p>
+
+    </div>
+
+    <button
+      class="add-btn"
+      (click)="openAddModal()"
+    >
+      <i class="bi bi-plus-circle"></i>
+      Add User
+    </button>
+
+  </div>
+
+  <!-- =========================================
+       SEARCH CARD
+  ========================================= -->
+
+  <div class="search-card">
+
+    <div class="search-wrapper">
+
+      <!-- SEARCH -->
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          placeholder="Search by email, mobile or ID..."
+          [(ngModel)]="searchText"
+        />
+
+      </div>
+
+      <!-- EXPORT -->
+
+      <button
+        class="export-btn"
+        (click)="exportUsers()"
+      >
+        <i class="bi bi-download"></i>
+        Export CSV
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       TABLE CARD
+  ========================================= -->
+
+  <div class="table-card">
+
+    <!-- HEADER -->
+
+    <div class="table-header">
+
+      <div class="table-title">
+        User Master List
+      </div>
+
+      <div class="table-count">
+        Total Records :
+        {{ filteredUsers().length }}
+      </div>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-responsive">
+
+      <table class="custom-table">
+
+        <thead>
+
+          <tr>
+
+            <th>User ID</th>
+
+            <th>Email</th>
+
+            <th>Password Hash</th>
+
+            <th>Salt</th>
+
+            <th>Mobile</th>
+
+            <th>Email Verified</th>
+
+            <th>Mobile Verified</th>
+
+            <th>Status</th>
+
+            <th>Lock Status</th>
+
+            <th>Failed Attempts</th>
+
+            <th>Last Login</th>
+
+            <th>Created Date</th>
+
+            <th>Updated Date</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (
+            user of paginatedUsers();
+            track user.userId
+          ) {
+
+            <tr>
+
+              <!-- USER ID -->
+
+              <td>
+
+                <div class="id-badge">
+                  #{{ user.userId }}
+                </div>
+
+              </td>
+
+              <!-- EMAIL -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ user.email }}
+                </div>
+
+              </td>
+
+              <!-- PASSWORD -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{
+                    getMaskedValue(
+                      user.passwordHash
+                    )
+                  }}
+                </div>
+
+              </td>
+
+              <!-- SALT -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{
+                    getMaskedValue(
+                      user.salt
+                    )
+                  }}
+                </div>
+
+              </td>
+
+              <!-- MOBILE -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ user.mobileNumber }}
+                </div>
+
+              </td>
+
+              <!-- EMAIL VERIFIED -->
+
+              <td>
+
+                <div
+                  class="status-badge"
+                  [ngClass]="
+                    user.isEmailVerified
+                      ? 'active'
+                      : 'inactive'
+                  "
+                >
+                  {{
+                    user.isEmailVerified
+                      ? 'Verified'
+                      : 'Pending'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- MOBILE VERIFIED -->
+
+              <td>
+
+                <div
+                  class="status-badge"
+                  [ngClass]="
+                    user.isMobileVerified
+                      ? 'active'
+                      : 'inactive'
+                  "
+                >
+                  {{
+                    user.isMobileVerified
+                      ? 'Verified'
+                      : 'Pending'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- STATUS -->
+
+              <td>
+
+                <div
+                  class="status-badge"
+                  [ngClass]="
+                    user.isActive
+                      ? 'active'
+                      : 'inactive'
+                  "
+                >
+                  {{
+                    user.isActive
+                      ? 'Active'
+                      : 'Inactive'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- LOCK -->
+
+              <td>
+
+                <div
+                  class="status-badge"
+                  [ngClass]="
+                    user.isLocked
+                      ? 'inactive'
+                      : 'active'
+                  "
+                >
+                  {{
+                    user.isLocked
+                      ? 'Locked'
+                      : 'Unlocked'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- FAILED -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ user.failedLoginAttempts }}
+                </div>
+
+              </td>
+
+              <!-- LAST LOGIN -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{
+                    user.lastLoginDate
+                    || '—'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- CREATED -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{
+                    user.createdDate
+                    || '—'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- UPDATED -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{
+                    user.updatedDate
+                    || '—'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- ACTION -->
+
+              <td>
+
+                <button
+                  class="action-btn"
+                  (click)="openViewModal(user)"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       PAGINATION
+  ========================================= -->
+
+  <div class="pagination-wrapper">
+
+    <button
+      class="pagination-btn"
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+    >
+      Previous
+    </button>
+
+    <div class="pagination-info">
+
+      Page {{ currentPage }}
+      of
+      {{ totalPages }}
+
+    </div>
+
+    <button
+      class="pagination-btn"
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+    >
+      Next
+    </button>
+
+  </div>
+
+</div>
+
+<!-- =========================================
+     VIEW MODAL
+========================================= -->
+
+@if (isViewModalOpen && selectedUser) {
+
+<div
+  class="custom-modal-backdrop"
+  (click)="closeViewModal()"
+>
+
+  <div
+    class="custom-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- HEADER -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <h3>User Details</h3>
+
+        <p>
+          Complete user information
+        </p>
+
+      </div>
+
+      <button
+        class="close-btn"
+        (click)="closeViewModal()"
+      >
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+    </div>
+
+    <!-- BODY -->
+
+    <div class="modal-body">
+
+      <div class="details-grid">
+
+        <div class="detail-card">
+
+          <label>User ID</label>
+
+          <h4>
+            #{{ selectedUser.userId }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Email</label>
+
+          <h4>
+            {{ selectedUser.email }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Password Hash</label>
+
+          <h4>
+            {{
+              getMaskedValue(
+                selectedUser.passwordHash
+              )
+            }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Salt</label>
+
+          <h4>
+            {{
+              getMaskedValue(
+                selectedUser.salt
+              )
+            }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Mobile</label>
+
+          <h4>
+            {{ selectedUser.mobileNumber }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Failed Attempts</label>
+
+          <h4>
+            {{
+              selectedUser.failedLoginAttempts
+            }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Email Verified</label>
+
+          <div
+            class="status-badge"
+            [ngClass]="
+              selectedUser.isEmailVerified
+                ? 'active'
+                : 'inactive'
+            "
+          >
+            {{
+              selectedUser.isEmailVerified
+                ? 'Verified'
+                : 'Pending'
+            }}
+          </div>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Mobile Verified</label>
+
+          <div
+            class="status-badge"
+            [ngClass]="
+              selectedUser.isMobileVerified
+                ? 'active'
+                : 'inactive'
+            "
+          >
+            {{
+              selectedUser.isMobileVerified
+                ? 'Verified'
+                : 'Pending'
+            }}
+          </div>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Status</label>
+
+          <div
+            class="status-badge"
+            [ngClass]="
+              selectedUser.isActive
+                ? 'active'
+                : 'inactive'
+            "
+          >
+            {{
+              selectedUser.isActive
+                ? 'Active'
+                : 'Inactive'
+            }}
+          </div>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Lock Status</label>
+
+          <div
+            class="status-badge"
+            [ngClass]="
+              selectedUser.isLocked
+                ? 'inactive'
+                : 'active'
+            "
+          >
+            {{
+              selectedUser.isLocked
+                ? 'Locked'
+                : 'Unlocked'
+            }}
+          </div>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Last Login</label>
+
+          <h4>
+            {{
+              selectedUser.lastLoginDate
+              || '—'
+            }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Password Changed</label>
+
+          <h4>
+            {{
+              selectedUser.passwordLastChangedDate
+              || '—'
+            }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Created Date</label>
+
+          <h4>
+            {{
+              selectedUser.createdDate
+              || '—'
+            }}
+          </h4>
+
+        </div>
+
+        <div class="detail-card">
+
+          <label>Updated Date</label>
+
+          <h4>
+            {{
+              selectedUser.updatedDate
+              || '—'
+            }}
+          </h4>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+      <button
+        class="reject-btn"
+        (click)="rejectUser()"
+      >
+        Reject
+      </button>
+
+      <button
+        class="cancel-btn"
+        (click)="closeViewModal()"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="approve-btn"
+        (click)="approveUser()"
+      >
+        Approve
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
+
+<!-- =========================================
+     ADD USER MODAL
+========================================= -->
+
+@if (isAddModalOpen) {
+
+<div
+  class="custom-modal-backdrop"
+  (click)="closeAddModal()"
+>
+
+  <div
+    class="custom-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- HEADER -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <h3>Add User</h3>
+
+        <p>
+          Create a new user record
+        </p>
+
+      </div>
+
+      <button
+        class="close-btn"
+        (click)="closeAddModal()"
+      >
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+    </div>
+
+    <!-- BODY -->
+
+    <div class="modal-body">
+
+      <div class="details-grid">
+
+        <div class="form-group">
+
+          <label>Email</label>
+
+          <input
+            type="email"
+            [(ngModel)]="newUser.email"
+            placeholder="Enter email"
+          />
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Mobile Number</label>
+
+          <input
+            type="text"
+            [(ngModel)]="newUser.mobileNumber"
+            placeholder="Enter mobile number"
+          />
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Password Hash</label>
+
+          <input
+            type="text"
+            [(ngModel)]="newUser.passwordHash"
+            placeholder="Enter password hash"
+          />
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Salt</label>
+
+          <input
+            type="text"
+            [(ngModel)]="newUser.salt"
+            placeholder="Enter salt"
+          />
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="closeAddModal()"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="approve-btn"
+        (click)="addUser()"
+      >
+        Save User
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}

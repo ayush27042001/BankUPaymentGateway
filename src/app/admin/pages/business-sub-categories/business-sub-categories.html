@@ -1,1 +1,615 @@
-<p>business-sub-categories works!</p>
+<div class="business-sub-categories-page">
+
+  <!-- ========================= -->
+  <!-- PAGE HEADER -->
+  <!-- ========================= -->
+
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <h2>Business Sub Categories</h2>
+
+      <p>
+        Manage all business sub category master records.
+      </p>
+
+    </div>
+
+    <div class="header-right">
+
+      <button
+        class="add-btn"
+        (click)="openAddModal()"
+      >
+        <i class="bi bi-plus-circle"></i>
+        Add Sub Category
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- SEARCH SECTION -->
+  <!-- ========================= -->
+
+  <div class="search-card">
+
+    <div class="search-wrapper">
+
+      <!-- SEARCH -->
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          placeholder="Search by ID, category, sub category, code or status..."
+          [(ngModel)]="searchTerm"
+          (input)="filterSubCategories()"
+        />
+
+      </div>
+
+      <!-- EXPORT -->
+
+      <button
+        class="export-btn"
+        (click)="exportCSV()"
+      >
+        <i class="bi bi-download"></i>
+        Export CSV
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- TABLE SECTION -->
+  <!-- ========================= -->
+
+  <div class="table-card">
+
+    <!-- TABLE HEADER -->
+
+    <div class="table-header">
+
+      <div class="table-title">
+        Business Sub Category Master List
+      </div>
+
+      <div class="table-count">
+        Total Records : {{ filteredSubCategories.length }}
+      </div>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-responsive">
+
+      <table class="custom-table">
+
+        <thead>
+
+          <tr>
+
+            <th>ID</th>
+
+            <th>Category Name</th>
+
+            <th>Sub Category Name</th>
+
+            <th>Sub Category Code</th>
+
+            <th>Description</th>
+
+            <th>Status</th>
+
+            <th>Created Date</th>
+
+            <th>Updated Date</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (
+            subCategory of filteredSubCategories;
+            track subCategory.businessSubCategoryID
+          ) {
+
+            <tr>
+
+              <!-- ID -->
+
+              <td>
+
+                <div class="id-badge">
+                  #{{ subCategory.businessSubCategoryID }}
+                </div>
+
+              </td>
+
+              <!-- CATEGORY NAME -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ subCategory.categoryName }}
+                </div>
+
+              </td>
+
+              <!-- SUB CATEGORY NAME -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ subCategory.subCategoryName }}
+                </div>
+
+              </td>
+
+              <!-- CODE -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ subCategory.subCategoryCode }}
+                </div>
+
+              </td>
+
+              <!-- DESCRIPTION -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ subCategory.description || 'N/A' }}
+                </div>
+
+              </td>
+
+              <!-- STATUS -->
+
+              <td>
+
+                <div
+                  class="status-badge"
+                  [ngClass]="
+                    subCategory.isActive
+                      ? 'active'
+                      : 'inactive'
+                  "
+                >
+                  {{
+                    subCategory.isActive
+                      ? 'Active'
+                      : 'Inactive'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- CREATED DATE -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ subCategory.createdDate }}
+                </div>
+
+              </td>
+
+              <!-- UPDATED DATE -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ subCategory.updatedDate }}
+                </div>
+
+              </td>
+
+              <!-- ACTION -->
+
+              <td>
+
+                <button
+                  class="action-btn"
+                  (click)="openViewModal(subCategory)"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- VIEW MODAL -->
+  <!-- ========================= -->
+
+  @if (showViewModal && selectedSubCategory) {
+
+    <div class="custom-modal-backdrop">
+
+      <div class="custom-modal">
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h3>Business Sub Category Details</h3>
+
+            <p>
+              Complete sub category information
+            </p>
+
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeViewModal()"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+          <div class="details-grid">
+
+            <!-- ID -->
+
+            <div class="detail-card">
+
+              <label>
+                Business Sub Category ID
+              </label>
+
+              <h4>
+                #{{ selectedSubCategory.businessSubCategoryID }}
+              </h4>
+
+            </div>
+
+            <!-- CATEGORY -->
+
+            <div class="detail-card">
+
+              <label>
+                Category Name
+              </label>
+
+              <h4>
+                {{ selectedSubCategory.categoryName }}
+              </h4>
+
+            </div>
+
+            <!-- SUB CATEGORY -->
+
+            <div class="detail-card">
+
+              <label>
+                Sub Category Name
+              </label>
+
+              <h4>
+                {{ selectedSubCategory.subCategoryName }}
+              </h4>
+
+            </div>
+
+            <!-- CODE -->
+
+            <div class="detail-card">
+
+              <label>
+                Sub Category Code
+              </label>
+
+              <h4>
+                {{ selectedSubCategory.subCategoryCode }}
+              </h4>
+
+            </div>
+
+            <!-- DESCRIPTION -->
+
+            <div class="detail-card full-width">
+
+              <label>
+                Description
+              </label>
+
+              <h4>
+                {{
+                  selectedSubCategory.description
+                  || 'N/A'
+                }}
+              </h4>
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="detail-card">
+
+              <label>Status</label>
+
+              <div
+                class="status-badge"
+                [ngClass]="
+                  selectedSubCategory.isActive
+                    ? 'active'
+                    : 'inactive'
+                "
+              >
+                {{
+                  selectedSubCategory.isActive
+                    ? 'Active'
+                    : 'Inactive'
+                }}
+              </div>
+
+            </div>
+
+            <!-- CREATED -->
+
+            <div class="detail-card">
+
+              <label>
+                Created Date
+              </label>
+
+              <h4>
+                {{ selectedSubCategory.createdDate }}
+              </h4>
+
+            </div>
+
+            <!-- UPDATED -->
+
+            <div class="detail-card">
+
+              <label>
+                Updated Date
+              </label>
+
+              <h4>
+                {{ selectedSubCategory.updatedDate }}
+              </h4>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            class="reject-btn"
+            (click)="rejectSubCategory()"
+          >
+            Reject
+          </button>
+
+          <button
+            class="cancel-btn"
+            (click)="closeViewModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="approve-btn"
+            (click)="approveSubCategory()"
+          >
+            Approve
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- ========================= -->
+  <!-- ADD MODAL -->
+  <!-- ========================= -->
+
+  @if (showAddModal) {
+
+    <div class="custom-modal-backdrop">
+
+      <div class="custom-modal add-category-modal">
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h3>Add Business Sub Category</h3>
+
+            <p>
+              Create a new sub category record
+            </p>
+
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeAddModal()"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+          <div class="details-grid">
+
+            <!-- CATEGORY -->
+
+            <div class="form-group">
+
+              <label>
+                Business Category
+              </label>
+
+              <select
+                [(ngModel)]="newSubCategory.categoryName"
+              >
+
+                <option value="">
+                  Select Category
+                </option>
+
+                @for (
+                  category of categories;
+                  track category
+                ) {
+
+                  <option [value]="category">
+                    {{ category }}
+                  </option>
+
+                }
+
+              </select>
+
+            </div>
+
+            <!-- SUB CATEGORY -->
+
+            <div class="form-group">
+
+              <label>
+                Sub Category Name
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="newSubCategory.subCategoryName"
+                placeholder="Enter sub category name"
+              />
+
+            </div>
+
+            <!-- CODE -->
+
+            <div class="form-group">
+
+              <label>
+                Sub Category Code
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="newSubCategory.subCategoryCode"
+                placeholder="Enter sub category code"
+              />
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+              <label>Status</label>
+
+              <select
+                [(ngModel)]="newSubCategory.isActive"
+              >
+
+                <option [ngValue]="true">
+                  Active
+                </option>
+
+                <option [ngValue]="false">
+                  Inactive
+                </option>
+
+              </select>
+
+            </div>
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group full-width">
+
+              <label>Description</label>
+
+              <textarea
+                rows="4"
+                [(ngModel)]="newSubCategory.description"
+                placeholder="Enter description"
+              ></textarea>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            class="cancel-btn"
+            (click)="closeAddModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="approve-btn"
+            (click)="addSubCategory()"
+          >
+            Add Sub Category
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

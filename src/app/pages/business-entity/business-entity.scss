@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 :host {
   display: block;
 }
@@ -142,7 +144,7 @@ $page-bg: #fafafa;
   transition: all 0.3s ease;
 
   &:hover {
-    color: darken($brand-primary, 8%);
+    color: color.adjust($brand-primary, $lightness: -8%);
   }
 }
 
