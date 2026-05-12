@@ -1,1 +1,685 @@
-<p>document-types works!</p>
+<div class="document-types-page">
+
+  <!-- ========================= -->
+  <!-- PAGE HEADER -->
+  <!-- ========================= -->
+
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <h2>Document Types</h2>
+
+      <p>
+        Manage all document type master records.
+      </p>
+
+    </div>
+
+    <div class="header-right">
+
+      <button
+        class="add-btn"
+        (click)="openAddModal()"
+      >
+        <i class="bi bi-plus-circle"></i>
+        Add Document Type
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- SEARCH SECTION -->
+  <!-- ========================= -->
+
+  <div class="search-card">
+
+    <div class="search-wrapper">
+
+      <!-- SEARCH -->
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          placeholder="Search by ID, document name, code or status..."
+          [(ngModel)]="searchTerm"
+          (input)="filterDocumentTypes()"
+        />
+
+      </div>
+
+      <!-- EXPORT -->
+
+      <button
+        class="export-btn"
+        (click)="exportCSV()"
+      >
+        <i class="bi bi-download"></i>
+        Export CSV
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- TABLE SECTION -->
+  <!-- ========================= -->
+
+  <div class="table-card">
+
+    <!-- HEADER -->
+
+    <div class="table-header">
+
+      <div class="table-title">
+        Document Type Master List
+      </div>
+
+      <div class="table-count">
+        Total Records : {{ filteredDocumentTypes.length }}
+      </div>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-responsive">
+
+      <table class="custom-table">
+
+        <thead>
+
+          <tr>
+
+            <th>ID</th>
+
+            <th>Document Name</th>
+
+            <th>Document Code</th>
+
+            <th>Allowed Extensions</th>
+
+            <th>Max File Size</th>
+
+            <th>Required</th>
+
+            <th>Status</th>
+
+            <th>Created Date</th>
+
+            <th>Updated Date</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (
+            document of paginatedData;
+            track document.documentTypeID
+          ) {
+
+            <tr>
+
+              <!-- ID -->
+
+              <td>
+
+                <div class="id-badge">
+                  #{{ document.documentTypeID }}
+                </div>
+
+              </td>
+
+              <!-- DOCUMENT NAME -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ document.documentName }}
+                </div>
+
+              </td>
+
+              <!-- DOCUMENT CODE -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ document.documentCode }}
+                </div>
+
+              </td>
+
+              <!-- EXTENSIONS -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ document.allowedExtensions }}
+                </div>
+
+              </td>
+
+              <!-- FILE SIZE -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ document.maxFileSizeMB }} MB
+                </div>
+
+              </td>
+
+              <!-- REQUIRED -->
+
+              <td>
+
+                <div
+                  class="required-badge"
+                  [ngClass]="
+                    document.isRequired
+                      ? 'required'
+                      : 'optional'
+                  "
+                >
+                  {{
+                    document.isRequired
+                      ? 'Required'
+                      : 'Optional'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- STATUS -->
+
+              <td>
+
+                <div
+                  class="status-badge"
+                  [ngClass]="
+                    document.isActive
+                      ? 'active'
+                      : 'inactive'
+                  "
+                >
+                  {{
+                    document.isActive
+                      ? 'Active'
+                      : 'Inactive'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- CREATED -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ document.createdDate }}
+                </div>
+
+              </td>
+
+              <!-- UPDATED -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ document.updatedDate }}
+                </div>
+
+              </td>
+
+              <!-- ACTION -->
+
+              <td>
+
+                <button
+                  class="action-btn"
+                  (click)="openViewModal(document)"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- PAGINATION -->
+  <!-- ========================= -->
+
+  <div class="pagination-wrapper">
+
+    <button
+      class="pagination-btn"
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+    >
+      Previous
+    </button>
+
+    <div class="pagination-info">
+
+      Page {{ currentPage }}
+      of
+      {{ totalPages }}
+
+    </div>
+
+    <button
+      class="pagination-btn"
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+    >
+      Next
+    </button>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- VIEW MODAL -->
+  <!-- ========================= -->
+
+  @if (showViewModal && selectedDocumentType) {
+
+    <div class="custom-modal-backdrop">
+
+      <div class="custom-modal">
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h3>Document Type Details</h3>
+
+            <p>
+              Complete document type information
+            </p>
+
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeViewModal()"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+          <div class="details-grid">
+
+            <div class="detail-card">
+
+              <label>
+                Document Type ID
+              </label>
+
+              <h4>
+                #{{ selectedDocumentType.documentTypeID }}
+              </h4>
+
+            </div>
+
+            <div class="detail-card">
+
+              <label>
+                Document Name
+              </label>
+
+              <h4>
+                {{ selectedDocumentType.documentName }}
+              </h4>
+
+            </div>
+
+            <div class="detail-card">
+
+              <label>
+                Document Code
+              </label>
+
+              <h4>
+                {{ selectedDocumentType.documentCode }}
+              </h4>
+
+            </div>
+
+            <div class="detail-card">
+
+              <label>
+                Allowed Extensions
+              </label>
+
+              <h4>
+                {{ selectedDocumentType.allowedExtensions }}
+              </h4>
+
+            </div>
+
+            <div class="detail-card">
+
+              <label>
+                Max File Size
+              </label>
+
+              <h4>
+                {{ selectedDocumentType.maxFileSizeMB }} MB
+              </h4>
+
+            </div>
+
+            <div class="detail-card">
+
+              <label>
+                Required
+              </label>
+
+              <div
+                class="required-badge"
+                [ngClass]="
+                  selectedDocumentType.isRequired
+                    ? 'required'
+                    : 'optional'
+                "
+              >
+                {{
+                  selectedDocumentType.isRequired
+                    ? 'Required'
+                    : 'Optional'
+                }}
+              </div>
+
+            </div>
+
+            <div class="detail-card">
+
+              <label>Status</label>
+
+              <div
+                class="status-badge"
+                [ngClass]="
+                  selectedDocumentType.isActive
+                    ? 'active'
+                    : 'inactive'
+                "
+              >
+                {{
+                  selectedDocumentType.isActive
+                    ? 'Active'
+                    : 'Inactive'
+                }}
+              </div>
+
+            </div>
+
+            <div class="detail-card">
+
+              <label>
+                Created Date
+              </label>
+
+              <h4>
+                {{ selectedDocumentType.createdDate }}
+              </h4>
+
+            </div>
+
+            <div class="detail-card">
+
+              <label>
+                Updated Date
+              </label>
+
+              <h4>
+                {{ selectedDocumentType.updatedDate }}
+              </h4>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            class="reject-btn"
+            (click)="rejectDocumentType()"
+          >
+            Reject
+          </button>
+
+          <button
+            class="cancel-btn"
+            (click)="closeViewModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="approve-btn"
+            (click)="approveDocumentType()"
+          >
+            Approve
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- ========================= -->
+  <!-- ADD MODAL -->
+  <!-- ========================= -->
+
+  @if (showAddModal) {
+
+    <div class="custom-modal-backdrop">
+
+      <div class="custom-modal add-category-modal">
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h3>Add Document Type</h3>
+
+            <p>
+              Create a new document type record
+            </p>
+
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeAddModal()"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+          <div class="details-grid">
+
+            <!-- DOCUMENT NAME -->
+
+            <div class="form-group">
+
+              <label>
+                Document Name
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="newDocumentType.documentName"
+                placeholder="Enter document name"
+              />
+
+            </div>
+
+            <!-- DOCUMENT CODE -->
+
+            <div class="form-group">
+
+              <label>
+                Document Code
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="newDocumentType.documentCode"
+                placeholder="Enter document code"
+              />
+
+            </div>
+
+            <!-- EXTENSIONS -->
+
+            <div class="form-group">
+
+              <label>
+                Allowed Extensions
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="newDocumentType.allowedExtensions"
+                placeholder="JPG,PNG,PDF"
+              />
+
+            </div>
+
+            <!-- MAX SIZE -->
+
+            <div class="form-group">
+
+              <label>
+                Max File Size (MB)
+              </label>
+
+              <input
+                type="number"
+                [(ngModel)]="newDocumentType.maxFileSizeMB"
+                placeholder="Enter max size"
+              />
+
+            </div>
+
+            <!-- REQUIRED -->
+
+            <div class="form-group">
+
+              <label>
+                Required
+              </label>
+
+              <select
+                [(ngModel)]="newDocumentType.isRequired"
+              >
+
+                <option [ngValue]="true">
+                  Required
+                </option>
+
+                <option [ngValue]="false">
+                  Optional
+                </option>
+
+              </select>
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+              <label>Status</label>
+
+              <select
+                [(ngModel)]="newDocumentType.isActive"
+              >
+
+                <option [ngValue]="true">
+                  Active
+                </option>
+
+                <option [ngValue]="false">
+                  Inactive
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            class="cancel-btn"
+            (click)="closeAddModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="approve-btn"
+            (click)="addDocumentType()"
+          >
+            Add Document Type
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

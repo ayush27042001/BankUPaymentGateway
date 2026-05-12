@@ -82,7 +82,7 @@
   }
 
   &:hover {
-    background: rgba(105, 1, 105, 0.08);
+    background:#b751b7;
     color: #690169;
   }
 }
@@ -224,4 +224,35 @@
   .sidebar {
     transform: translateX(-100%);
   }
+}
+.active-submenu {
+  background: rgba(105, 1, 105, 0.12);
+  color: #690169 !important;
+  font-weight: 600;
+  border-left: 3px solid #690169;
+}
+.active-submenu {
+  background: rgba(105, 1, 105, 0.1);
+  color: #690169 !important;
+  font-weight: 600;
+}
+// .submenu-link{
+//    background: rgba(105, 1, 105, 0.1);
+//   color: #690169 !important;
+//   font-weight: 600;
+// }
+/* =========================================
+   LOGOUT MENU ITEM
+========================================= */
+
+.logout-item {
+
+  &:hover {
+
+    background: #fee2e2 !important;
+
+    color: #dc2626 !important;
+
+  }
+
 }

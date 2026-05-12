@@ -1,1 +1,555 @@
-<p>business-proof-types works!</p>
+<div class="business-proof-types-page">
+
+  <!-- ========================= -->
+  <!-- PAGE HEADER -->
+  <!-- ========================= -->
+
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <h2>Business Proof Types</h2>
+
+      <p>
+        Manage all business proof type master records.
+      </p>
+
+    </div>
+
+    <div class="header-right">
+
+      <button
+        class="add-btn"
+        (click)="openAddModal()"
+      >
+        <i class="bi bi-plus-circle"></i>
+        Add Proof Type
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- SEARCH SECTION -->
+  <!-- ========================= -->
+
+  <div class="search-card">
+
+    <div class="search-wrapper">
+
+      <!-- SEARCH -->
+
+      <div class="search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          placeholder="Search by ID, proof name, proof code or status..."
+          [(ngModel)]="searchTerm"
+          (input)="filterProofTypes()"
+        />
+
+      </div>
+
+      <!-- EXPORT -->
+
+      <button
+        class="export-btn"
+        (click)="exportCSV()"
+      >
+        <i class="bi bi-download"></i>
+        Export CSV
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- TABLE SECTION -->
+  <!-- ========================= -->
+
+  <div class="table-card">
+
+    <!-- TABLE HEADER -->
+
+    <div class="table-header">
+
+      <div class="table-title">
+        Business Proof Type Master List
+      </div>
+
+      <div class="table-count">
+        Total Records : {{ filteredProofTypes.length }}
+      </div>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-responsive">
+
+      <table class="custom-table">
+
+        <thead>
+
+          <tr>
+
+            <th>ID</th>
+
+            <th>Proof Name</th>
+
+            <th>Proof Code</th>
+
+            <th>Description</th>
+
+            <th>Status</th>
+
+            <th>Created Date</th>
+
+            <th>Updated Date</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (
+            proofType of filteredProofTypes;
+            track proofType.businessProofTypeID
+          ) {
+
+            <tr>
+
+              <!-- ID -->
+
+              <td>
+
+                <div class="id-badge">
+                  #{{ proofType.businessProofTypeID }}
+                </div>
+
+              </td>
+
+              <!-- PROOF NAME -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ proofType.proofName }}
+                </div>
+
+              </td>
+
+              <!-- PROOF CODE -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ proofType.proofCode }}
+                </div>
+
+              </td>
+
+              <!-- DESCRIPTION -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ proofType.description }}
+                </div>
+
+              </td>
+
+              <!-- STATUS -->
+
+              <td>
+
+                <div
+                  class="status-badge"
+                  [ngClass]="
+                    proofType.isActive
+                      ? 'active'
+                      : 'inactive'
+                  "
+                >
+                  {{
+                    proofType.isActive
+                      ? 'Active'
+                      : 'Inactive'
+                  }}
+                </div>
+
+              </td>
+
+              <!-- CREATED DATE -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ proofType.createdDate }}
+                </div>
+
+              </td>
+
+              <!-- UPDATED DATE -->
+
+              <td>
+
+                <div class="table-pill">
+                  {{ proofType.updatedDate }}
+                </div>
+
+              </td>
+
+              <!-- ACTION -->
+
+              <td>
+
+                <button
+                  class="action-btn"
+                  (click)="openViewModal(proofType)"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- VIEW MODAL -->
+  <!-- ========================= -->
+
+  @if (showViewModal && selectedProofType) {
+
+    <div class="custom-modal-backdrop">
+
+      <div class="custom-modal">
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h3>Business Proof Type Details</h3>
+
+            <p>
+              Complete proof type information
+            </p>
+
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeViewModal()"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+          <div class="details-grid">
+
+            <!-- ID -->
+
+            <div class="detail-card">
+
+              <label>
+                Business Proof Type ID
+              </label>
+
+              <h4>
+                #{{ selectedProofType.businessProofTypeID }}
+              </h4>
+
+            </div>
+
+            <!-- PROOF NAME -->
+
+            <div class="detail-card">
+
+              <label>
+                Proof Name
+              </label>
+
+              <h4>
+                {{ selectedProofType.proofName }}
+              </h4>
+
+            </div>
+
+            <!-- PROOF CODE -->
+
+            <div class="detail-card">
+
+              <label>
+                Proof Code
+              </label>
+
+              <h4>
+                {{ selectedProofType.proofCode }}
+              </h4>
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="detail-card">
+
+              <label>Status</label>
+
+              <div
+                class="status-badge"
+                [ngClass]="
+                  selectedProofType.isActive
+                    ? 'active'
+                    : 'inactive'
+                "
+              >
+                {{
+                  selectedProofType.isActive
+                    ? 'Active'
+                    : 'Inactive'
+                }}
+              </div>
+
+            </div>
+
+            <!-- DESCRIPTION -->
+
+            <div class="detail-card full-width">
+
+              <label>
+                Description
+              </label>
+
+              <h4>
+                {{ selectedProofType.description }}
+              </h4>
+
+            </div>
+
+            <!-- CREATED DATE -->
+
+            <div class="detail-card">
+
+              <label>
+                Created Date
+              </label>
+
+              <h4>
+                {{ selectedProofType.createdDate }}
+              </h4>
+
+            </div>
+
+            <!-- UPDATED DATE -->
+
+            <div class="detail-card">
+
+              <label>
+                Updated Date
+              </label>
+
+              <h4>
+                {{ selectedProofType.updatedDate }}
+              </h4>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            class="reject-btn"
+            (click)="rejectProofType()"
+          >
+            Reject
+          </button>
+
+          <button
+            class="cancel-btn"
+            (click)="closeViewModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="approve-btn"
+            (click)="approveProofType()"
+          >
+            Approve
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- ========================= -->
+  <!-- ADD MODAL -->
+  <!-- ========================= -->
+
+  @if (showAddModal) {
+
+    <div class="custom-modal-backdrop">
+
+      <div class="custom-modal add-category-modal">
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h3>Add Business Proof Type</h3>
+
+            <p>
+              Create a new proof type record
+            </p>
+
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeAddModal()"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+          <div class="details-grid">
+
+            <!-- PROOF NAME -->
+
+            <div class="form-group">
+
+              <label>
+                Proof Name
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="newProofType.proofName"
+                placeholder="Enter proof name"
+              />
+
+            </div>
+
+            <!-- PROOF CODE -->
+
+            <div class="form-group">
+
+              <label>
+                Proof Code
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="newProofType.proofCode"
+                placeholder="Enter proof code"
+              />
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+              <label>Status</label>
+
+              <select
+                [(ngModel)]="newProofType.isActive"
+              >
+
+                <option [ngValue]="true">
+                  Active
+                </option>
+
+                <option [ngValue]="false">
+                  Inactive
+                </option>
+
+              </select>
+
+            </div>
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group full-width">
+
+              <label>Description</label>
+
+              <textarea
+                rows="4"
+                [(ngModel)]="newProofType.description"
+                placeholder="Enter description"
+              ></textarea>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            class="cancel-btn"
+            (click)="closeAddModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="approve-btn"
+            (click)="addProofType()"
+          >
+            Add Proof Type
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

@@ -35,5 +35,29 @@ export class Sidebar {
   toggleSettings(): void {
     this.settingsExpanded = !this.settingsExpanded;
   }
+/* =========================================
+   SUPPORT
+========================================= */
 
+openSupport(): void {
+
+  alert(
+    'Support section coming soon.'
+  );
+
+}
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+logout(): void {
+
+  localStorage.clear();
+
+  sessionStorage.clear();
+
+  window.location.href = '/login';
+
+}
 }

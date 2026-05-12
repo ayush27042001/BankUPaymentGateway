@@ -1,6 +1,7 @@
 <div class="sidebar">
 
   <div class="sidebar-logo">
+
     <div class="logo-icon">
       B
     </div>
@@ -9,6 +10,7 @@
       <h2>BankU</h2>
       <span>Admin Panel</span>
     </div>
+
   </div>
 
   <div class="sidebar-menu">
@@ -19,16 +21,21 @@
       routerLinkActive="active-menu"
       class="menu-item"
     >
+
       <div class="menu-left">
         <i class="bi bi-grid"></i>
         <span>Dashboard</span>
       </div>
+
     </a>
 
     <!-- Masters -->
     <div class="menu-group">
 
-      <div class="menu-item submenu-toggle" (click)="toggleMasters()">
+      <div
+        class="menu-item submenu-toggle"
+        (click)="toggleMasters()"
+      >
 
         <div class="menu-left">
           <i class="bi bi-folder"></i>
@@ -47,29 +54,60 @@
 
         <div class="submenu">
 
-          <a class="submenu-item">
-            Business Proof Types
+          <a
+            class="submenu-item"
+            routerLink="/admin/masters/users"
+            routerLinkActive="active-submenu"
+          >
+            Users
           </a>
 
-          <a class="submenu-item">
-            Business Categories
-          </a>
+         <a
+  class="submenu-item"
+  routerLink="/admin/masters/business-proof-types"
+  routerLinkActive="active-submenu"
+>
+  Business Proof Types
+</a>
 
-          <a class="submenu-item">
+    <a
+  class="submenu-item"
+  routerLink="/admin/masters/business-categories"
+  routerLinkActive="active-submenu"
+>
+  Business Categories
+</a>
+
+          <a class="submenu-item
+          "
+           routerLink="/admin/masters/business-sub-categories"
+  routerLinkActive="active-submenu">
             Business Sub Categories
           </a>
 
-          <a class="submenu-item">
-            Business Entity Types
-          </a>
+       <a
+  routerLink="/admin/masters/business-entity-types"
+  routerLinkActive="active-submenu"
+ class="menu-item"
+>
+  Business Entity Types
+</a>
 
-          <a class="submenu-item">
-            Document Types
-          </a>
+        <a
+  class="submenu-item"
+  routerLink="/admin/masters/document-types"
+  routerLinkActive="active-submenu"
+>
+  Document Type
+</a>
 
-          <a class="submenu-item">
-            PEP Status
-          </a>
+         <a
+  class="submenu-item"
+  routerLink="/admin/masters/pep-status"
+  routerLinkActive="active-submenu"
+>
+  PEP Status
+</a>
 
         </div>
 
@@ -80,7 +118,10 @@
     <!-- Merchants -->
     <div class="menu-group">
 
-      <div class="menu-item submenu-toggle" (click)="toggleMerchant()">
+      <div
+        class="menu-item submenu-toggle"
+        (click)="toggleMerchant()"
+      >
 
         <div class="menu-left">
           <i class="bi bi-people"></i>
@@ -99,9 +140,13 @@
 
         <div class="submenu">
 
-          <a class="submenu-item">
-            Test One
-          </a>
+        <a
+  class="submenu-item"
+  routerLink="/admin/merchants"
+  routerLinkActive="active-submenu"
+>
+  All Merchants
+</a>
 
           <a class="submenu-item">
             Test Two
@@ -116,7 +161,10 @@
     <!-- Reports -->
     <div class="menu-group">
 
-      <div class="menu-item submenu-toggle" (click)="toggleReport()">
+      <div
+        class="menu-item submenu-toggle"
+        (click)="toggleReport()"
+      >
 
         <div class="menu-left">
           <i class="bi bi-file-earmark-text"></i>
@@ -150,40 +198,65 @@
     </div>
 
     <!-- Settings -->
-    <div class="menu-group">
+   <!-- Settings -->
+<div class="menu-group">
 
-      <div class="menu-item submenu-toggle" (click)="toggleSettings()">
+  <div
+    class="menu-item submenu-toggle"
+    (click)="toggleSettings()"
+  >
 
-        <div class="menu-left">
-          <i class="bi bi-gear"></i>
-          <span>Settings</span>
-        </div>
+    <div class="menu-left">
 
-        <i
-          class="bi"
-          [class.bi-chevron-down]="settingsExpanded"
-          [class.bi-chevron-right]="!settingsExpanded"
-        ></i>
+      <i class="bi bi-gear"></i>
 
-      </div>
-
-      @if (settingsExpanded) {
-
-        <div class="submenu">
-
-          <a class="submenu-item">
-            Test One
-          </a>
-
-          <a class="submenu-item">
-            Test Two
-          </a>
-
-        </div>
-
-      }
+      <span>Settings</span>
 
     </div>
+
+    <i
+      class="bi"
+      [class.bi-chevron-down]="settingsExpanded"
+      [class.bi-chevron-right]="!settingsExpanded"
+    ></i>
+
+  </div>
+
+  @if (settingsExpanded) {
+
+    <div class="submenu">
+
+      <!-- SUPPORT -->
+
+      <a
+        class="submenu-item"
+        (click)="openSupport()"
+      >
+
+        <i class="bi bi-headset"></i>
+
+        <span>Support</span>
+
+      </a>
+
+      <!-- LOGOUT -->
+
+      <a
+        class="submenu-item logout-item"
+        (click)="logout()"
+      >
+
+        <i class="bi bi-box-arrow-right"></i>
+
+        <span>Logout</span>
+
+      </a>
+
+    </div>
+
+  }
+
+</div>
 
   </div>
 

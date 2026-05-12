@@ -1,1 +1,596 @@
-<p>business-entity-types works!</p>
+<div class="business-entity-page container-fluid py-4">
+
+  <!-- =========================================
+  PAGE HEADER
+  ========================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h2 class="page-title">
+        Business Entity Types
+      </h2>
+
+      <p class="page-subtitle">
+        Manage all business entity master records.
+      </p>
+
+    </div>
+
+    <!-- ADD ENTITY -->
+    <button
+      class="btn add-btn"
+      (click)="openAddModal()"
+    >
+
+      <i class="bi bi-plus-circle"></i>
+
+      Add Entity
+
+    </button>
+
+  </div>
+
+  <!-- =========================================
+  FILTER SECTION
+  ========================================== -->
+
+  <div class="filter-card">
+
+    <div class="row g-3 align-items-center">
+
+      <!-- SEARCH -->
+      <div class="col-lg-8 col-md-12">
+
+        <div class="search-box">
+
+          <i class="bi bi-search"></i>
+
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search by ID, name, description or status..."
+            [(ngModel)]="searchText"
+            (input)="filterEntities()"
+          />
+
+        </div>
+
+      </div>
+
+      <!-- EXPORT -->
+      <div class="col-lg-4 col-md-12">
+
+        <button
+          class="btn export-btn w-100"
+          (click)="exportToCSV()"
+        >
+
+          <i class="bi bi-download"></i>
+
+          Export CSV
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+  TABLE CARD
+  ========================================== -->
+
+  <div class="table-card">
+
+    <!-- TABLE HEADER -->
+    <div class="table-top-header">
+
+      <div class="table-title">
+
+        Business Entity Master List
+
+      </div>
+
+      <div class="table-records">
+
+        Total Records :
+        <strong>{{ filteredEntities.length }}</strong>
+
+      </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+
+      <table class="table custom-table">
+
+        <thead>
+
+          <tr>
+
+            <th>ID</th>
+
+            <th>Entity Name</th>
+
+            <th>Description</th>
+
+            <th>Status</th>
+
+            <th>Created Date</th>
+
+            <th>Updated Date</th>
+
+            <th class="text-center">
+              Action
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (
+            entity of paginatedEntities;
+            track entity.businessEntityTypeID
+          ) {
+
+          <tr>
+
+            <!-- ID -->
+            <td>
+
+              <div class="td-box id-box">
+
+                #{{ entity.businessEntityTypeID }}
+
+              </div>
+
+            </td>
+
+            <!-- NAME -->
+            <td>
+
+              <div class="td-box name-box">
+
+                {{ entity.entityName }}
+
+              </div>
+
+            </td>
+
+            <!-- DESCRIPTION -->
+            <td>
+
+              <div class="td-box">
+
+                {{ entity.description }}
+
+              </div>
+
+            </td>
+
+            <!-- STATUS -->
+            <td>
+
+              <div class="td-box">
+
+                <span
+                  class="status-badge"
+                  [ngClass]="
+                    entity.isActive
+                    ? 'active-status'
+                    : 'inactive-status'
+                  "
+                >
+
+                  {{
+                    entity.isActive
+                    ? 'Active'
+                    : 'Inactive'
+                  }}
+
+                </span>
+
+              </div>
+
+            </td>
+
+            <!-- CREATED -->
+            <td>
+
+              <div class="td-box">
+
+                {{ entity.createdDate }}
+
+              </div>
+
+            </td>
+
+            <!-- UPDATED -->
+            <td>
+
+              <div class="td-box">
+
+                {{ entity.updatedDate }}
+
+              </div>
+
+            </td>
+
+            <!-- ACTION -->
+            <td>
+
+              <div class="td-box action-box">
+
+                <!-- VIEW -->
+                <button
+                  class="btn table-btn view-btn"
+                  (click)="openDetails(entity)"
+                >
+
+                  <i class="bi bi-eye"></i>
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- =========================================
+    PAGINATION
+    ========================================== -->
+
+    <div class="pagination-wrapper">
+
+      <button
+        class="btn pagination-btn"
+        [disabled]="currentPage === 1"
+        (click)="previousPage()"
+      >
+        Previous
+      </button>
+
+      <div class="page-number">
+
+        Page {{ currentPage }}
+        of
+        {{ totalPages }}
+
+      </div>
+
+      <button
+        class="btn pagination-btn"
+        [disabled]="currentPage === totalPages"
+        (click)="nextPage()"
+      >
+        Next
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- =========================================
+VIEW DETAILS MODAL
+========================================= -->
+
+@if (showModal) {
+
+<div class="custom-modal-overlay">
+
+  <div class="custom-modal">
+
+    <!-- HEADER -->
+    <div class="modal-header-custom">
+
+      <div>
+
+        <h3 class="modal-title">
+          Business Entity Details
+        </h3>
+
+        <p class="modal-subtitle">
+          Complete entity information
+        </p>
+
+      </div>
+
+      <button
+        class="close-btn"
+        (click)="closeModal()"
+      >
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    </div>
+
+    <!-- BODY -->
+    <div class="modal-body-custom">
+
+      <div class="details-grid">
+
+        <!-- ID -->
+        <div class="detail-card">
+
+          <label>
+            Business Entity ID
+          </label>
+
+          <div class="detail-value">
+
+            #{{ selectedEntity?.businessEntityTypeID }}
+
+          </div>
+
+        </div>
+
+        <!-- NAME -->
+        <div class="detail-card">
+
+          <label>
+            Entity Name
+          </label>
+
+          <div class="detail-value">
+
+            {{ selectedEntity?.entityName }}
+
+          </div>
+
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="detail-card">
+
+          <label>
+            Description
+          </label>
+
+          <div class="detail-value">
+
+            {{ selectedEntity?.description }}
+
+          </div>
+
+        </div>
+
+        <!-- STATUS -->
+        <div class="detail-card">
+
+          <label>
+            Status
+          </label>
+
+          <div class="detail-value">
+
+            <span
+              class="status-badge"
+              [ngClass]="
+                selectedEntity?.isActive
+                ? 'active-status'
+                : 'inactive-status'
+              "
+            >
+
+              {{
+                selectedEntity?.isActive
+                ? 'Active'
+                : 'Inactive'
+              }}
+
+            </span>
+
+          </div>
+
+        </div>
+
+        <!-- CREATED -->
+        <div class="detail-card">
+
+          <label>
+            Created Date
+          </label>
+
+          <div class="detail-value">
+
+            {{ selectedEntity?.createdDate }}
+
+          </div>
+
+        </div>
+
+        <!-- UPDATED -->
+        <div class="detail-card">
+
+          <label>
+            Updated Date
+          </label>
+
+          <div class="detail-value">
+
+            {{ selectedEntity?.updatedDate }}
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="modal-footer-custom">
+
+      <button
+        class="btn reject-btn"
+        (click)="rejectEntity()"
+      >
+        Reject
+      </button>
+
+      <button
+        class="btn cancel-btn"
+        (click)="closeModal()"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="btn approve-btn"
+        (click)="approveEntity()"
+      >
+        Approve
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
+
+<!-- =========================================
+ADD ENTITY MODAL
+========================================= -->
+
+@if (showAddModal) {
+
+<div class="custom-modal-overlay">
+
+  <div class="custom-modal add-modal">
+
+    <!-- HEADER -->
+    <div class="modal-header-custom">
+
+      <div>
+
+        <h3 class="modal-title">
+          Add New Entity
+        </h3>
+
+        <p class="modal-subtitle">
+          Create new business entity
+        </p>
+
+      </div>
+
+      <button
+        class="close-btn"
+        (click)="closeAddModal()"
+      >
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    </div>
+
+    <!-- BODY -->
+    <div class="modal-body-custom">
+
+      <div class="form-grid">
+
+        <!-- NAME -->
+        <div class="form-group">
+
+          <label>
+            Entity Name
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="newEntity.entityName"
+            placeholder="Enter entity name"
+          />
+
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="form-group">
+
+          <label>
+            Description
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="newEntity.description"
+            placeholder="Enter description"
+          />
+
+        </div>
+
+        <!-- STATUS -->
+        <div class="form-group full-width">
+
+          <label>
+            Status
+          </label>
+
+          <select
+            class="form-select"
+            [(ngModel)]="newEntity.isActive"
+          >
+
+            <option [ngValue]="true">
+              Active
+            </option>
+
+            <option [ngValue]="false">
+              Inactive
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="modal-footer-custom">
+
+      <button
+        class="btn cancel-btn"
+        (click)="closeAddModal()"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="btn approve-btn"
+        (click)="saveEntity()"
+      >
+        Save Entity
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
