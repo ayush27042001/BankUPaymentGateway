@@ -1,36 +1,6 @@
 <div class="business-proof-types-page">
 
   <!-- ========================= -->
-  <!-- PAGE HEADER -->
-  <!-- ========================= -->
-
-  <div class="page-header">
-
-    <div class="header-left">
-
-      <h2>Business Proof Types</h2>
-
-      <p>
-        Manage all business proof type master records.
-      </p>
-
-    </div>
-
-    <div class="header-right">
-
-      <button
-        class="add-btn"
-        (click)="openAddModal()"
-      >
-        <i class="bi bi-plus-circle"></i>
-        Add Proof Type
-      </button>
-
-    </div>
-
-  </div>
-
-  <!-- ========================= -->
   <!-- SEARCH SECTION -->
   <!-- ========================= -->
 
@@ -52,6 +22,16 @@
         />
 
       </div>
+
+      <!-- ADD BUTTON -->
+
+      <button
+        class="add-btn"
+        (click)="openAddModal()"
+      >
+        <i class="bi bi-plus-circle"></i>
+        Add Proof Type
+      </button>
 
       <!-- EXPORT -->
 
@@ -211,12 +191,27 @@
 
               <td>
 
-                <button
-                  class="action-btn"
-                  (click)="openViewModal(proofType)"
-                >
-                  <i class="bi bi-eye"></i>
-                </button>
+                <div class="action-group">
+
+                  <!-- VIEW BUTTON -->
+
+                  <button
+                    class="action-btn view-btn"
+                    (click)="openViewModal(proofType)"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+
+                  <!-- EDIT BUTTON -->
+
+                  <button
+                    class="action-btn edit-btn"
+                    (click)="openEditModal(proofType)"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+
+                </div>
 
               </td>
 
@@ -301,8 +296,6 @@
 
           <div class="details-grid">
 
-            <!-- ID -->
-
             <div class="detail-card">
 
               <label>
@@ -314,8 +307,6 @@
               </h4>
 
             </div>
-
-            <!-- PROOF NAME -->
 
             <div class="detail-card">
 
@@ -329,8 +320,6 @@
 
             </div>
 
-            <!-- PROOF CODE -->
-
             <div class="detail-card">
 
               <label>
@@ -342,8 +331,6 @@
               </h4>
 
             </div>
-
-            <!-- STATUS -->
 
             <div class="detail-card">
 
@@ -366,8 +353,6 @@
 
             </div>
 
-            <!-- DESCRIPTION -->
-
             <div class="detail-card full-width">
 
               <label>
@@ -380,8 +365,6 @@
 
             </div>
 
-            <!-- CREATED DATE -->
-
             <div class="detail-card">
 
               <label>
@@ -393,8 +376,6 @@
               </h4>
 
             </div>
-
-            <!-- UPDATED DATE -->
 
             <div class="detail-card">
 
@@ -455,8 +436,6 @@
 
       <div class="custom-modal add-category-modal">
 
-        <!-- HEADER -->
-
         <div class="modal-header">
 
           <div>
@@ -478,13 +457,9 @@
 
         </div>
 
-        <!-- BODY -->
-
         <div class="modal-body">
 
           <div class="details-grid">
-
-            <!-- PROOF NAME -->
 
             <div class="form-group">
 
@@ -500,8 +475,6 @@
 
             </div>
 
-            <!-- PROOF CODE -->
-
             <div class="form-group">
 
               <label>
@@ -515,8 +488,6 @@
               />
 
             </div>
-
-            <!-- STATUS -->
 
             <div class="form-group">
 
@@ -538,8 +509,6 @@
 
             </div>
 
-            <!-- DESCRIPTION -->
-
             <div class="form-group full-width">
 
               <label>Description</label>
@@ -556,8 +525,6 @@
 
         </div>
 
-        <!-- FOOTER -->
-
         <div class="modal-footer">
 
           <button
@@ -572,6 +539,129 @@
             (click)="addProofType()"
           >
             Add Proof Type
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- ========================= -->
+  <!-- EDIT MODAL -->
+  <!-- ========================= -->
+
+  @if (showEditModal) {
+
+    <div class="custom-modal-backdrop">
+
+      <div class="custom-modal add-category-modal">
+
+        <div class="modal-header">
+
+          <div>
+
+            <h3>Edit Business Proof Type</h3>
+
+            <p>
+              Update proof type details
+            </p>
+
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeEditModal()"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+        <div class="modal-body">
+
+          <div class="details-grid">
+
+            <div class="form-group">
+
+              <label>
+                Proof Name
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="editProofType.proofName"
+                placeholder="Enter proof name"
+              />
+
+            </div>
+
+            <div class="form-group">
+
+              <label>
+                Proof Code
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="editProofType.proofCode"
+                placeholder="Enter proof code"
+              />
+
+            </div>
+
+            <div class="form-group">
+
+              <label>Status</label>
+
+              <select
+                [(ngModel)]="editProofType.isActive"
+              >
+
+                <option [ngValue]="true">
+                  Active
+                </option>
+
+                <option [ngValue]="false">
+                  Inactive
+                </option>
+
+              </select>
+
+            </div>
+
+            <div class="form-group full-width">
+
+              <label>Description</label>
+
+              <textarea
+                rows="4"
+                [(ngModel)]="editProofType.description"
+                placeholder="Enter description"
+              ></textarea>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+          <button
+            class="cancel-btn"
+            (click)="closeEditModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="approve-btn"
+            (click)="updateProofType()"
+          >
+            Update Proof Type
           </button>
 
         </div>
