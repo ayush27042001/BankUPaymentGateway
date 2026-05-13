@@ -5,7 +5,7 @@
 .business-proof-types-page {
   width: 100%;
   min-height: 100vh;
-  padding: 24px;
+  // padding: 24px;
   background: #f4f7fb;
 }
 
@@ -641,7 +641,80 @@
   }
 
 }
+/* =========================================
+   ACTION GROUP
+========================================= */
 
+.action-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+/* =========================================
+   ACTION BUTTON
+========================================= */
+
+.action-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #dce4ee;
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+/* =========================================
+   VIEW BUTTON
+========================================= */
+
+.view-btn {
+  color: #7e22ce;
+
+  &:hover {
+    background: #f3e8ff;
+    border-color: #d8b4fe;
+    transform: translateY(-2px);
+  }
+}
+
+/* =========================================
+   EDIT BUTTON
+========================================= */
+
+.edit-btn {
+  color: #d97706;
+
+  &:hover {
+    background: #fff7ed;
+    border-color: #fdba74;
+    transform: translateY(-2px);
+  }
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 576px) {
+  .action-group {
+    gap: 8px;
+  }
+
+  .action-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 14px;
+  }
+
+}
 /* =========================================
    RESPONSIVE
 ========================================= */

@@ -536,4 +536,113 @@ export class BusinessProofTypes {
 
   }
 
+
+//   openEditModal(proofType: any): void {
+//   console.log('Edit:', proofType);
+// }
+/* =========================================
+   EDIT MODAL
+========================================= */
+
+showEditModal: boolean = false;
+
+editProofType: any = {
+  businessProofTypeID: 0,
+  proofName: '',
+  proofCode: '',
+  description: '',
+  isActive: true,
+  createdDate: '',
+  updatedDate: ''
+};
+
+/* =========================================
+   OPEN EDIT MODAL
+========================================= */
+
+openEditModal(proofType: any): void {
+
+  this.editProofType = {
+    ...proofType
+  };
+
+  this.showEditModal = true;
+
+  document.body.style.overflow = 'hidden';
+
+}
+
+/* =========================================
+   CLOSE EDIT MODAL
+========================================= */
+
+closeEditModal(): void {
+
+  this.showEditModal = false;
+
+  document.body.style.overflow = 'auto';
+
+}
+
+/* =========================================
+   UPDATE PROOF TYPE
+========================================= */
+
+updateProofType(): void {
+
+  if (
+    !this.editProofType.proofName.trim()
+    ||
+    !this.editProofType.proofCode.trim()
+    ||
+    !this.editProofType.description.trim()
+  ) {
+
+    alert(
+      'Please fill all required fields.'
+    );
+
+    return;
+
+  }
+
+  const index =
+    this.businessProofTypes.findIndex(
+      (proof) =>
+        proof.businessProofTypeID ===
+        this.editProofType.businessProofTypeID
+    );
+
+  if (index !== -1) {
+
+    this.businessProofTypes[index] = {
+
+      ...this.editProofType,
+
+      proofCode:
+        this.editProofType.proofCode
+          .toUpperCase(),
+
+      updatedDate:
+        new Date().toLocaleDateString(
+          'en-GB',
+          {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          }
+        )
+
+    };
+
+    this.filteredProofTypes = [
+      ...this.businessProofTypes
+    ];
+
+  }
+
+  this.closeEditModal();
+
+}
+
 }

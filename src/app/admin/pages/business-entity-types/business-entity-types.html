@@ -1,10 +1,10 @@
-<div class="business-entity-page container-fluid py-4">
+<div class="business-entity-page container-fluid py-2">
 
   <!-- =========================================
   PAGE HEADER
   ========================================== -->
 
-  <div class="page-header">
+  <!-- <div class="page-header">
 
     <div>
 
@@ -18,7 +18,7 @@
 
     </div>
 
-    <!-- ADD ENTITY -->
+  
     <button
       class="btn add-btn"
       (click)="openAddModal()"
@@ -30,40 +30,55 @@
 
     </button>
 
-  </div>
+  </div> -->
 
   <!-- =========================================
   FILTER SECTION
   ========================================== -->
 
-  <div class="filter-card">
+ <div class="filter-card">
 
-    <div class="row g-3 align-items-center">
+  <div class="row g-3 align-items-center">
 
-      <!-- SEARCH -->
-      <div class="col-lg-8 col-md-12">
+    <!-- SEARCH -->
+    <div class="col-lg-6 col-md-12">
 
-        <div class="search-box">
+      <div class="search-box">
 
-          <i class="bi bi-search"></i>
+        <i class="bi bi-search"></i>
 
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Search by ID, name, description or status..."
-            [(ngModel)]="searchText"
-            (input)="filterEntities()"
-          />
-
-        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by ID, name, description or status..."
+          [(ngModel)]="searchText"
+          (input)="filterEntities()"
+        />
 
       </div>
 
-      <!-- EXPORT -->
-      <div class="col-lg-4 col-md-12">
+    </div>
 
+    <!-- ACTION BUTTONS -->
+    <div class="col-lg-6 col-md-12">
+
+      <div class="d-flex gap-2 flex-wrap">
+
+        <!-- ADD ENTITY -->
         <button
-          class="btn export-btn w-100"
+          class="btn add-btn flex-fill"
+          (click)="openAddModal()"
+        >
+
+          <i class="bi bi-plus-circle"></i>
+
+          Add Entity
+
+        </button>
+
+        <!-- EXPORT -->
+        <button
+          class="btn export-btn flex-fill"
           (click)="exportToCSV()"
         >
 
@@ -78,6 +93,8 @@
     </div>
 
   </div>
+
+</div>
 
   <!-- =========================================
   TABLE CARD
