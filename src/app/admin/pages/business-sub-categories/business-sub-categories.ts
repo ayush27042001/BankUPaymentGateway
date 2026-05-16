@@ -621,4 +621,111 @@ export class BusinessSubCategories {
 
   }
 
+  /* =========================================
+     EDIT MODAL
+  ========================================= */
+
+  showEditModal: boolean = false;
+
+  editSubCategory: any = {
+    businessSubCategoryID: 0,
+    businessCategoryID: 0,
+    categoryName: '',
+    subCategoryName: '',
+    subCategoryCode: '',
+    description: '',
+    isActive: true,
+    createdDate: '',
+    updatedDate: ''
+  };
+
+  /* =========================================
+     OPEN EDIT MODAL
+  ========================================= */
+
+  openEditModal(subCategory: any): void {
+
+    this.editSubCategory = {
+      ...subCategory
+    };
+
+    this.showEditModal = true;
+
+    document.body.style.overflow = 'hidden';
+
+  }
+
+  /* =========================================
+     CLOSE EDIT MODAL
+  ========================================= */
+
+  closeEditModal(): void {
+
+    this.showEditModal = false;
+
+    document.body.style.overflow = 'auto';
+
+  }
+
+  /* =========================================
+     UPDATE SUB CATEGORY
+  ========================================= */
+
+  updateSubCategory(): void {
+
+    if (
+      !this.editSubCategory.subCategoryName.trim()
+      ||
+      !this.editSubCategory.subCategoryCode.trim()
+      ||
+      !this.editSubCategory.description.trim()
+    ) {
+
+      alert(
+        'Please fill all required fields.'
+      );
+
+      return;
+
+    }
+
+    const index =
+      this.businessSubCategories.findIndex(
+        (subCat) =>
+          subCat.businessSubCategoryID ===
+          this.editSubCategory.businessSubCategoryID
+      );
+
+    if (index !== -1) {
+
+      this.businessSubCategories[index] = {
+
+        ...this.editSubCategory,
+
+        subCategoryCode:
+          this.editSubCategory.subCategoryCode
+            .toUpperCase(),
+
+        updatedDate:
+          new Date().toLocaleDateString(
+            'en-GB',
+            {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            }
+          )
+
+      };
+
+      this.filteredSubCategories = [
+        ...this.businessSubCategories
+      ];
+
+    }
+
+    this.closeEditModal();
+
+  }
+
 }

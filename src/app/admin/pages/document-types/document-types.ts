@@ -304,61 +304,62 @@ export class DocumentTypes {
   ========================================= */
 
   openViewModal(
-    document: any
-  ): void {
+  doc: any
+): void {
 
-    this.selectedDocumentType =
-      document;
+  this.selectedDocumentType =
+    doc;
 
-    this.showViewModal = true;
+  this.showViewModal = true;
 
-    document.body.style.overflow =
-      'hidden';
+  window.document.body.style.overflow =
+    'hidden';
 
-  }
+}
 
   /* =========================================
      CLOSE VIEW MODAL
   ========================================= */
 
-  closeViewModal(): void {
+ closeViewModal(): void {
 
-    this.showViewModal = false;
+  this.showViewModal = false;
 
-    this.selectedDocumentType = null;
+  this.selectedDocumentType = null;
 
-    document.body.style.overflow =
-      'auto';
+  window.document.body.style.overflow =
+    'auto';
 
-  }
+}
 
   /* =========================================
      OPEN ADD MODAL
   ========================================= */
 
-  openAddModal(): void {
+ openAddModal(): void {
 
-    this.showAddModal = true;
+  this.showAddModal = true;
 
-    document.body.style.overflow =
-      'hidden';
+  window.document.body.style.overflow =
+    'hidden';
 
-  }
+}
 
   /* =========================================
      CLOSE ADD MODAL
   ========================================= */
 
-  closeAddModal(): void {
+ closeAddModal(): void {
 
-    this.showAddModal = false;
+  this.showAddModal = false;
 
-    document.body.style.overflow =
-      'auto';
+  window.document.body.style.overflow =
+    'auto';
 
-    this.resetForm();
+  this.resetForm();
 
-  }
+}
+
 
   /* =========================================
      RESET FORM
@@ -620,6 +621,116 @@ export class DocumentTypes {
     link.click();
 
     document.body.removeChild(link);
+
+  }
+
+  /* =========================================
+     EDIT MODAL
+  ========================================= */
+
+  showEditModal: boolean = false;
+
+  editDocumentType: any = {
+    documentTypeID: 0,
+    documentName: '',
+    documentCode: '',
+    allowedExtensions: '',
+    maxFileSizeMB: null,
+    isRequired: true,
+    isActive: true,
+    createdDate: '',
+    updatedDate: ''
+  };
+
+  /* =========================================
+     OPEN EDIT MODAL
+  ========================================= */
+
+  openEditModal(docType: any): void {
+
+  this.editDocumentType = {
+    ...docType
+  };
+
+  this.showEditModal = true;
+
+  window.document.body.style.overflow =
+    'hidden';
+
+}
+
+
+  /* =========================================
+     CLOSE EDIT MODAL
+  ========================================= */
+
+ closeEditModal(): void {
+
+  this.showEditModal = false;
+
+  window.document.body.style.overflow =
+    'auto';
+
+}
+
+  /* =========================================
+     UPDATE DOCUMENT TYPE
+  ========================================= */
+
+  updateDocumentType(): void {
+
+    if (
+      !this.editDocumentType.documentName.trim()
+      ||
+      !this.editDocumentType.documentCode.trim()
+      ||
+      !this.editDocumentType.allowedExtensions.trim()
+    ) {
+
+      alert(
+        'Please fill all required fields.'
+      );
+
+      return;
+
+    }
+
+    const index =
+      this.documentTypes.findIndex(
+        (doc) =>
+          doc.documentTypeID ===
+          this.editDocumentType.documentTypeID
+      );
+
+    if (index !== -1) {
+
+      this.documentTypes[index] = {
+
+        ...this.editDocumentType,
+
+        documentCode:
+          this.editDocumentType.documentCode
+            .toUpperCase(),
+
+        updatedDate:
+          new Date().toLocaleDateString(
+            'en-GB',
+            {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            }
+          )
+
+      };
+
+      this.filteredDocumentTypes = [
+        ...this.documentTypes
+      ];
+
+    }
+
+    this.closeEditModal();
 
   }
 

@@ -496,4 +496,102 @@ export class PepStatus {
 
   }
 
+  /* =========================================
+     EDIT MODAL
+  ========================================= */
+
+  showEditModal: boolean = false;
+
+  editPepStatus: any = {
+    pepStatusID: 0,
+    statusName: '',
+    description: '',
+    isActive: true,
+    createdDate: '',
+    updatedDate: ''
+  };
+
+  /* =========================================
+     OPEN EDIT MODAL
+  ========================================= */
+
+  openEditModal(status: any): void {
+
+    this.editPepStatus = {
+      ...status
+    };
+
+    this.showEditModal = true;
+
+    document.body.style.overflow = 'hidden';
+
+  }
+
+  /* =========================================
+     CLOSE EDIT MODAL
+  ========================================= */
+
+  closeEditModal(): void {
+
+    this.showEditModal = false;
+
+    document.body.style.overflow = 'auto';
+
+  }
+
+  /* =========================================
+     UPDATE PEP STATUS
+  ========================================= */
+
+  updatePepStatus(): void {
+
+    if (
+      !this.editPepStatus.statusName.trim()
+      ||
+      !this.editPepStatus.description.trim()
+    ) {
+
+      alert(
+        'Please fill all required fields.'
+      );
+
+      return;
+
+    }
+
+    const index =
+      this.pepStatusList.findIndex(
+        (status) =>
+          status.pepStatusID ===
+          this.editPepStatus.pepStatusID
+      );
+
+    if (index !== -1) {
+
+      this.pepStatusList[index] = {
+
+        ...this.editPepStatus,
+
+        updatedDate:
+          new Date().toLocaleDateString(
+            'en-GB',
+            {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            }
+          )
+
+      };
+
+      this.filteredPepStatus = [
+        ...this.pepStatusList
+      ];
+
+    }
+
+    this.closeEditModal();
+
+  }
+
 }

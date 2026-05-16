@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
     RouterLink,
     RouterLinkActive
   ],
-  templateUrl: './sidebar.html',
+  templateUrl: './sidebar.html', 
   styleUrl: './sidebar.scss',
 })
 export class Sidebar {
@@ -20,6 +20,8 @@ export class Sidebar {
   merchantExpanded = false;
   reportExpanded = false;
   settingsExpanded = false;
+  userExpanded = false;
+  onboardingExpanded = false;
 
   toggleMasters(): void {
     this.mastersExpanded = !this.mastersExpanded;
@@ -28,6 +30,12 @@ export class Sidebar {
   toggleMerchant(): void {
     this.merchantExpanded = !this.merchantExpanded;
   }
+  toggleOnboarding(): void {
+  this.onboardingExpanded = !this.onboardingExpanded;
+}
+  toggleUsers(): void {
+  this.userExpanded = !this.userExpanded;
+}
 
   toggleReport(): void {
     this.reportExpanded = !this.reportExpanded;

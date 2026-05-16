@@ -254,6 +254,16 @@
 
                 </button>
 
+                <!-- EDIT -->
+                <button
+                  class="btn table-btn edit-btn"
+                  (click)="openEditModal(entity)"
+                >
+
+                  <i class="bi bi-pencil-square"></i>
+
+                </button>
+
               </div>
 
             </td>
@@ -609,5 +619,114 @@ ADD ENTITY MODAL
   </div>
 
 </div>
+
+}
+
+<!-- ========================= -->
+<!-- EDIT MODAL -->
+<!-- ========================= -->
+
+@if (showEditModal) {
+
+  <div class="modal-backdrop-custom">
+
+    <div class="modal-custom add-entity-modal">
+
+      <!-- HEADER -->
+      <div class="modal-header-custom">
+
+        <div>
+
+          <h3>Edit Business Entity Type</h3>
+
+          <p>Update entity type details</p>
+
+        </div>
+
+        <button
+          class="close-btn"
+          (click)="closeEditModal()"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body-custom">
+
+        <div class="form-grid">
+
+          <!-- ENTITY NAME -->
+          <div class="form-group-custom">
+
+            <label>Entity Name</label>
+
+            <input
+              type="text"
+              [(ngModel)]="editEntity.entityName"
+              placeholder="Enter entity name"
+            />
+
+          </div>
+
+          <!-- DESCRIPTION -->
+          <div class="form-group-custom full-width">
+
+            <label>Description</label>
+
+            <textarea
+              rows="4"
+              [(ngModel)]="editEntity.description"
+              placeholder="Enter description"
+            ></textarea>
+
+          </div>
+
+          <!-- STATUS -->
+          <div class="form-group-custom">
+
+            <label>Status</label>
+
+            <select [(ngModel)]="editEntity.isActive">
+
+              <option [ngValue]="true">
+                Active
+              </option>
+
+              <option [ngValue]="false">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer-custom">
+
+        <button
+          class="btn cancel-btn"
+          (click)="closeEditModal()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="btn approve-btn"
+          (click)="updateEntity()"
+        >
+          Update Entity
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
 
 }

@@ -205,12 +205,23 @@
 
               <td>
 
-                <button
-                  class="action-btn"
-                  (click)="openViewModal(pep)"
-                >
-                  <i class="bi bi-eye"></i>
-                </button>
+                <div class="action-group">
+
+                  <button
+                    class="action-btn view-btn"
+                    (click)="openViewModal(pep)"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+
+                  <button
+                    class="action-btn edit-btn"
+                    (click)="openEditModal(pep)"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+
+                </div>
 
               </td>
 
@@ -538,6 +549,121 @@
             (click)="addPepStatus()"
           >
             Add PEP Status
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- ========================= -->
+  <!-- EDIT MODAL -->
+  <!-- ========================= -->
+
+  @if (showEditModal) {
+
+    <div class="custom-modal-backdrop">
+
+      <div class="custom-modal add-category-modal">
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h3>Edit PEP Status</h3>
+
+            <p>Update status details</p>
+
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeEditModal()"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+          <div class="details-grid">
+
+            <!-- STATUS NAME -->
+
+            <div class="form-group full-width">
+
+              <label>Status Name</label>
+
+              <input
+                type="text"
+                [(ngModel)]="editPepStatus.statusName"
+                placeholder="Enter status name"
+              />
+
+            </div>
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group full-width">
+
+              <label>Description</label>
+
+              <textarea
+                rows="4"
+                [(ngModel)]="editPepStatus.description"
+                placeholder="Enter description"
+              ></textarea>
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+              <label>Status</label>
+
+              <select [(ngModel)]="editPepStatus.isActive">
+
+                <option [ngValue]="true">
+                  Active
+                </option>
+
+                <option [ngValue]="false">
+                  Inactive
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            class="cancel-btn"
+            (click)="closeEditModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="approve-btn"
+            (click)="updatePepStatus()"
+          >
+            Update PEP Status
           </button>
 
         </div>

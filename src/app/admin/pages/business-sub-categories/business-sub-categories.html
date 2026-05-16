@@ -230,12 +230,23 @@
 
               <td>
 
-                <button
-                  class="action-btn"
-                  (click)="openViewModal(subCategory)"
-                >
-                  <i class="bi bi-eye"></i>
-                </button>
+                <div class="action-group">
+
+                  <button
+                    class="action-btn view-btn"
+                    (click)="openViewModal(subCategory)"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+
+                  <button
+                    class="action-btn edit-btn"
+                    (click)="openEditModal(subCategory)"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+
+                </div>
 
               </td>
 
@@ -639,6 +650,153 @@
             (click)="addSubCategory()"
           >
             Add Sub Category
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- ========================= -->
+  <!-- EDIT MODAL -->
+  <!-- ========================= -->
+
+  @if (showEditModal) {
+
+    <div class="custom-modal-backdrop">
+
+      <div class="custom-modal add-category-modal">
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h3>Edit Business Sub Category</h3>
+
+            <p>Update sub category details</p>
+
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeEditModal()"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+          <div class="details-grid">
+
+            <!-- CATEGORY -->
+
+            <div class="form-group">
+
+              <label>Category</label>
+
+              <select [(ngModel)]="editSubCategory.categoryName">
+
+                @for (cat of categories; track $index) {
+                  <option [value]="cat">
+                    {{ cat }}
+                  </option>
+                }
+
+              </select>
+
+            </div>
+
+            <!-- SUB CATEGORY NAME -->
+
+            <div class="form-group">
+
+              <label>Sub Category Name</label>
+
+              <input
+                type="text"
+                [(ngModel)]="editSubCategory.subCategoryName"
+                placeholder="Enter sub category name"
+              />
+
+            </div>
+
+            <!-- SUB CATEGORY CODE -->
+
+            <div class="form-group">
+
+              <label>Sub Category Code</label>
+
+              <input
+                type="text"
+                [(ngModel)]="editSubCategory.subCategoryCode"
+                placeholder="Enter sub category code"
+              />
+
+            </div>
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group full-width">
+
+              <label>Description</label>
+
+              <textarea
+                rows="4"
+                [(ngModel)]="editSubCategory.description"
+                placeholder="Enter description"
+              ></textarea>
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+              <label>Status</label>
+
+              <select [(ngModel)]="editSubCategory.isActive">
+
+                <option [ngValue]="true">
+                  Active
+                </option>
+
+                <option [ngValue]="false">
+                  Inactive
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            class="cancel-btn"
+            (click)="closeEditModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="approve-btn"
+            (click)="updateSubCategory()"
+          >
+            Update Sub Category
           </button>
 
         </div>

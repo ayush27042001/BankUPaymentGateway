@@ -197,12 +197,23 @@
 
               <td>
 
-                <button
-                  class="action-btn"
-                  (click)="openViewModal(category)"
-                >
-                  <i class="bi bi-eye"></i>
-                </button>
+                <div class="action-group">
+
+                  <button
+                    class="action-btn view-btn"
+                    (click)="openViewModal(category)"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+
+                  <button
+                    class="action-btn edit-btn"
+                    (click)="openEditModal(category)"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+
+                </div>
 
               </td>
 
@@ -530,6 +541,135 @@
             (click)="addCategory()"
           >
             Add Category
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- ========================= -->
+  <!-- EDIT MODAL -->
+  <!-- ========================= -->
+
+  @if (showEditModal) {
+
+    <div class="custom-modal-backdrop">
+
+      <div class="custom-modal add-category-modal">
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h3>Edit Business Category</h3>
+
+            <p>Update category details</p>
+
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeEditModal()"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+          <div class="details-grid">
+
+            <!-- CATEGORY NAME -->
+
+            <div class="form-group">
+
+              <label>Category Name</label>
+
+              <input
+                type="text"
+                [(ngModel)]="editCategory.categoryName"
+                placeholder="Enter category name"
+              />
+
+            </div>
+
+            <!-- CATEGORY CODE -->
+
+            <div class="form-group">
+
+              <label>Category Code</label>
+
+              <input
+                type="text"
+                [(ngModel)]="editCategory.categoryCode"
+                placeholder="Enter category code"
+              />
+
+            </div>
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group full-width">
+
+              <label>Description</label>
+
+              <textarea
+                rows="4"
+                [(ngModel)]="editCategory.description"
+                placeholder="Enter category description"
+              ></textarea>
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="form-group">
+
+              <label>Status</label>
+
+              <select [(ngModel)]="editCategory.isActive">
+
+                <option [ngValue]="true">
+                  Active
+                </option>
+
+                <option [ngValue]="false">
+                  Inactive
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            class="cancel-btn"
+            (click)="closeEditModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="approve-btn"
+            (click)="updateCategory()"
+          >
+            Update Category
           </button>
 
         </div>
