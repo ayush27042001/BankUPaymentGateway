@@ -5,7 +5,6 @@
 .business-categories-page {
   width: 100%;
   min-height: 100vh;
-  // padding: 24px;
   background: #f4f7fb;
 }
 
@@ -61,6 +60,7 @@
   gap: 10px;
   transition: 0.3s ease;
   box-shadow: 0 10px 24px rgba(109, 0, 255, 0.22);
+  cursor: pointer;
 
   i {
     font-size: 16px;
@@ -153,6 +153,7 @@
   justify-content: center;
   gap: 10px;
   transition: 0.3s ease;
+  cursor: pointer;
 
   &:hover {
     transform: translateY(-2px);
@@ -302,22 +303,65 @@
 }
 
 /* =========================================
+   ACTION GROUP
+========================================= */
+
+.action-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 120px;
+}
+
+/* =========================================
    ACTION BUTTON
 ========================================= */
 
 .action-btn {
   width: 50px;
   height: 50px;
+  min-width: 50px;
   border: 1px solid #dce4ee;
   background: #ffffff;
   border-radius: 14px;
-  color: #7e22ce;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
   transition: 0.3s ease;
+
+  i {
+    font-size: 18px;
+  }
+}
+
+/* =========================================
+   VIEW BUTTON
+========================================= */
+
+.view-btn {
+  color: #7e22ce;
 
   &:hover {
     background: #f3e8ff;
-    transform: scale(1.04);
+    border-color: #d8b4fe;
+    transform: translateY(-2px);
+  }
+}
+
+/* =========================================
+   EDIT BUTTON
+========================================= */
+
+.edit-btn {
+  color: #d97706;
+
+  &:hover {
+    background: #fff7ed;
+    border-color: #fdba74;
+    transform: translateY(-2px);
   }
 }
 
@@ -347,6 +391,7 @@
   font-weight: 700;
   color: #334155;
   transition: 0.3s ease;
+  cursor: pointer;
 
   &:hover:not(:disabled) {
     background: #f3e8ff;
@@ -441,6 +486,7 @@
   color: #ffffff;
   font-size: 16px;
   transition: 0.3s ease;
+  cursor: pointer;
 
   &:hover {
     background: rgba(255, 255, 255, 0.24);
@@ -574,6 +620,7 @@
   font-size: 14px;
   font-weight: 700;
   transition: 0.3s ease;
+  cursor: pointer;
 }
 
 .cancel-btn {
@@ -643,7 +690,7 @@
 }
 
 /* =========================================
-   RESPONSIVE
+   RESPONSIVE — 1200px
 ========================================= */
 
 @media (max-width: 1200px) {
@@ -653,6 +700,10 @@
   }
 
 }
+
+/* =========================================
+   RESPONSIVE — 992px
+========================================= */
 
 @media (max-width: 992px) {
 
@@ -678,6 +729,10 @@
   }
 
 }
+
+/* =========================================
+   RESPONSIVE — 768px
+========================================= */
 
 @media (max-width: 768px) {
 
@@ -719,6 +774,10 @@
 
 }
 
+/* =========================================
+   RESPONSIVE — 576px
+========================================= */
+
 @media (max-width: 576px) {
 
   .add-btn,
@@ -745,6 +804,21 @@
   .approve-btn,
   .reject-btn {
     width: 100%;
+  }
+
+  .action-group {
+    min-width: 100px;
+    gap: 8px;
+  }
+
+  .action-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+
+    i {
+      font-size: 16px;
+    }
   }
 
 }

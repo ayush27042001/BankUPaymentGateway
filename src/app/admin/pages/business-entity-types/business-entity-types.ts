@@ -472,4 +472,102 @@ export class BusinessEntityTypes implements OnInit {
 
   }
 
+  /* =========================================
+  EDIT MODAL
+  ========================================= */
+
+  showEditModal: boolean = false;
+
+  editEntity: any = {
+    businessEntityTypeID: 0,
+    entityName: '',
+    description: '',
+    isActive: true,
+    createdDate: '',
+    updatedDate: ''
+  };
+
+  /* =========================================
+  OPEN EDIT MODAL
+  ========================================= */
+
+  openEditModal(entity: any): void {
+
+    this.editEntity = {
+      ...entity
+    };
+
+    this.showEditModal = true;
+
+    document.body.style.overflow = 'hidden';
+
+  }
+
+  /* =========================================
+  CLOSE EDIT MODAL
+  ========================================= */
+
+  closeEditModal(): void {
+
+    this.showEditModal = false;
+
+    document.body.style.overflow = 'auto';
+
+  }
+
+  /* =========================================
+  UPDATE ENTITY
+  ========================================= */
+
+  updateEntity(): void {
+
+    if (
+      !this.editEntity.entityName.trim()
+      ||
+      !this.editEntity.description.trim()
+    ) {
+
+      alert(
+        'Please fill all required fields.'
+      );
+
+      return;
+
+    }
+
+    const index =
+      this.businessEntityTypes.findIndex(
+        (entity) =>
+          entity.businessEntityTypeID ===
+          this.editEntity.businessEntityTypeID
+      );
+
+    if (index !== -1) {
+
+      this.businessEntityTypes[index] = {
+
+        ...this.editEntity,
+
+        updatedDate:
+          new Date().toLocaleDateString(
+            'en-GB',
+            {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            }
+          )
+
+      };
+
+      this.filteredEntities = [
+        ...this.businessEntityTypes
+      ];
+
+    }
+
+    this.closeEditModal();
+
+  }
+
 }

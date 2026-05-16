@@ -1,9 +1,13 @@
+/* =========================================
+   PAGE WRAPPER
+========================================= */
+
 .business-entity-page {
   width: 100%;
 }
 
 /* =========================================
-PAGE HEADER
+   PAGE HEADER
 ========================================= */
 
 .page-header {
@@ -29,7 +33,7 @@ PAGE HEADER
 }
 
 /* =========================================
-BUTTONS
+   BUTTONS
 ========================================= */
 
 .add-btn {
@@ -43,11 +47,12 @@ BUTTONS
   font-weight: 700;
   transition: 0.3s ease;
   box-shadow: 0 10px 20px rgba(180, 0, 180, 0.18);
-}
+  cursor: pointer;
 
-.add-btn:hover {
-  transform: translateY(-2px);
-  color: #ffffff;
+  &:hover {
+    transform: translateY(-2px);
+    color: #ffffff;
+  }
 }
 
 .export-btn {
@@ -60,15 +65,16 @@ BUTTONS
   font-weight: 700;
   transition: 0.3s ease;
   box-shadow: 0 10px 20px rgba(16, 185, 129, 0.18);
-}
+  cursor: pointer;
 
-.export-btn:hover {
-  transform: translateY(-2px);
-  color: #ffffff;
+  &:hover {
+    transform: translateY(-2px);
+    color: #ffffff;
+  }
 }
 
 /* =========================================
-FILTER CARD
+   FILTER CARD
 ========================================= */
 
 .filter-card {
@@ -77,45 +83,43 @@ FILTER CARD
   padding: 20px;
   margin-bottom: 24px;
   border: 1px solid #ececec;
-
-  box-shadow:
-    0 8px 20px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
 }
 
 /* =========================================
-SEARCH BOX
+   SEARCH BOX
 ========================================= */
 
 .search-box {
   position: relative;
-}
 
-.search-box i {
-  position: absolute;
-  top: 50%;
-  left: 18px;
-  transform: translateY(-50%);
-  color: #64748b;
-  font-size: 16px;
-}
+  i {
+    position: absolute;
+    top: 50%;
+    left: 18px;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 16px;
+  }
 
-.search-box .form-control {
-  height: 52px;
-  border-radius: 16px;
-  border: 1px solid #dbe2ea;
-  padding-left: 48px;
-  font-size: 15px;
-  font-weight: 500;
-  box-shadow: none;
-}
+  .form-control {
+    height: 52px;
+    border-radius: 16px;
+    border: 1px solid #dbe2ea;
+    padding-left: 48px;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: none;
 
-.search-box .form-control:focus {
-  border-color: #b100b1;
-  box-shadow: 0 0 0 4px rgba(177, 0, 177, 0.08);
+    &:focus {
+      border-color: #b100b1;
+      box-shadow: 0 0 0 4px rgba(177, 0, 177, 0.08);
+    }
+  }
 }
 
 /* =========================================
-TABLE CARD
+   TABLE CARD
 ========================================= */
 
 .table-card {
@@ -123,24 +127,16 @@ TABLE CARD
   border-radius: 24px;
   overflow: hidden;
   border: 1px solid #ececec;
-
-  box-shadow:
-    0 12px 28px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
 }
 
 /* =========================================
-TOP HEADER
+   TABLE TOP HEADER
 ========================================= */
 
 .table-top-header {
-  background: linear-gradient(
-    135deg,
-    #76008f,
-    #b300b3
-  );
-
+  background: linear-gradient(135deg, #76008f, #b300b3);
   padding: 18px 24px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -161,95 +157,75 @@ TOP HEADER
 }
 
 /* =========================================
-TABLE
+   TABLE
 ========================================= */
 
 .custom-table {
   margin: 0;
   min-width: 1100px;
-}
 
-.custom-table thead {
-  background: #f8fafc;
-}
+  thead {
+    background: #f8fafc;
 
-.custom-table thead th {
-  padding: 18px 16px;
-  border: none;
-  font-size: 14px;
-  font-weight: 800;
-  color: #475569;
-  white-space: nowrap;
-}
+    th {
+      padding: 18px 16px;
+      border: none;
+      font-size: 14px;
+      font-weight: 800;
+      color: #475569;
+      white-space: nowrap;
+    }
+  }
 
-.custom-table tbody td {
-  padding: 12px 16px;
-  border-top: 1px solid #f1f5f9;
-  vertical-align: middle;
+  tbody td {
+    padding: 12px 16px;
+    border-top: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
 }
 
 /* =========================================
-3D TABLE CELLS
+   TD BOX
 ========================================= */
 
 .td-box {
   background: #ffffff;
-
   border: 1px solid #edf2f7;
-
   border-radius: 16px;
-
   padding: 14px 16px;
-
   min-height: 56px;
-
   display: flex;
   align-items: center;
-
   font-size: 14px;
   font-weight: 600;
   color: #0f172a;
-
-  box-shadow:
-    0 4px 10px rgba(15, 23, 42, 0.04);
-
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
   transition: 0.3s ease;
 }
 
 .custom-table tbody tr:hover .td-box {
   transform: translateY(-2px);
-  box-shadow:
-    0 8px 18px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
 }
-
-/* ID */
 
 .id-box {
   justify-content: center;
   font-weight: 800;
   color: #7c0099;
-
-  background: linear-gradient(
-    135deg,
-    #faf5ff,
-    #f3e8ff
-  );
+  background: linear-gradient(135deg, #faf5ff, #f3e8ff);
 }
-
-/* NAME */
 
 .name-box {
   font-weight: 700;
 }
 
-/* ACTION */
-
 .action-box {
   justify-content: center;
+  gap: 10px;
 }
 
 /* =========================================
-STATUS BADGES
+   STATUS BADGES
 ========================================= */
 
 .status-badge {
@@ -270,48 +246,52 @@ STATUS BADGES
 }
 
 /* =========================================
-TABLE BUTTONS
+   TABLE BUTTONS
 ========================================= */
 
 .table-btn {
-  width: 42px;
-  height: 42px;
-
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
   border: none;
   border-radius: 12px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 16px;
-
   transition: 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .view-btn {
-  background: linear-gradient(
-    135deg,
-    #ede9fe,
-    #ddd6fe
-  );
-
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
   color: #6d28d9;
+
+  &:hover {
+    background: #ddd6fe;
+  }
 }
 
-.table-btn:hover {
-  transform: scale(1.08);
+.edit-btn {
+  background: linear-gradient(135deg, #fff7ed, #fed7aa);
+  color: #d97706;
+
+  &:hover {
+    background: #fed7aa;
+  }
 }
 
 /* =========================================
-PAGINATION
+   PAGINATION
 ========================================= */
 
 .pagination-wrapper {
   padding: 20px 24px;
-
   border-top: 1px solid #f1f5f9;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -322,20 +302,24 @@ PAGINATION
 .pagination-btn {
   height: 42px;
   padding: 0 18px;
-
   border: none;
   border-radius: 12px;
-
   background: #f8fafc;
-
   font-size: 14px;
   font-weight: 700;
-
   color: #334155;
-}
+  cursor: pointer;
+  transition: 0.3s ease;
 
-.pagination-btn:disabled {
-  opacity: 0.5;
+  &:hover:not(:disabled) {
+    background: #ede9fe;
+    color: #6d28d9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .page-number {
@@ -345,45 +329,50 @@ PAGINATION
 }
 
 /* =========================================
-MODAL OVERLAY
+   MODAL OVERLAY  (view / add modals)
 ========================================= */
 
 .custom-modal-overlay {
   position: fixed;
   inset: 0;
-
   background: rgba(15, 23, 42, 0.6);
-
   backdrop-filter: blur(6px);
-
   z-index: 99999;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
   animation: overlayFade 0.3s ease;
 }
 
 /* =========================================
-MODAL
+   MODAL BACKDROP  (edit modal)
+========================================= */
+
+.modal-backdrop-custom {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: overlayFade 0.3s ease;
+}
+
+/* =========================================
+   MODAL  (view / add modals)
 ========================================= */
 
 .custom-modal {
   width: 100%;
   max-width: 820px;
-
   background: #ffffff;
-
   border-radius: 28px;
-
   overflow: hidden;
-
-  box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.25);
-
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
   animation: modalShow 0.35s ease;
 }
 
@@ -392,21 +381,46 @@ MODAL
 }
 
 /* =========================================
-MODAL HEADER
+   MODAL CUSTOM  (edit modal)
+========================================= */
+
+.modal-custom {
+  width: 100%;
+  max-width: 720px;
+  background: #ffffff;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+  animation: modalShow 0.35s ease;
+}
+
+.add-entity-modal {
+  max-width: 720px;
+}
+
+/* =========================================
+   MODAL HEADER
 ========================================= */
 
 .modal-header-custom {
   padding: 22px 26px;
-
-  background: linear-gradient(
-    135deg,
-    #76008f,
-    #b300b3
-  );
-
+  background: linear-gradient(135deg, #76008f, #b300b3);
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  h3 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+  }
 }
 
 .modal-title {
@@ -422,31 +436,37 @@ MODAL HEADER
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* CLOSE */
+/* =========================================
+   CLOSE BUTTON
+========================================= */
 
 .close-btn {
   width: 42px;
   height: 42px;
-
   border: none;
   border-radius: 12px;
-
   background: rgba(255, 255, 255, 0.12);
-
   color: #ffffff;
-
   font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
 }
 
 /* =========================================
-MODAL BODY
+   MODAL BODY
 ========================================= */
 
 .modal-body-custom {
   padding: 24px;
 }
 
-/* DETAILS GRID */
+/* =========================================
+   DETAILS GRID
+========================================= */
 
 .details-grid {
   display: grid;
@@ -454,27 +474,19 @@ MODAL BODY
   gap: 18px;
 }
 
-/* DETAIL CARD */
-
 .detail-card {
   background: #f8fafc;
-
   border: 1px solid #e2e8f0;
-
   border-radius: 18px;
-
   padding: 18px;
-}
 
-.detail-card label {
-  display: block;
-
-  margin-bottom: 10px;
-
-  font-size: 13px;
-  font-weight: 700;
-
-  color: #64748b;
+  label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+  }
 }
 
 .detail-value {
@@ -484,7 +496,7 @@ MODAL BODY
 }
 
 /* =========================================
-FORM GRID
+   FORM GRID  (add modal — Bootstrap classes)
 ========================================= */
 
 .form-grid {
@@ -495,113 +507,148 @@ FORM GRID
 
 .form-group label {
   display: block;
-
   margin-bottom: 10px;
-
   font-size: 13px;
   font-weight: 700;
-
   color: #475569;
 }
 
 .form-group .form-control,
 .form-group .form-select {
   height: 50px;
-
   border-radius: 14px;
-
   border: 1px solid #dbe2ea;
-
   font-size: 14px;
-
   box-shadow: none;
+
+  &:focus {
+    border-color: #b100b1;
+    box-shadow: 0 0 0 4px rgba(177, 0, 177, 0.08);
+  }
 }
 
-.form-group .form-control:focus,
-.form-group .form-select:focus {
-  border-color: #b100b1;
-  box-shadow: 0 0 0 4px rgba(177, 0, 177, 0.08);
+/* =========================================
+   FORM GROUP CUSTOM  (edit modal — custom inputs)
+========================================= */
+
+.form-group-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #334155;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    border: 1px solid #dce4ee;
+    border-radius: 16px;
+    padding: 14px 16px;
+    outline: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #0f172a;
+    background: #ffffff;
+    transition: 0.3s ease;
+
+    &:focus {
+      border-color: #b100b1;
+      box-shadow: 0 0 0 4px rgba(177, 0, 177, 0.08);
+    }
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  select {
+    cursor: pointer;
+    height: 54px;
+  }
 }
+
+/* =========================================
+   FULL WIDTH
+========================================= */
 
 .full-width {
   grid-column: 1 / -1;
 }
 
 /* =========================================
-MODAL FOOTER
+   MODAL FOOTER
 ========================================= */
 
 .modal-footer-custom {
   padding: 20px 24px;
-
   border-top: 1px solid #edf2f7;
-
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
 }
 
-/* APPROVE */
+/* =========================================
+   FOOTER BUTTONS
+========================================= */
 
 .approve-btn {
   height: 46px;
   padding: 0 22px;
-
   border: none;
   border-radius: 14px;
-
-  background: linear-gradient(
-    135deg,
-    #059669,
-    #10b981
-  );
-
+  background: linear-gradient(135deg, #059669, #10b981);
   color: #ffffff;
-
   font-size: 14px;
   font-weight: 700;
-}
+  cursor: pointer;
+  transition: 0.3s ease;
 
-/* REJECT */
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
 
 .reject-btn {
   height: 46px;
   padding: 0 22px;
-
   border: none;
   border-radius: 14px;
-
-  background: linear-gradient(
-    135deg,
-    #dc2626,
-    #ef4444
-  );
-
+  background: linear-gradient(135deg, #dc2626, #ef4444);
   color: #ffffff;
-
   font-size: 14px;
   font-weight: 700;
-}
+  cursor: pointer;
+  transition: 0.3s ease;
 
-/* CANCEL */
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
 
 .cancel-btn {
   height: 46px;
   padding: 0 22px;
-
   border-radius: 14px;
-
   background: #f1f5f9;
-
   border: 1px solid #dbe2ea;
-
   font-size: 14px;
   font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s ease;
+
+  &:hover {
+    background: #e2e8f0;
+  }
 }
 
 /* =========================================
-ANIMATIONS
+   ANIMATIONS
 ========================================= */
 
 @keyframes modalShow {
@@ -631,7 +678,7 @@ ANIMATIONS
 }
 
 /* =========================================
-RESPONSIVE
+   RESPONSIVE — 992px
 ========================================= */
 
 @media (max-width: 992px) {
@@ -641,6 +688,10 @@ RESPONSIVE
   }
 
 }
+
+/* =========================================
+   RESPONSIVE — 768px
+========================================= */
 
 @media (max-width: 768px) {
 
@@ -665,6 +716,16 @@ RESPONSIVE
   .reject-btn,
   .cancel-btn {
     width: 100%;
+  }
+
+  .action-box {
+    gap: 8px;
+  }
+
+  .table-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
   }
 
 }

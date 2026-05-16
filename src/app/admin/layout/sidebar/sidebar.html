@@ -54,13 +54,13 @@
 
         <div class="submenu">
 
-          <a
+          <!-- <a
             class="submenu-item"
             routerLink="/admin/masters/users"
             routerLinkActive="active-submenu"
           >
             Users
-          </a>
+          </a> -->
 
          <a
   class="submenu-item"
@@ -157,7 +157,144 @@
       }
 
     </div>
+    <!-- Merchant Onboarding -->
+<div class="menu-group">
 
+  <div
+    class="menu-item submenu-toggle"
+    (click)="toggleOnboarding()"
+  >
+
+    <div class="menu-left">
+
+      <i class="bi bi-building-check"></i>
+
+      <span>Merchant Onboarding</span>
+
+    </div>
+
+    <i
+      class="bi"
+      [class.bi-chevron-down]="onboardingExpanded"
+      [class.bi-chevron-right]="!onboardingExpanded"
+    ></i>
+
+  </div>
+
+  @if (onboardingExpanded) {
+
+    <div class="submenu">
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/business-pan-details"
+        routerLinkActive="active-submenu"
+      >
+        Business PAN Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/business-address-details"
+        routerLinkActive="active-submenu"
+      >
+        Business Address Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/website-app-details"
+        routerLinkActive="active-submenu"
+      >
+        Website/App Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/video-kyc-details"
+        routerLinkActive="active-submenu"
+      >
+        Video KYC Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/document-uploads"
+        routerLinkActive="active-submenu"
+      >
+        Document Uploads
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/signing-authority-details"
+        routerLinkActive="active-submenu"
+      >
+        Signing Authority Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/bank-account-details"
+        routerLinkActive="active-submenu"
+      >
+        Bank Account Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/service-agreements"
+        routerLinkActive="active-submenu"
+      >
+        Service Agreements
+      </a>
+
+    </div>
+
+  }
+
+</div>
+<!-- Users -->
+<div class="menu-group">
+
+  <div
+    class="menu-item submenu-toggle"
+    (click)="toggleUsers()"
+  >
+
+    <div class="menu-left">
+
+      <i class="bi bi-person"></i>
+
+      <span>Users</span>
+
+    </div>
+
+    <i
+      class="bi"
+      [class.bi-chevron-down]="userExpanded"
+      [class.bi-chevron-right]="!userExpanded"
+    ></i>
+
+  </div>
+
+  @if (userExpanded) {
+
+    <div class="submenu">
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/masters/users"
+        routerLinkActive="active-submenu"
+      >
+        All Users
+      </a>
+
+    </div>
+
+  }
+
+</div>
     <!-- Reports -->
     <div class="menu-group">
 

@@ -252,12 +252,23 @@
 
               <td>
 
-                <button
-                  class="action-btn"
-                  (click)="openViewModal(document)"
-                >
-                  <i class="bi bi-eye"></i>
-                </button>
+                <div class="action-group">
+
+                  <button
+                    class="action-btn view-btn"
+                    (click)="openViewModal(document)"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+
+                  <button
+                    class="action-btn edit-btn"
+                    (click)="openEditModal(document)"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+
+                </div>
 
               </td>
 
@@ -689,3 +700,183 @@
   }
 
 </div>
+<!-- ========================= -->
+<!-- EDIT MODAL -->
+<!-- ========================= -->
+
+@if (showEditModal) {
+
+  <div class="custom-modal-backdrop">
+
+    <div class="custom-modal add-category-modal">
+
+      <!-- HEADER -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <h3>Edit Document Type</h3>
+
+          <p>
+            Update document type details
+          </p>
+
+        </div>
+
+        <button
+          class="close-btn"
+          (click)="closeEditModal()"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+
+      </div>
+
+      <!-- BODY -->
+
+      <div class="modal-body">
+
+        <div class="details-grid">
+
+          <!-- DOCUMENT NAME -->
+
+          <div class="form-group">
+
+            <label>
+              Document Name
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="editDocumentType.documentName"
+              placeholder="Enter document name"
+            />
+
+          </div>
+
+          <!-- DOCUMENT CODE -->
+
+          <div class="form-group">
+
+            <label>
+              Document Code
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="editDocumentType.documentCode"
+              placeholder="Enter document code"
+            />
+
+          </div>
+
+          <!-- EXTENSIONS -->
+
+          <div class="form-group">
+
+            <label>
+              Allowed Extensions
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="editDocumentType.allowedExtensions"
+              placeholder="JPG,PNG,PDF"
+            />
+
+          </div>
+
+          <!-- MAX SIZE -->
+
+          <div class="form-group">
+
+            <label>
+              Max File Size (MB)
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="editDocumentType.maxFileSizeMB"
+              placeholder="Enter max size"
+            />
+
+          </div>
+
+          <!-- REQUIRED -->
+
+          <div class="form-group">
+
+            <label>
+              Required
+            </label>
+
+            <select
+              [(ngModel)]="editDocumentType.isRequired"
+            >
+
+              <option [ngValue]="true">
+                Required
+              </option>
+
+              <option [ngValue]="false">
+                Optional
+              </option>
+
+            </select>
+
+          </div>
+
+          <!-- STATUS -->
+
+          <div class="form-group">
+
+            <label>
+              Status
+            </label>
+
+            <select
+              [(ngModel)]="editDocumentType.isActive"
+            >
+
+              <option [ngValue]="true">
+                Active
+              </option>
+
+              <option [ngValue]="false">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+
+      <div class="modal-footer">
+
+        <button
+          class="cancel-btn"
+          (click)="closeEditModal()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="approve-btn"
+          (click)="updateDocumentType()"
+        >
+          Update Document Type
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

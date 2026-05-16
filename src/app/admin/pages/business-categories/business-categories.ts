@@ -553,4 +553,109 @@ export class BusinessCategories {
 
   }
 
+  /* =========================================
+     EDIT MODAL
+  ========================================= */
+
+  showEditModal: boolean = false;
+
+  editCategory: any = {
+    businessCategoryID: 0,
+    categoryName: '',
+    categoryCode: '',
+    description: '',
+    isActive: true,
+    createdDate: '',
+    updatedDate: ''
+  };
+
+  /* =========================================
+     OPEN EDIT MODAL
+  ========================================= */
+
+  openEditModal(category: any): void {
+
+    this.editCategory = {
+      ...category
+    };
+
+    this.showEditModal = true;
+
+    document.body.style.overflow = 'hidden';
+
+  }
+
+  /* =========================================
+     CLOSE EDIT MODAL
+  ========================================= */
+
+  closeEditModal(): void {
+
+    this.showEditModal = false;
+
+    document.body.style.overflow = 'auto';
+
+  }
+
+  /* =========================================
+     UPDATE CATEGORY
+  ========================================= */
+
+  updateCategory(): void {
+
+    if (
+      !this.editCategory.categoryName.trim()
+      ||
+      !this.editCategory.categoryCode.trim()
+      ||
+      !this.editCategory.description.trim()
+    ) {
+
+      alert(
+        'Please fill all required fields.'
+      );
+
+      return;
+
+    }
+
+    const index =
+      this.businessCategories.findIndex(
+        (cat) =>
+          cat.businessCategoryID ===
+          this.editCategory.businessCategoryID
+      );
+
+    if (index !== -1) {
+
+      this.businessCategories[index] = {
+
+        ...this.editCategory,
+
+        categoryCode:
+          this.editCategory.categoryCode
+            .toUpperCase(),
+
+        updatedDate:
+          new Date().toLocaleDateString(
+            'en-GB',
+            {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            }
+          )
+
+      };
+
+      this.filteredCategories = [
+        ...this.businessCategories
+      ];
+
+    }
+
+    this.closeEditModal();
+
+  }
+
 }
