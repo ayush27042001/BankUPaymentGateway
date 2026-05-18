@@ -41,7 +41,7 @@
   padding: 0 22px;
   border: none;
   border-radius: 14px;
-  background: linear-gradient(135deg, #8b00a7, #c400c4);
+  background: linear-gradient(135deg, #901299, #c400c4);
   color: #ffffff;
   font-size: 15px;
   font-weight: 700;
@@ -135,7 +135,7 @@
 ========================================= */
 
 .table-top-header {
-  background: linear-gradient(135deg, #76008f, #b300b3);
+  background: linear-gradient(135deg, #901299, #b300b3);
   padding: 18px 24px;
   display: flex;
   align-items: center;
@@ -294,9 +294,11 @@
   border-top: 1px solid #f1f5f9;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 14px;
   flex-wrap: wrap;
+   border-radius: 15px;
+  margin-top: 18px;
 }
 
 .pagination-btn {

@@ -70,7 +70,7 @@ $breakpoint-xl: 1200px;
   height: 54px;
   padding: 0 24px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #6d00ff, #c700ff);
+  background: linear-gradient(135deg, #901299, #c700ff);
   color: #ffffff;
   font-size: 14px;
   font-weight: 700;
@@ -211,7 +211,7 @@ $breakpoint-xl: 1200px;
 ========================================= */
 
 .table-header {
-  background: linear-gradient(135deg, #6d00ff, #c700ff);
+  background: linear-gradient(135deg, #901299, #c700ff);
   padding: 22px 24px;
   display: flex;
   align-items: center;
@@ -364,10 +364,12 @@ $breakpoint-xl: 1200px;
   padding: 24px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 18px;
   flex-wrap: wrap;
   background: #ffffff;
+   border-radius: 15px;
+  margin-top: 18px;
 }
 
 .pagination-btn {
