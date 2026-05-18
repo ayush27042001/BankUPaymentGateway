@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule
   ],
   templateUrl: './users.html',
-  styleUrl: './users.scss',
+  styleUrls: ['./users.scss'],
 })
 export class Users {
 
@@ -50,11 +50,35 @@ export class Users {
 
     email: '',
 
-    passwordHash: '',
-
-    salt: '',
-
     mobileNumber: '',
+
+    panNumber: '',
+
+    panName: '',
+
+    businessType: '',
+
+    businessCategory: '',
+
+    gstin: '',
+
+    annualSales: '',
+
+    bankHolderName: '',
+
+    bankAccountNumber: '',
+
+    ifscCode: '',
+
+    bankName: '',
+
+    state: '',
+
+    city: '',
+
+    pincode: '',
+
+    businessAddress: '',
 
   };
 
@@ -65,55 +89,56 @@ export class Users {
   users = [
 
     {
+
       userId: 1,
+
       email: 'ayushawasthi731@gmail.com',
-      passwordHash: 'AKKDJSHD889X8U=',
-      salt: 'JSHDJSHD99Mw==',
+
       mobileNumber: '9935144983',
-      isEmailVerified: true,
-      isMobileVerified: true,
+
+      panNumber: 'CMHPA4444B',
+
+      panName: 'AYUSH KUMAR AWASTHI',
+
+      panDob: '20 Sep 2001',
+
+      businessType: 'Sole Proprietorship',
+
+      businessCategory: 'Gifts & Novelties',
+
+      gstin: '29ABCDE1234F1Z5',
+
+      annualSales: '₹ 10,00,000',
+
+      bankHolderName: 'AYUSH AWASTHI',
+
+      bankAccountNumber: 'XXXXXX9765',
+
+      ifscCode: 'SBIN0004587',
+
+      bankName: 'State Bank of India',
+
+      state: 'Delhi',
+
+      city: 'New Delhi',
+
+      pincode: '110001',
+
+      businessAddress: 'Karol Bagh, New Delhi',
+
+      isKycVerified: true,
+
       isActive: true,
-      isLocked: false,
-      failedLoginAttempts: 0,
+
       lastLoginDate: '11 May 2026',
-      passwordLastChangedDate: '09 May 2026',
+
       createdDate: '01 May 2026',
+
       updatedDate: '11 May 2026',
+
     },
 
-    {
-      userId: 2,
-      email: 'john@example.com',
-      passwordHash: 'HJSGD88HSHD7A=',
-      salt: 'QWERTY89XX==',
-      mobileNumber: '9876543210',
-      isEmailVerified: true,
-      isMobileVerified: false,
-      isActive: true,
-      isLocked: false,
-      failedLoginAttempts: 2,
-      lastLoginDate: '10 May 2026',
-      passwordLastChangedDate: '08 May 2026',
-      createdDate: '02 May 2026',
-      updatedDate: '10 May 2026',
-    },
-
-    {
-      userId: 3,
-      email: 'demo@example.com',
-      passwordHash: 'LKJHGFDSA67=',
-      salt: 'ZXCVBNM77==',
-      mobileNumber: '9123456789',
-      isEmailVerified: false,
-      isMobileVerified: true,
-      isActive: false,
-      isLocked: true,
-      failedLoginAttempts: 5,
-      lastLoginDate: '—',
-      passwordLastChangedDate: '05 May 2026',
-      createdDate: '03 May 2026',
-      updatedDate: '09 May 2026',
-    },
+    
 
   ];
 
@@ -151,6 +176,12 @@ export class Users {
 
           user.userId
             ?.toString()
+            .includes(search)
+
+          ||
+
+          user.panNumber
+            ?.toLowerCase()
             .includes(search)
 
         );
@@ -292,284 +323,164 @@ export class Users {
 
       email: '',
 
-      passwordHash: '',
-
-      salt: '',
-
       mobileNumber: '',
 
-    };
+      panNumber: '',
 
-  }
+      panName: '',
 
-  /* =========================================
-     ADD USER
-  ========================================= */
+      businessType: '',
 
-  addUser(): void {
+      businessCategory: '',
 
-    if (
+      gstin: '',
 
-      !this.newUser.email
-      ||
+      annualSales: '',
 
-      !this.newUser.passwordHash
-      ||
+      bankHolderName: '',
 
-      !this.newUser.mobileNumber
+      bankAccountNumber: '',
 
-    ) {
+      ifscCode: '',
 
-      alert(
-        'Please fill all required fields.'
-      );
+      bankName: '',
 
-      return;
+      state: '',
 
-    }
+      city: '',
 
-    const currentDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
+      pincode: '',
 
-    const user = {
-
-      userId:
-        this.users.length + 1,
-
-      email:
-        this.newUser.email,
-
-      passwordHash:
-        this.newUser.passwordHash,
-
-      salt:
-        this.newUser.salt,
-
-      mobileNumber:
-        this.newUser.mobileNumber,
-
-      isEmailVerified: false,
-
-      isMobileVerified: false,
-
-      isActive: true,
-
-      isLocked: false,
-
-      failedLoginAttempts: 0,
-
-      lastLoginDate: '—',
-
-      passwordLastChangedDate:
-        currentDate,
-
-      createdDate:
-        currentDate,
-
-      updatedDate:
-        currentDate,
+      businessAddress: '',
 
     };
 
-    this.users.unshift(user);
-
-    this.closeAddModal();
-
-    this.currentPage = 1;
-
   }
 
-  /* =========================================
-     APPROVE USER
-  ========================================= */
-
-  approveUser(): void {
-
-    if (!this.selectedUser) {
-      return;
-    }
-
-    this.selectedUser.isActive = true;
-
-    this.selectedUser.updatedDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
-
-    this.closeViewModal();
-
+  trackByUserId(_: number, user: any): number {
+    return user.userId;
   }
-
-  /* =========================================
-     REJECT USER
-  ========================================= */
-
-  rejectUser(): void {
-
-    if (!this.selectedUser) {
-      return;
-    }
-
-    this.selectedUser.isActive = false;
-
-    this.selectedUser.updatedDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
-
-    this.closeViewModal();
-
-  }
-
-  /* =========================================
-     EXPORT USERS CSV
-  ========================================= */
 
   exportUsers(): void {
-
     const headers = [
-
       'User ID',
-
       'Email',
-
       'Mobile Number',
-
-      'Email Verified',
-
-      'Mobile Verified',
-
-      'Status',
-
-      'Lock Status',
-
-      'Failed Attempts',
-
+      'PAN Number',
+      'PAN Name',
+      'Business Type',
+      'GSTIN',
+      'Bank Name',
+      'Bank Account',
+      'Business Category',
+      'KYC Status',
+      'Account Status',
       'Last Login',
-
-      'Created Date',
-
-      'Updated Date'
-
     ];
 
-    const rows =
-      this.filteredUsers().map(
-        (user: any) => [
+    const rows = this.filteredUsers().map((user: any) => [
+      user.userId,
+      user.email,
+      user.mobileNumber,
+      user.panNumber,
+      user.panName,
+      user.businessType,
+      user.gstin,
+      user.bankName,
+      user.bankAccountNumber,
+      user.businessCategory,
+      user.isKycVerified ? 'Verified' : 'Pending',
+      user.isActive ? 'Active' : 'Inactive',
+      user.lastLoginDate || '—',
+    ]);
 
-          user.userId,
-
-          user.email,
-
-          user.mobileNumber,
-
-          user.isEmailVerified
-            ? 'Verified'
-            : 'Pending',
-
-          user.isMobileVerified
-            ? 'Verified'
-            : 'Pending',
-
-          user.isActive
-            ? 'Active'
-            : 'Inactive',
-
-          user.isLocked
-            ? 'Locked'
-            : 'Unlocked',
-
-          user.failedLoginAttempts,
-
-          user.lastLoginDate,
-
-          user.createdDate,
-
-          user.updatedDate
-
-        ]
-      );
-
-    const csvContent = [
-
-      headers.join(','),
-
-      ...rows.map((row: any) =>
-        row.join(',')
-      )
-
-    ].join('\n');
-
-    const blob = new Blob(
-      [csvContent],
-      {
-        type: 'text/csv;charset=utf-8;',
-      }
-    );
-
-    const link =
-      document.createElement('a');
-
-    const url =
-      URL.createObjectURL(blob);
-
-    link.setAttribute('href', url);
-
-    link.setAttribute(
-      'download',
-      'users.csv'
-    );
-
-    link.style.visibility =
-      'hidden';
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    document.body.removeChild(link);
-
+    this.downloadCsv(headers, rows);
   }
 
-  /* =========================================
-     MASKED VALUE
-  ========================================= */
+  private downloadCsv(headers: string[], rows: any[][]): void {
+    const csvLines = [
+      headers.join(','),
+      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')),
+    ];
 
-  getMaskedValue(
-    value: string
-  ): string {
+    const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
 
+    link.href = url;
+    link.setAttribute('download', 'users.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  approveUser(): void {
+    if (!this.selectedUser) {
+      return;
+    }
+
+    this.selectedUser.isKycVerified = true;
+    this.selectedUser.isActive = true;
+  }
+
+  rejectUser(): void {
+    if (!this.selectedUser) {
+      return;
+    }
+
+    this.selectedUser.isKycVerified = false;
+  }
+
+  addUser(): void {
+    const nextId = this.users.length
+      ? Math.max(...this.users.map((user: any) => user.userId)) + 1
+      : 1;
+
+    const newUser = {
+      userId: nextId,
+      email: this.newUser.email,
+      mobileNumber: this.newUser.mobileNumber,
+      panNumber: this.newUser.panNumber,
+      panName: this.newUser.panName || '-',
+      panDob: '—',
+      businessType: this.newUser.businessType,
+      businessCategory: this.newUser.businessCategory,
+      gstin: this.newUser.gstin,
+      annualSales: this.newUser.annualSales || '—',
+      bankHolderName: this.newUser.bankHolderName || '-',
+      bankAccountNumber: this.newUser.bankAccountNumber || '-',
+      ifscCode: this.newUser.ifscCode || '-',
+      bankName: this.newUser.bankName || '-',
+      state: this.newUser.state || '-',
+      city: this.newUser.city || '-',
+      pincode: this.newUser.pincode || '-',
+      businessAddress: this.newUser.businessAddress || '-',
+      isKycVerified: false,
+      isActive: true,
+      lastLoginDate: '—',
+      createdDate: new Date().toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      }),
+      updatedDate: new Date().toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      }),
+    };
+
+    this.users.unshift(newUser);
+    this.closeAddModal();
+  }
+
+  private getMaskedValue(value: any): string {
     if (!value) {
       return '—';
     }
 
-    if (value.length <= 4) {
-      return '••••';
-    }
-
-    return (
-      '••••••••'
-      +
-      value.slice(-4)
-    );
-
+    return value.toString().replace(/.(?=.{4})/g, '*');
   }
 
 }
