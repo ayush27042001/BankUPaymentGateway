@@ -9,6 +9,8 @@ import {
   SendOtpResponse,
   VerifyOtpRequest,
   VerifyOtpResponse,
+  LogoutRequest,
+  LogoutResponse,
   RefreshTokenRequest,
   RefreshTokenResponse,
 } from '../../models/auth/auth.models';
@@ -59,6 +61,17 @@ export class LoginService {
     });
     return this.http.post<RefreshTokenResponse>(
       `${this.apiUrl}/Auth/refresh-token`,
+      data,
+      { headers }
+    );
+  }
+
+  logoutApi(data: LogoutRequest): Observable<LogoutResponse> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<LogoutResponse>(
+      `${this.apiUrl}/Auth/logout`,
       data,
       { headers }
     );

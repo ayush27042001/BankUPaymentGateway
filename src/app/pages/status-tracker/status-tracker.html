@@ -1,7 +1,8 @@
 <div class="status-tracker-page">
   <app-onboarding-header
     [title]="'Onboarding Status'"
-    [currentStep]="3">
+    [currentStep]="3"
+    [showDashboard]="isOnboardingCompleted">
   </app-onboarding-header>
 
   @if (loading) {
@@ -14,27 +15,15 @@
     <section class="main-section">
       <div class="page-shell">
         <aside class="left-panel">
-          <button type="button" class="summary-link">
-            ← Back to Dashboard
-          </button>
+          @if (isOnboardingCompleted) {
+            <button type="button" class="summary-link">
+              ← Back to Dashboard
+            </button>
+          }
 
           <nav class="step-nav">
             <button type="button" class="nav-item active">
               <span>Status Tracker</span>
-              <span class="nav-status">
-                <span class="arrow">›</span>
-              </span>
-            </button>
-
-            <button type="button" class="nav-item">
-              <span>Application Details</span>
-              <span class="nav-status">
-                <span class="arrow">›</span>
-              </span>
-            </button>
-
-            <button type="button" class="nav-item">
-              <span>Support</span>
               <span class="nav-status">
                 <span class="arrow">›</span>
               </span>
@@ -70,6 +59,46 @@
                   <span class="error-icon">⚠️</span>
                   <span class="error-message">{{ errorMessage }}</span>
                   <button type="button" class="error-dismiss" (click)="clearError()">×</button>
+                </div>
+              }
+
+              <!-- Onboarding Completed Banner -->
+              @if (isOnboardingCompleted) {
+                <div class="status-banner completed-banner">
+                  <div class="banner-glow"></div>
+                  <div class="banner-inner">
+                    <div class="banner-icon-ring completed-ring">
+                      <span class="banner-icon">🎉</span>
+                    </div>
+                    <div class="banner-body">
+                      <span class="banner-tag completed-tag">Onboarding Complete</span>
+                      <h3>Congratulations! Your Payment Gateway is Active</h3>
+                      <p>Your application has been fully verified and approved. You can now start accepting payments through BankU Payment Gateway.</p>
+                    </div>
+                    <button type="button" class="banner-cta completed-cta">
+                      Go to Dashboard →
+                    </button>
+                  </div>
+                </div>
+              }
+
+              <!-- Onboarding Rejected Banner -->
+              @if (isOnboardingRejected) {
+                <div class="status-banner rejected-banner">
+                  <div class="banner-inner">
+                    <div class="banner-icon-ring rejected-ring">
+                      <span class="banner-icon">🚫</span>
+                    </div>
+                    <div class="banner-body">
+                      <span class="banner-tag rejected-tag">Application Rejected</span>
+                      <h3>Your Application Could Not Be Approved</h3>
+                      <p>Unfortunately, your onboarding application has been rejected. Please review the remarks on each step below and reach out to our support team for further guidance.</p>
+                    </div>
+                    <div class="banner-actions">
+                      <button type="button" class="banner-cta rejected-outline-cta">Contact Support</button>
+                      <button type="button" class="banner-cta rejected-solid-cta">Reapply</button>
+                    </div>
+                  </div>
                 </div>
               }
 
@@ -129,7 +158,7 @@
                 
                 <div class="timeline-container">
                   @for (step of statusSteps; track step.id; let i = $index) {
-                    <div class="timeline-item" [class.completed]="isStepCompleted(step)" [class.current]="isStepCurrent(step)" [class.pending]="isStepPending(step)">
+                    <div class="timeline-item" [class.completed]="isStepCompleted(step)" [class.current]="isStepCurrent(step)" [class.pending]="isStepPending(step)" [class.rejected]="isStepRejected(step)">
                       <div class="timeline-marker">
                         @if (isStepCompleted(step)) {
                           <div class="marker-icon approved">✓</div>
@@ -138,6 +167,8 @@
                             <div class="pulse-ring"></div>
                             <span>{{ getStepNumber(i) }}</span>
                           </div>
+                        } @else if (isStepRejected(step)) {
+                          <div class="marker-icon rejected">✕</div>
                         } @else {
                           <div class="marker-icon pending">{{ getStepNumber(i) }}</div>
                         }

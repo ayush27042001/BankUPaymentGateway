@@ -1743,6 +1743,10 @@ h2 {
   margin-top: 0;
 }
 
+.card-error-border {
+  border-color: red !important;
+}
+
 /* Responsive adjustments for Agreement Step */
 @media (max-width: 767.98px) {
   .agreement-grid {

@@ -20,6 +20,8 @@ export interface OnboardingStatusResponse {
     statusSteps: StatusStep[];
     overallProgress: number;
     lastUpdated: string;
+    isOnboardingCompleted: boolean;
+    isOnboardingRejected: boolean;
   };
   message?: string;
   errors?: string[];

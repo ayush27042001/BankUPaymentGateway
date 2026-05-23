@@ -30,6 +30,7 @@ import { SigningAuthorityService, PepStatus, SigningAuthorityDetail, SaveSigning
 import { BusinessAddressService, SaveBusinessAddressRequest } from '../../services/business-address/business-address.service';
 import { BusinessProofTypeService, BusinessProofType } from '../../services/business-proof-type/business-proof-type.service';
 import { DocumentService, DocumentType, UploadedDocument } from '../../services/document/document.service';
+import { ServiceAgreementService, SaveServiceAgreementRequest } from '../../services/service-agreement/service-agreement.service';
 
 type StepKey =
   | 'platform'
@@ -118,6 +119,12 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   agreementFileName: string = '';
   agreementDate: string = '';
   agreementAccepted: boolean = false;
+  agreementSubmitting: boolean = false;
+  agreementErrors: { date: string; signature: string; accepted: string } = {
+    date: '',
+    signature: '',
+    accepted: '',
+  };
 
  constructor(
   private fb: FormBuilder,
@@ -132,7 +139,8 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
   private signingAuthorityService: SigningAuthorityService,
   private businessAddressService: BusinessAddressService,
   private businessProofTypeService: BusinessProofTypeService,
-  private documentService: DocumentService
+  private documentService: DocumentService,
+  private serviceAgreementService: ServiceAgreementService
 ) {
   this.initializeForms();
 }
@@ -150,6 +158,7 @@ export class ConnectPlatformComponent implements OnInit, OnDestroy {
       this.autoFetchEmailFromAuth();
       this.loadBusinessAddress();
       this.loadBusinessProofTypes();
+      this.loadServiceAgreement();
     } else {
       this.loading = false;
     }
@@ -1748,11 +1757,95 @@ case 'thank-you':
     }
   }
 
-  /**
-   * Navigates user to thank you page.
-   */
-  goToThankYouPage(): void {
-    this.currentStep = 'thank-you';
+  loadServiceAgreement(): void {
+    this.serviceAgreementService.getServiceAgreement().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const data = response.data;
+          if (data.agreementDate) {
+            this.agreementDate = data.agreementDate.split('T')[0];
+          }
+          if (data.isAccepted) {
+            this.agreementAccepted = data.isAccepted;
+          }
+        }
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  submitServiceAgreement(): void {
+    this.agreementErrors = { date: '', signature: '', accepted: '' };
+    let hasError = false;
+
+    if (!this.agreementDate) {
+      this.agreementErrors.date = 'Agreement date is required.';
+      hasError = true;
+    }
+
+    if (!this.isSigned || !this.signatureImage) {
+      this.agreementErrors.signature = 'Please provide your digital signature.';
+      hasError = true;
+    }
+
+    if (!this.agreementAccepted) {
+      this.agreementErrors.accepted = 'You must accept the service agreement terms and conditions.';
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    this.agreementSubmitting = true;
+
+    const payload: SaveServiceAgreementRequest = {
+      signatureData: this.signatureImage,
+      agreementDate: new Date(this.agreementDate).toISOString(),
+      isAccepted: this.agreementAccepted,
+    };
+
+    this.serviceAgreementService.saveServiceAgreement(payload).subscribe({
+      next: (response) => {
+        this.agreementSubmitting = false;
+        if (response.success && response.data) {
+          this.toastService.success(
+            response.message || 'Service agreement submitted successfully.'
+          );
+          const onboardingStatus = response.data.onboardingStatus;
+          if (onboardingStatus?.isOnboardingRejected) {
+            this.router.navigate(['/onboarding-rejected']);
+            return;
+          }
+          if (
+            onboardingStatus?.isServiceAgreementSubmitted &&
+            !onboardingStatus.isOnboardingCompleted &&
+            !onboardingStatus.isOnboardingRejected
+          ) {
+            this.router.navigate(['/status-tracker']);
+            return;
+          }
+          this.currentStep = 'thank-you';
+        } else {
+          const errorMsg =
+            response.errors?.length
+              ? response.errors.join(', ')
+              : response.message || 'Failed to submit service agreement.';
+          this.toastService.error(errorMsg);
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.agreementSubmitting = false;
+        const errorMsg =
+          err.error?.errors?.length
+            ? err.error.errors.join(', ')
+            : err.error?.message || 'Failed to submit service agreement.';
+        this.toastService.error(errorMsg);
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   urlValidator(control: AbstractControl): ValidationErrors | null {

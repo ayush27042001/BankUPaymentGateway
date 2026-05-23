@@ -28,12 +28,14 @@
 
         @if (showActions) {
           <div class="header-actions">
-            <a href="javascript:void(0)" class="action-link">
-              <i class="bi bi-speedometer2"></i>
-              <span class="link-text">Go to Dashboard</span>
-            </a>
+            @if (showDashboard) {
+              <a href="javascript:void(0)" class="action-link">
+                <i class="bi bi-speedometer2"></i>
+                <span class="link-text">Go to Dashboard</span>
+              </a>
+            }
 
-            <a href="javascript:void(0)" class="action-link">
+            <a href="javascript:void(0)" class="action-link" (click)="signOut()">
               <i class="bi bi-box-arrow-right"></i>
               <span class="link-text">Sign Out</span>
             </a>
@@ -82,12 +84,14 @@
 
         @if (showActions && mobileMenuOpen) {
           <div class="mobile-actions-dropdown">
-            <a href="javascript:void(0)" class="action-link" (click)="closeMobileMenu()">
-              <i class="bi bi-speedometer2"></i>
-              <span>Go to Dashboard</span>
-            </a>
+            @if (showDashboard) {
+              <a href="javascript:void(0)" class="action-link" (click)="closeMobileMenu()">
+                <i class="bi bi-speedometer2"></i>
+                <span>Go to Dashboard</span>
+              </a>
+            }
 
-            <a href="javascript:void(0)" class="action-link" (click)="closeMobileMenu()">
+            <a href="javascript:void(0)" class="action-link" (click)="signOut(); closeMobileMenu()">
               <i class="bi bi-box-arrow-right"></i>
               <span>Sign Out</span>
             </a>

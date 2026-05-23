@@ -34,6 +34,9 @@ export class OnboardingHeaderComponent {
   // Controls action buttons visibility
   @Input() showActions: boolean = true;
 
+  // Controls Go to Dashboard button visibility independently
+  @Input() showDashboard: boolean = true;
+
   // Controls mobile action menu state
   mobileMenuOpen = false;
 
@@ -45,5 +48,10 @@ export class OnboardingHeaderComponent {
   // Close mobile menu
   closeMobileMenu(): void {
     this.mobileMenuOpen = false;
+  }
+
+  // Sign out the user
+  signOut(): void {
+    this.authService.signOut();
   }
 }

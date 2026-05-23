@@ -117,6 +117,18 @@ export interface VerifyOtpResponse {
   timestamp: string;
 }
 
+export interface LogoutRequest {
+  refreshToken: string;
+}
+
+export interface LogoutResponse {
+  success: boolean;
+  message: string;
+  data: string;
+  errors: string[];
+  timestamp: string;
+}
+
 export interface RefreshTokenRequest {
   refreshToken: string;
   expiredToken: string;

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { OnboardingHeaderComponent } from '../../components/onboarding-header/onboarding-header';
 import { StatusTrackerService, StatusStep } from '../../services/status-tracker/status-tracker.service';
 import { Subscription } from 'rxjs';
@@ -21,12 +21,15 @@ export class StatusTrackerComponent implements OnInit, OnDestroy {
   applicationId = '';
   errorMessage: string | null = null;
   lastUpdated: string = '';
+  isOnboardingCompleted = false;
+  isOnboardingRejected = false;
   
   private pollingSubscription: Subscription | null = null;
   private readonly POLLING_INTERVAL = 30000; // 30 seconds
 
   constructor(
-    private statusTrackerService: StatusTrackerService
+    private statusTrackerService: StatusTrackerService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -94,8 +97,15 @@ export class StatusTrackerComponent implements OnInit, OnDestroy {
     this.overallProgress = data.overallProgress || 0;
     this.applicationId = data.applicationId || '';
     this.lastUpdated = data.lastUpdated || new Date().toISOString();
+    this.isOnboardingCompleted = data.isOnboardingCompleted ?? false;
+    this.isOnboardingRejected = data.isOnboardingRejected ?? false;
     this.loading = false;
     this.errorMessage = null;
+    this.cdr.markForCheck();
+
+    if (this.isOnboardingCompleted || this.isOnboardingRejected) {
+      this.stopRealTimeUpdates();
+    }
   }
 
   /**
@@ -159,6 +169,7 @@ export class StatusTrackerComponent implements OnInit, OnDestroy {
     this.applicationId = 'APP-2026-00452';
     this.lastUpdated = new Date().toISOString();
     this.loading = false;
+    this.cdr.markForCheck();
   }
 
   /**
@@ -192,6 +203,7 @@ export class StatusTrackerComponent implements OnInit, OnDestroy {
       error: () => {
         this.handleMockData();
         this.errorMessage = 'Failed to refresh status. Using cached data.';
+        this.cdr.markForCheck();
       }
     });
   }
@@ -257,6 +269,13 @@ export class StatusTrackerComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Check if step is rejected
+   */
+  isStepRejected(step: StatusStep): boolean {
+    return step.status === 'rejected';
+  }
+
+  /**
    * Format last updated timestamp
    */
   getLastUpdatedTime(): string {
@@ -281,5 +300,6 @@ export class StatusTrackerComponent implements OnInit, OnDestroy {
    */
   clearError(): void {
     this.errorMessage = null;
+    this.cdr.markForCheck();
   }
 }

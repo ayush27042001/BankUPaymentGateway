@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, catchError, of } from 'rxjs';
 import { LoginService } from '../login/login.service';
 
 @Injectable({
@@ -200,6 +200,19 @@ export class AuthService {
     localStorage.removeItem(this.IS_SERVICE_AGREEMENT_SUBMITTED_KEY);
     localStorage.removeItem(this.IS_ONBOARDING_REJECTED_KEY);
     this.router.navigate(['/login']);
+  }
+
+  signOut(): void {
+    const refreshToken = this.getRefreshToken();
+    if (refreshToken) {
+      this.loginService.logoutApi({ refreshToken }).pipe(
+        catchError(() => of(null))
+      ).subscribe(() => {
+        this.logout();
+      });
+    } else {
+      this.logout();
+    }
   }
 
   clearAuth(): void {

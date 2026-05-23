@@ -362,6 +362,12 @@ $pending-color: #6b7280;
       background: $border-color;
     }
   }
+
+  &.rejected {
+    .timeline-connector {
+      background: linear-gradient(to bottom, #ef4444, rgba(239, 68, 68, 0.2));
+    }
+  }
 }
 
 .timeline-marker {
@@ -398,6 +404,12 @@ $pending-color: #6b7280;
   &.pending {
     background: $border-color;
     color: $pending-color;
+  }
+
+  &.rejected {
+    background: #ef4444;
+    color: $white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
   }
 }
 
@@ -444,6 +456,11 @@ $pending-color: #6b7280;
 
   .timeline-item.pending & {
     opacity: 0.7;
+  }
+
+  .timeline-item.rejected & {
+    border-color: rgba(239, 68, 68, 0.25);
+    background: rgba(239, 68, 68, 0.02);
   }
 }
 
@@ -700,6 +717,29 @@ $pending-color: #6b7280;
     grid-template-columns: 1fr;
   }
 
+  .banner-inner {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .banner-cta,
+  .banner-actions {
+    width: 100%;
+  }
+
+  .banner-cta {
+    text-align: center;
+  }
+
+  .banner-actions {
+    flex-direction: row;
+    justify-content: stretch;
+
+    .banner-cta {
+      flex: 1;
+    }
+  }
+
   .left-panel {
     border-right: none;
     border-bottom: 1px solid rgba(129, 0, 126, 0.08);
@@ -750,6 +790,30 @@ $pending-color: #6b7280;
 @media (max-width: 767.98px) {
   .card-body-custom {
     padding: 22px 16px;
+  }
+
+  .banner-inner {
+    padding: 22px 20px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .banner-icon-ring {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto;
+
+    .banner-icon {
+      font-size: 2rem;
+    }
+  }
+
+  .banner-body h3 {
+    font-size: 1.2rem;
+  }
+
+  .banner-actions {
+    width: 100%;
   }
 
   .header-content h2 {
@@ -814,6 +878,195 @@ $pending-color: #6b7280;
     width: 100%;
   }
 }
+
+// ── Status Banners ──────────────────────────────────────────────────────────
+
+.status-banner {
+  border-radius: 22px;
+  overflow: hidden;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 28px 32px;
+  border-radius: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.banner-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  background: radial-gradient(ellipse at top left, rgba(255, 255, 255, 0.2) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.banner-icon-ring {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: bannerIconIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  .banner-icon {
+    font-size: 2.4rem;
+    line-height: 1;
+  }
+}
+
+.banner-body {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: $white;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
+
+  p {
+    font-size: 0.97rem;
+    color: rgba(255, 255, 255, 0.88);
+    margin: 0;
+    line-height: 1.6;
+  }
+}
+
+.banner-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.banner-cta {
+  min-height: 46px;
+  padding: 0 26px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.93rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.banner-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+// Completed banner
+.completed-banner {
+  background: linear-gradient(135deg, #0d5c37 0%, #15803d 50%, #16a34a 100%);
+  box-shadow: 0 12px 36px rgba(22, 163, 74, 0.25), 0 4px 16px rgba(22, 163, 74, 0.15);
+
+  .banner-inner {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.1) 100%);
+  }
+
+  .completed-ring {
+    background: rgba(255, 255, 255, 0.18);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.06);
+  }
+
+  .completed-tag {
+    background: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .completed-cta {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    color: $white;
+    backdrop-filter: blur(6px);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.28);
+      border-color: rgba(255, 255, 255, 0.7);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Rejected banner
+.rejected-banner {
+  background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 50%, #991b1b 100%);
+  box-shadow: 0 12px 36px rgba(153, 27, 27, 0.28), 0 4px 16px rgba(239, 68, 68, 0.15);
+
+  .banner-inner {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.12) 100%);
+  }
+
+  .rejected-ring {
+    background: rgba(255, 255, 255, 0.12);
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.04);
+  }
+
+  .rejected-tag {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  .rejected-outline-cta {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    color: $white;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.65);
+    }
+  }
+
+  .rejected-solid-cta {
+    background: rgba(255, 255, 255, 0.92);
+    border: 2px solid transparent;
+    color: #7f1d1d;
+
+    &:hover {
+      background: $white;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+@keyframes bannerIconIn {
+  0% {
+    transform: scale(0.4) rotate(-15deg);
+    opacity: 0;
+  }
+
+  70% {
+    transform: scale(1.12) rotate(4deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+// ── End Status Banners ───────────────────────────────────────────────────────
 
 @media (max-width: 575.98px) {
   .content-panel {

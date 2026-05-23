@@ -798,7 +798,7 @@
                   </div>
 
                   <!-- Upload Signature Card -->
-                   <div class="signature-card">
+                   <div class="signature-card" [class.card-error-border]="agreementErrors.signature">
   <div class="signature-icon">
     ✍️
   </div>
@@ -826,30 +826,11 @@
       Submit
     </button>
   </div>
-</div>
-                  <!-- <div class="agreement-card">
-                    <div class="agreement-icon">✍</div>
-                    <h3>Upload Digital Signature</h3>
-                    <p>
-                      Upload the signed agreement document or your digital signature to continue.
-                    </p>
-                    <div class="file-upload-box">
-                      <input
-                        type="file"
-                        id="agreementFile"
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        class="hidden-file-input"
-                        (change)="onAgreementFileSelected($event)"
-                      />
-                      <label for="agreementFile" class="proceed-btn upload-btn">
-                        {{ agreementFileName ? 'Change File' : 'Select Signed File' }}
-                      </label>
-                      @if (agreementFileName) {
-                        <small class="file-name">{{ agreementFileName }}</small>
-                      }
-                    </div>
-                  </div> -->
 
+  @if (agreementErrors.signature) {
+    <small class="error-text">{{ agreementErrors.signature }}</small>
+  }
+</div>
                   <!-- Date Selection Card -->
                   <div class="agreement-card date-card">
                     <div class="agreement-icon">📅</div>
@@ -859,12 +840,17 @@
                       type="date"
                       class="form-control custom-input"
                       [(ngModel)]="agreementDate"
+                      [style.border-color]="agreementErrors.date ? 'red' : ''"
+                      (ngModelChange)="agreementErrors.date = ''"
                     />
+                    @if (agreementErrors.date) {
+                      <small class="error-text">{{ agreementErrors.date }}</small>
+                    }
                   </div>
                 </div>
 
                 <!-- Agreement Acceptance -->
-                <div class="agreement-checkbox">
+                <div class="agreement-checkbox" [class.card-error-border]="agreementErrors.accepted">
                   <label class="checkbox-container">
                     <input type="checkbox" [(ngModel)]="agreementAccepted" />
                     <span class="checkmark"></span>
@@ -872,6 +858,9 @@
                       I have read and accepted the service agreement terms and conditions.
                     </span>
                   </label>
+                  @if (agreementErrors.accepted) {
+                    <small class="error-text mt-1">{{ agreementErrors.accepted }}</small>
+                  }
                 </div>
 
                 <!-- Footer Actions -->
@@ -883,8 +872,8 @@
                   <button
                     type="button"
                     class="proceed-btn"
-                    [disabled]="!agreementAccepted || !isSigned"
-                    (click)="goToThankYouPage()">
+                    [disabled]="agreementSubmitting"
+                    (click)="submitServiceAgreement()">
                     Finish &amp; Proceed →
                   </button>
                 </div>
