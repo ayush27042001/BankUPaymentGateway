@@ -1,0 +1,417 @@
+<div class="sidebar">
+
+  <div class="sidebar-logo">
+
+    <div class="logo-icon">
+      B
+    </div>
+
+    <div class="logo-text">
+      <h2>BankU</h2>
+      <span>Admin Panel</span>
+    </div>
+
+  </div>
+
+  <div class="sidebar-menu">
+
+    <!-- Dashboard -->
+    <a
+      routerLink="/admin/dashboard"
+      routerLinkActive="active-menu"
+      class="menu-item"
+    >
+
+      <div class="menu-left">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </div>
+
+    </a>
+
+    <!-- Masters -->
+    <div class="menu-group">
+
+      <div
+        class="menu-item submenu-toggle"
+        (click)="toggleMasters()"
+      >
+
+        <div class="menu-left">
+          <i class="bi bi-folder"></i>
+          <span>Masters</span>
+        </div>
+
+        <i
+          class="bi"
+          [class.bi-chevron-down]="mastersExpanded"
+          [class.bi-chevron-right]="!mastersExpanded"
+        ></i>
+
+      </div>
+
+      @if (mastersExpanded) {
+
+        <div class="submenu">
+
+          <!-- <a
+            class="submenu-item"
+            routerLink="/admin/masters/users"
+            routerLinkActive="active-submenu"
+          >
+            Users
+          </a> -->
+
+         <a
+  class="submenu-item"
+  routerLink="/admin/masters/business-proof-types"
+  routerLinkActive="active-submenu"
+>
+  Business Proof Types
+</a>
+
+    <a
+  class="submenu-item"
+  routerLink="/admin/masters/business-categories"
+  routerLinkActive="active-submenu"
+>
+  Business Categories
+</a>
+
+          <a class="submenu-item
+          "
+           routerLink="/admin/masters/business-sub-categories"
+  routerLinkActive="active-submenu">
+            Business Sub Categories
+          </a>
+
+       <a
+  routerLink="/admin/masters/business-entity-types"
+  routerLinkActive="active-submenu"
+ class="menu-item"
+>
+  Business Entity Types
+</a>
+
+        <a
+  class="submenu-item"
+  routerLink="/admin/masters/document-types"
+  routerLinkActive="active-submenu"
+>
+  Document Type
+</a>
+
+         <a
+  class="submenu-item"
+  routerLink="/admin/masters/pep-status"
+  routerLinkActive="active-submenu"
+>
+  PEP Status
+</a>
+
+        </div>
+
+      }
+
+    </div>
+
+    <!-- Merchants -->
+    <div class="menu-group">
+
+      <div
+        class="menu-item submenu-toggle"
+        (click)="toggleMerchant()"
+      >
+
+        <div class="menu-left">
+          <i class="bi bi-people"></i>
+          <span>Merchants</span>
+        </div>
+
+        <i
+          class="bi"
+          [class.bi-chevron-down]="merchantExpanded"
+          [class.bi-chevron-right]="!merchantExpanded"
+        ></i>
+
+      </div>
+
+      @if (merchantExpanded) {
+
+        <div class="submenu">
+
+        <a
+  class="submenu-item"
+  routerLink="/admin/merchants"
+  routerLinkActive="active-submenu"
+>
+  All Merchants
+</a>
+
+          <a class="submenu-item">
+            Test Two
+          </a>
+
+        </div>
+
+      }
+
+    </div>
+    <!-- Merchant Onboarding -->
+<div class="menu-group">
+
+  <div
+    class="menu-item submenu-toggle"
+    (click)="toggleOnboarding()"
+  >
+
+    <div class="menu-left">
+
+      <i class="bi bi-building-check"></i>
+
+      <span>Merchant Onboarding</span>
+
+    </div>
+
+    <i
+      class="bi"
+      [class.bi-chevron-down]="onboardingExpanded"
+      [class.bi-chevron-right]="!onboardingExpanded"
+    ></i>
+
+  </div>
+
+  @if (onboardingExpanded) {
+
+    <div class="submenu">
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/business-pan-details"
+        routerLinkActive="active-submenu"
+      >
+        Business PAN Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/business-address-details"
+        routerLinkActive="active-submenu"
+      >
+        Business Address Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/website-app-details"
+        routerLinkActive="active-submenu"
+      >
+        Website/App Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/video-kyc-details"
+        routerLinkActive="active-submenu"
+      >
+        Video KYC Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/document-uploads"
+        routerLinkActive="active-submenu"
+      >
+        Document Uploads
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/signing-authority-details"
+        routerLinkActive="active-submenu"
+      >
+        Signing Authority Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/bank-account-details"
+        routerLinkActive="active-submenu"
+      >
+        Bank Account Details
+      </a>
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/onboarding/service-agreements"
+        routerLinkActive="active-submenu"
+      >
+        Service Agreements
+      </a>
+
+    </div>
+
+  }
+
+</div>
+<!-- Users -->
+<div class="menu-group">
+
+  <div
+    class="menu-item submenu-toggle"
+    (click)="toggleUsers()"
+  >
+
+    <div class="menu-left">
+
+      <i class="bi bi-person"></i>
+
+      <span>Users</span>
+
+    </div>
+
+    <i
+      class="bi"
+      [class.bi-chevron-down]="userExpanded"
+      [class.bi-chevron-right]="!userExpanded"
+    ></i>
+
+  </div>
+
+  @if (userExpanded) {
+
+    <div class="submenu">
+
+      <a
+        class="submenu-item"
+        routerLink="/admin/masters/users"
+        routerLinkActive="active-submenu"
+      >
+        All Users
+      </a>
+
+    </div>
+
+  }
+
+</div>
+    <!-- Reports -->
+    <div class="menu-group">
+
+      <div
+        class="menu-item submenu-toggle"
+        (click)="toggleReport()"
+      >
+
+        <div class="menu-left">
+          <i class="bi bi-file-earmark-text"></i>
+          <span>Reports</span>
+        </div>
+
+        <i
+          class="bi"
+          [class.bi-chevron-down]="reportExpanded"
+          [class.bi-chevron-right]="!reportExpanded"
+        ></i>
+
+      </div>
+
+      @if (reportExpanded) {
+
+        <div class="submenu">
+
+          <a class="submenu-item">
+            Test One
+          </a>
+
+          <a class="submenu-item">
+            Test Two
+          </a>
+
+        </div>
+
+      }
+
+    </div>
+
+    <!-- Settings -->
+   <!-- Settings -->
+<div class="menu-group">
+
+  <div
+    class="menu-item submenu-toggle"
+    (click)="toggleSettings()"
+  >
+
+    <div class="menu-left">
+
+      <i class="bi bi-gear"></i>
+
+      <span>Settings</span>
+
+    </div>
+
+    <i
+      class="bi"
+      [class.bi-chevron-down]="settingsExpanded"
+      [class.bi-chevron-right]="!settingsExpanded"
+    ></i>
+
+  </div>
+
+  @if (settingsExpanded) {
+
+    <div class="submenu">
+
+      <!-- SUPPORT -->
+
+      <a
+        class="submenu-item"
+        (click)="openSupport()"
+      >
+
+        <i class="bi bi-headset"></i>
+
+        <span>Support</span>
+
+      </a>
+
+      <!-- LOGOUT -->
+
+      <a
+        class="submenu-item logout-item"
+        (click)="logout()"
+      >
+
+        <i class="bi bi-box-arrow-right"></i>
+
+        <span>Logout</span>
+
+      </a>
+
+    </div>
+
+  }
+
+</div>
+
+  </div>
+
+  <div class="sidebar-footer">
+
+    <div class="admin-profile">
+
+      <div class="profile-avatar">
+        A
+      </div>
+
+      <div class="profile-info">
+        <h4>Admin</h4>
+        <span>Super Admin</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

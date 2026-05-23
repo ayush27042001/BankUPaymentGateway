@@ -1,0 +1,30 @@
+<div class="admin-layout" [class.sidebar-mobile-open]="isMobileSidebarOpen()">
+
+  <app-sidebar
+    [isMobileSidebarOpen]="isMobileSidebarOpen"
+  ></app-sidebar>
+
+  <!-- Mobile Overlay -->
+  @if (isMobileSidebarOpen()) {
+    <div
+      class="mobile-sidebar-overlay"
+      (click)="closeMobileSidebar()"
+    ></div>
+  }
+
+  <div class="admin-main">
+
+    <app-navbar
+      (toggleMobileMenu)="toggleMobileSidebar()"
+    ></app-navbar>
+
+    <!-- Common Search Bar -->
+    <app-search-filter></app-search-filter>
+
+    <div class="admin-content">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+
+</div>

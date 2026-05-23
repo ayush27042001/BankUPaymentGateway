@@ -1,0 +1,618 @@
+/* =============================================
+   BREAKPOINTS
+============================================= */
+$bp-sm: 576px;
+$bp-md: 768px;
+$bp-lg: 992px;
+$bp-xl: 1200px;
+
+/* =============================================
+   PAGE WRAPPER
+============================================= */
+.users-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #f4f7fb;
+  box-sizing: border-box;
+}
+
+/* =============================================
+   SEARCH CARD
+============================================= */
+.search-card {
+  background: #fff;
+  border-radius: 22px;
+  padding: 16px 20px;
+  margin-bottom: 18px;
+  border: 1px solid #e4ecf5;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
+  box-sizing: border-box;
+
+  @media (max-width: $bp-md - 1px) { padding: 14px; border-radius: 16px; }
+  @media (max-width: $bp-sm - 1px) { padding: 12px; border-radius: 12px; }
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  @media (max-width: $bp-md - 1px) { flex-direction: column; gap: 10px; }
+}
+
+/* =============================================
+   SEARCH BOX
+============================================= */
+.search-box {
+  flex: 1;
+  min-width: 200px;
+  height: 50px;
+  background: #f8fafc;
+  border: 1.5px solid #dce4ee;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 15px;
+  transition: 0.22s ease;
+
+  &:focus-within {
+    border-color: #a855f7;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+  }
+
+  i { font-size: 16px; color: #94a3b8; flex-shrink: 0; }
+
+  input {
+    flex: 1; min-width: 0; border: none; outline: none;
+    background: transparent; font-size: 14px; font-weight: 500; color: #0f172a;
+    &::placeholder { color: #94a3b8; }
+  }
+
+  @media (max-width: $bp-md - 1px) { width: 100%; height: 46px; }
+  @media (max-width: $bp-sm - 1px) { height: 42px; font-size: 13px; }
+}
+
+/* =============================================
+   ADD / EXPORT BUTTONS
+============================================= */
+.add-btn {
+  height: 50px; padding: 0 20px; border: none;
+  border-radius: 13px; cursor: pointer;
+  background: linear-gradient(135deg, #901299, #c700ff);
+  color: #fff; font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  white-space: nowrap; transition: 0.22s ease;
+  box-shadow: 0 6px 18px rgba(144, 18, 153, 0.26);
+
+  i { font-size: 16px; }
+  &:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(144, 18, 153, 0.36); }
+
+  @media (max-width: $bp-md - 1px) { width: 100%; height: 46px; }
+  @media (max-width: $bp-sm - 1px) { height: 42px; font-size: 13px; }
+}
+
+.export-btn {
+  height: 50px; padding: 0 20px; border: none;
+  border-radius: 13px; cursor: pointer;
+  background: #16a34a; color: #fff;
+  font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  white-space: nowrap; transition: 0.22s ease;
+
+  i { font-size: 16px; }
+  &:hover { background: #15803d; transform: translateY(-2px); }
+
+  @media (max-width: $bp-md - 1px) { width: 100%; height: 46px; }
+  @media (max-width: $bp-sm - 1px) { height: 42px; font-size: 13px; }
+}
+
+/* =============================================
+   TABLE CARD
+============================================= */
+.table-card {
+  background: #fff; border-radius: 22px;
+  overflow: hidden; border: 1px solid #e4ecf5;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
+
+  @media (max-width: $bp-md - 1px) { border-radius: 16px; }
+}
+
+.table-header {
+  background: linear-gradient(135deg, #901299, #c700ff);
+  padding: 16px 22px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 12px; flex-wrap: wrap;
+
+  @media (max-width: $bp-sm - 1px) { padding: 13px 14px; }
+}
+
+.table-title {
+  font-size: 15px; font-weight: 700; color: #fff;
+  display: flex; align-items: center; gap: 8px;
+  i { font-size: 17px; opacity: 0.9; }
+  @media (max-width: $bp-sm - 1px) { font-size: 13px; }
+}
+
+.table-count {
+  font-size: 12px; font-weight: 600;
+  color: rgba(255,255,255,0.88);
+  background: rgba(255,255,255,0.15);
+  padding: 4px 12px; border-radius: 999px;
+  @media (max-width: $bp-sm - 1px) { font-size: 11px; }
+}
+
+.table-responsive {
+  width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar { height: 4px; }
+  &::-webkit-scrollbar-track { background: #f8fafc; }
+  &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+}
+
+.custom-table {
+  width: 100%; min-width: 1600px;
+  border-collapse: separate; border-spacing: 0;
+}
+
+.custom-table thead th {
+  padding: 14px 13px;
+  background: #fafbfd;
+  border-bottom: 1.5px solid #edf2f7;
+  color: #475569; font-size: 12.5px; font-weight: 700;
+  white-space: nowrap; text-align: left; letter-spacing: 0.2px;
+}
+
+.custom-table tbody td {
+  padding: 11px 13px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.custom-table tbody tr:last-child td { border-bottom: none; }
+.custom-table tbody tr { transition: background 0.15s ease; }
+.custom-table tbody tr:hover { background: #fdf4ff; }
+
+/* =============================================
+   TABLE PILL
+============================================= */
+.table-pill {
+  min-height: 44px; background: #f8fafc;
+  border: 1px solid #e2e8f0; border-radius: 11px;
+  padding: 9px 13px; display: flex; align-items: center;
+  font-size: 13px; font-weight: 600; color: #1e293b;
+  min-width: 130px; word-break: break-all; transition: 0.18s ease;
+
+  &.email-pill { min-width: 200px; }
+}
+
+.custom-table tbody tr:hover .table-pill {
+  border-color: #d8b4fe; background: #fff;
+}
+
+/* =============================================
+   ID BADGE
+============================================= */
+.id-badge {
+  min-width: 66px; height: 44px;
+  background: #f3e8ff; border-radius: 11px;
+  color: #7e22ce; display: flex; align-items: center;
+  justify-content: center; font-size: 13px; font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* =============================================
+   STATUS BADGE (shared across page + modal)
+============================================= */
+.status-badge {
+  height: 32px; padding: 0 12px;
+  border-radius: 999px;
+  display: inline-flex; align-items: center;
+  justify-content: center; gap: 5px;
+  font-size: 12px; font-weight: 700; white-space: nowrap;
+
+  i { font-size: 10px; }
+
+  &.badge-green  { background: #dcfce7; color: #15803d; }
+  &.badge-red    { background: #fee2e2; color: #dc2626; }
+  &.badge-yellow { background: #fef9c3; color: #92400e; }
+}
+
+.dot-icon { font-size: 7px !important; }
+
+/* =============================================
+   ACTION BUTTON
+============================================= */
+.action-btn {
+  width: 42px; height: 42px;
+  border: 1.5px solid #e2e8f0; background: #fff;
+  border-radius: 11px; color: #7e22ce;
+  font-size: 15px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: 0.2s ease;
+
+  &:hover { background: #f3e8ff; border-color: #d8b4fe; transform: scale(1.06); }
+}
+
+/* =============================================
+   PAGINATION
+============================================= */
+.pagination-wrapper {
+  padding: 18px 22px; display: flex;
+  align-items: center; justify-content: flex-end;
+  gap: 14px; flex-wrap: wrap;
+  background: #fff; border-top: 1px solid #f1f5f9;
+  border-radius: 15px; margin-top: 18px;
+}
+
+.pagination-btn {
+  min-width: 106px; height: 42px;
+  border: 1.5px solid #e2e8f0; background: #fff;
+  border-radius: 11px; font-size: 13px; font-weight: 700;
+  color: #475569; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  transition: 0.2s ease;
+
+  &:hover:not(:disabled) { background: #f3e8ff; border-color: #d8b4fe; color: #7e22ce; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.pagination-info {
+  font-size: 13px; font-weight: 600; color: #64748b;
+  strong { color: #0f172a; }
+}
+
+/* =============================================
+   MODAL BACKDROP
+============================================= */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(8, 12, 28, 0.65);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: flex-start;
+  justify-content: center; padding: 24px 16px;
+  overflow-y: auto;
+}
+
+/* =============================================
+   KYC MODAL — MAIN CONTAINER
+============================================= */
+.kyc-modal {
+  width: 100%; max-width: 860px;
+  max-height: calc(100vh - 48px);
+  background: #fff; border-radius: 26px;
+  // overflow: hidden;
+  //  padding: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  // display: flex; flex-direction: column;
+  animation: popIn 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 28px 70px rgba(8, 12, 28, 0.22);
+
+  @media (max-width: $bp-sm - 1px) { border-radius: 18px; max-height: 96vh; }
+}
+
+/* =============================================
+   ZONE 1 — KYC HEADER
+============================================= */
+.kyc-header {
+  background: linear-gradient(135deg, #6d00ff 0%, #c700ff 100%);
+  padding: 22px 26px;
+  display: flex; align-items: flex-start; gap: 16px;
+  flex-shrink: 0;
+
+  @media (max-width: $bp-sm - 1px) { padding: 16px 16px; gap: 12px; }
+}
+
+.kyc-avatar {
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.18);
+  border: 2px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; color: #fff; flex-shrink: 0;
+
+  @media (max-width: $bp-sm - 1px) { width: 48px; height: 48px; font-size: 20px; border-radius: 14px; }
+}
+
+.kyc-user-info { flex: 1; min-width: 0; }
+
+.kyc-uid {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+  color: rgba(255,255,255,0.65); text-transform: uppercase; margin-bottom: 3px;
+}
+
+.kyc-email {
+  font-size: 18px; font-weight: 800; color: #fff;
+  word-break: break-all; line-height: 1.2; margin-bottom: 4px;
+
+  @media (max-width: $bp-sm - 1px) { font-size: 15px; }
+}
+
+.kyc-mobile {
+  font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,0.78);
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 12px;
+  i { font-size: 12px; }
+}
+
+.kyc-badges { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.kbadge {
+  height: 26px; padding: 0 11px; border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+  i { font-size: 8px; }
+
+  &.kb-green  { background: #dcfce7; color: #15803d; }
+  &.kb-red    { background: #fee2e2; color: #dc2626; }
+  &.kb-purple { background: rgba(255,255,255,0.9); color: #7e22ce; }
+  &.kb-yellow { background: #fef9c3; color: #92400e; }
+}
+
+.kyc-close {
+  width: 40px; height: 40px; border: none;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.15);
+  color: #fff; font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: 0.2s ease;
+
+  &:hover { background: rgba(255,255,255,0.28); }
+}
+
+/* =============================================
+   ZONE 2 — KYC BODY
+============================================= */
+.kyc-body {
+  flex: 1; min-height: 0; overflow-y: auto;
+  padding: 20px 22px;
+  display: flex; flex-direction: column; gap: 16px;
+  background: #f4f7fb;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: #dde4ed; border-radius: 999px; }
+
+  @media (max-width: $bp-sm - 1px) { padding: 14px; gap: 12px; }
+}
+
+/* =============================================
+   SECTION CARD
+============================================= */
+.kyc-section {
+  background: #fff;
+  border: 1.5px solid #e8eef7;
+  border-radius: 18px;
+  overflow: hidden;
+
+  @media (max-width: $bp-sm - 1px) { border-radius: 13px; }
+}
+
+/* Section title row */
+.kyc-sec-title {
+  display: flex; align-items: center; gap: 11px;
+  padding: 13px 18px;
+  background: #fff;
+  border-bottom: 1.5px solid #edf2f7;
+  font-size: 14px; font-weight: 800; color: #1e293b;
+
+  @media (max-width: $bp-sm - 1px) { padding: 11px 14px; font-size: 13px; }
+}
+
+.sec-icon {
+  width: 32px; height: 32px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+
+  &.icon-purple { background: #ede9fe; color: #7c3aed; }
+  &.icon-blue   { background: #dbeafe; color: #1d4ed8; }
+  &.icon-green  { background: #dcfce7; color: #15803d; }
+  &.icon-orange { background: #fef3c7; color: #b45309; }
+  &.icon-red    { background: #ffe4e6; color: #be123c; }
+}
+
+/* =============================================
+   DATA GRID  (4 col → 2 col → 1 col)
+   Each cell = label + value, with dividers
+============================================= */
+.kyc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #f8fafc;
+
+  @media (max-width: $bp-lg - 1px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: $bp-sm - 1px) { grid-template-columns: 1fr; }
+}
+
+.kyc-field {
+  padding: 16px 18px;
+  border-right: 1.5px solid #edf2f7;
+  border-bottom: 1.5px solid #edf2f7;
+
+  /* Remove right border on last column */
+  &:nth-child(4n) { border-right: none; }
+
+  /* 2-col: remove right border on even items */
+  @media (max-width: $bp-lg - 1px) and (min-width: $bp-sm) {
+    &:nth-child(4n)   { border-right: 1.5px solid #edf2f7; }
+    &:nth-child(even) { border-right: none; }
+  }
+
+  /* 1-col */
+  @media (max-width: $bp-sm - 1px) {
+    &:nth-child(4n)   { border-right: none; }
+    &:nth-child(even) { border-right: none; }
+    border-right: none;
+  }
+
+  /* remove bottom border on last row */
+  &:nth-last-child(-n+4) { border-bottom: none; }
+
+  @media (max-width: $bp-lg - 1px) and (min-width: $bp-sm) {
+    &:nth-last-child(-n+4) { border-bottom: 1.5px solid #edf2f7; }
+    &:nth-last-child(-n+2) { border-bottom: none; }
+  }
+
+  @media (max-width: $bp-sm - 1px) {
+    &:nth-last-child(-n+4) { border-bottom: 1.5px solid #edf2f7; }
+    &:last-child { border-bottom: none; }
+  }
+
+  @media (max-width: $bp-sm - 1px) { padding: 12px 14px; }
+}
+
+.field-label {
+  font-size: 10.5px; font-weight: 700;
+  color: #94a3b8; text-transform: uppercase;
+  letter-spacing: 0.7px; margin-bottom: 7px;
+}
+
+.field-value {
+  font-size: 14.5px; font-weight: 700;
+  color: #0f172a; word-break: break-word; line-height: 1.4;
+
+  &.mono { font-family: 'Courier New', monospace; font-size: 13.5px; letter-spacing: 0.5px; }
+  &.highlight-val { color: #15803d; }
+
+  @media (max-width: $bp-sm - 1px) { font-size: 13.5px; }
+}
+
+/* =============================================
+   DOCUMENT GRID  (4 cards)
+============================================= */
+.kyc-doc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #f8fafc;
+
+  @media (max-width: $bp-md - 1px) { grid-template-columns: repeat(2, 1fr); }
+}
+
+.kyc-doc-card {
+  padding: 20px 14px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 10px; text-align: center;
+  border-right: 1.5px solid #edf2f7;
+  border-bottom: 1.5px solid #edf2f7;
+
+  &:nth-child(4n)   { border-right: none; }
+  &:nth-child(n+3)  { border-bottom: none; }
+
+  @media (max-width: $bp-md - 1px) {
+    &:nth-child(4n)   { border-right: 1.5px solid #edf2f7; }
+    &:nth-child(even) { border-right: none; }
+    &:nth-child(n+3)  { border-bottom: 1.5px solid #edf2f7; }
+    &:nth-child(n+3)  { border-bottom: none; }
+    &:nth-last-child(-n+2) { border-bottom: none; }
+  }
+
+  @media (max-width: $bp-sm - 1px) { padding: 14px 10px; }
+}
+
+.doc-icon-wrap {
+  width: 50px; height: 50px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; border: 1.5px solid transparent;
+
+  &.doc-purple { background: #ede9fe; color: #7c3aed; border-color: #ddd6fe; }
+  &.doc-blue   { background: #dbeafe; color: #1d4ed8; border-color: #bfdbfe; }
+  &.doc-green  { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+  &.doc-yellow { background: #fef9c3; color: #92400e; border-color: #fef08a; }
+
+  @media (max-width: $bp-sm - 1px) { width: 42px; height: 42px; font-size: 18px; }
+}
+
+.doc-name {
+  font-size: 12px; font-weight: 700; color: #475569;
+}
+
+/* =============================================
+   ZONE 3 — KYC FOOTER
+============================================= */
+.kyc-footer {
+  padding: 16px 22px;
+  border-top: 1.5px solid #edf2f7;
+  display: flex; align-items: center;
+  justify-content: flex-end; gap: 10px; flex-wrap: wrap;
+  flex-shrink: 0; background: #fff;
+
+  @media (max-width: $bp-sm - 1px) {
+    padding: 13px 14px;
+    button { flex: 1; min-width: 0; }
+  }
+}
+
+.btn-reject, .btn-cancel, .btn-approve {
+  height: 44px; border: none; border-radius: 11px;
+  padding: 0 18px; font-size: 13.5px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 6px; transition: 0.2s ease;
+  i { font-size: 14px; }
+}
+
+.btn-reject {
+  background: #fee2e2; color: #dc2626;
+  &:hover { background: #dc2626; color: #fff; }
+}
+
+.btn-cancel {
+  background: #f1f5f9; color: #475569;
+  &:hover { background: #e2e8f0; }
+}
+
+.btn-approve {
+  background: #16a34a; color: #fff;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.26);
+  &:hover { background: #15803d; }
+}
+
+/* =============================================
+   ADD MODAL
+============================================= */
+.add-modal {
+  max-width: 840px;
+}
+
+.add-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+
+  @media (max-width: $bp-sm - 1px) { grid-template-columns: 1fr; gap: 11px; }
+}
+
+.form-group {
+  display: flex; flex-direction: column; gap: 7px;
+
+  &.full-col { grid-column: 1 / -1; }
+
+  label {
+    font-size: 12.5px; font-weight: 700;
+    color: #475569; letter-spacing: 0.2px;
+  }
+
+  input {
+    width: 100%; box-sizing: border-box;
+    border: 1.5px solid #dce4ee; border-radius: 11px;
+    padding: 11px 13px; outline: none;
+    font-size: 13.5px; font-weight: 500; color: #0f172a;
+    background: #f8fafc; transition: 0.2s ease;
+
+    &:focus {
+      border-color: #a855f7; background: #fff;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    }
+    &::placeholder { color: #94a3b8; }
+  }
+}
+
+/* =============================================
+   ANIMATION
+============================================= */
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}

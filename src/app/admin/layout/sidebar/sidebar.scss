@@ -1,0 +1,433 @@
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* =========================================
+   RESPONSIVE BREAKPOINTS (Standardized)
+========================================= */
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+/* =========================================
+   SIDEBAR BASE STYLES
+========================================= */
+.sidebar {
+  height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #ececec;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+
+  // Desktop (>= 992px)
+  @media (min-width: $breakpoint-lg) {
+    width: 280px;
+    padding: 24px 18px;
+  }
+
+  // Tablet (768px to 991px)
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
+    width: 90px;
+    padding: 20px 12px;
+  }
+
+  // Mobile (< 768px)
+  @media (max-width: $breakpoint-md - 1px) {
+    width: 280px;
+    padding: 24px 18px;
+    box-shadow: none; // Box shadow handled by layout container
+  }
+}
+
+/* =========================================
+   LOGO SECTION
+========================================= */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 40px;
+
+  // Tablet: Centered, no text
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+
+  // Mobile: Full width
+  @media (max-width: $breakpoint-md - 1px) {
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+}
+
+.logo-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #690169, #c026d3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+
+  // Tablet: Smaller icon
+  @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  // Mobile: Standard size
+  @media (max-width: $breakpoint-md - 1px) {
+    width: 54px;
+    height: 54px;
+    font-size: 24px;
+  }
+}
+
+.logo-text {
+  // Hidden on tablet
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
+    display: none;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #690169;
+
+    @media (max-width: $breakpoint-md - 1px) {
+      font-size: 22px;
+    }
+  }
+
+  span {
+    font-size: 13px;
+    color: #7a7a7a;
+
+    @media (max-width: $breakpoint-md - 1px) {
+      font-size: 12px;
+    }
+  }
+}
+
+/* =========================================
+   MENU
+========================================= */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  overflow-y: auto;
+
+  // Tablet
+  @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) {
+    gap: 8px;
+  }
+
+  // Mobile
+  @media (max-width: $breakpoint-md - 1px) {
+    gap: 10px;
+  }
+}
+
+.menu-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================
+   MENU ITEMS - RESPONSIVE
+========================================= */
+.menu-item {
+  min-height: 54px;
+  border-radius: 16px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #5e5e5e;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 15px;
+  font-weight: 500;
+
+  i {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(105, 1, 105, 0.08);
+    color: #690169;
+  }
+
+  // Tablet: Icon only, centered
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
+    min-height: 48px;
+    border-radius: 12px;
+    padding: 0;
+    justify-content: center;
+
+    i {
+      font-size: 20px;
+    }
+
+    span {
+      display: none;
+    }
+  }
+
+  // Mobile: Full menu items visible
+  @media (max-width: $breakpoint-md - 1px) {
+    min-height: 50px;
+    border-radius: 14px;
+    padding: 0 16px;
+    font-size: 14px;
+
+    i {
+      font-size: 18px;
+    }
+  }
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  // Tablet: Center alignment
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
+    justify-content: center;
+    gap: 0;
+  }
+
+  // Mobile: Normal
+  @media (max-width: $breakpoint-md - 1px) {
+    gap: 12px;
+  }
+}
+
+.submenu-toggle {
+  user-select: none;
+}
+
+/* =========================================
+   ACTIVE MENU STATE
+========================================= */
+.active-menu {
+  background: linear-gradient(135deg, #690169, #8d028d);
+  color: #ffffff !important;
+  box-shadow: 0 10px 25px rgba(105, 1, 105, 0.25);
+
+  i {
+    color: #ffffff;
+  }
+}
+
+/* =========================================
+   SUBMENU
+========================================= */
+.submenu {
+  margin-top: 10px;
+  margin-left: 20px;
+  padding-left: 12px;
+  border-left: 2px dashed rgba(105, 1, 105, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  // Tablet: Hidden
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
+    display: none;
+  }
+
+  // Mobile: Visible
+  @media (max-width: $breakpoint-md - 1px) {
+    margin-left: 20px;
+    padding-left: 12px;
+  }
+}
+
+.submenu-item {
+  min-height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: #6a6a6a;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  text-decoration: none;
+
+  &:hover {
+    background: rgba(243, 144, 33, 0.12);
+    color: #f39021;
+    transform: translateX(4px);
+  }
+
+  // Mobile
+  @media (max-width: $breakpoint-md - 1px) {
+    font-size: 13px;
+    min-height: 40px;
+    padding: 8px 12px;
+  }
+}
+
+.active-submenu {
+  background: rgba(105, 1, 105, 0.1);
+  color: #690169 !important;
+  font-weight: 600;
+}
+
+/* =========================================
+   FOOTER / PROFILE SECTION
+========================================= */
+.sidebar-footer {
+  margin-top: 30px;
+
+  // Tablet
+  @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) {
+    margin-top: 20px;
+  }
+
+  // Mobile
+  @media (max-width: $breakpoint-md - 1px) {
+    margin-top: 30px;
+  }
+}
+
+.admin-profile {
+  background: #f8f8f8;
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(105, 1, 105, 0.08);
+    transform: translateY(-2px);
+  }
+
+  // Tablet: Icon only
+  @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) {
+    justify-content: center;
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  // Mobile: Full profile
+  @media (max-width: $breakpoint-md - 1px) {
+    gap: 14px;
+  }
+}
+
+.profile-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #690169, #c026d3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 20px;
+  flex-shrink: 0;
+
+  // Tablet
+  @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  // Mobile
+  @media (max-width: $breakpoint-md - 1px) {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  // Hidden on tablet
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
+    display: none;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1b1b1b;
+
+    @media (max-width: $breakpoint-md - 1px) {
+      font-size: 13px;
+    }
+  }
+
+  span {
+    font-size: 12px;
+    color: #7b7b7b;
+
+    @media (max-width: $breakpoint-md - 1px) {
+      font-size: 11px;
+    }
+  }
+}
+
+/* =========================================
+   SCROLLBAR STYLING
+========================================= */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(105, 1, 105, 0.3);
+  border-radius: 10px;
+
+  &:hover {
+    background: rgba(105, 1, 105, 0.5);
+  }
+}
+
+/* =========================================
+   LOGOUT MENU ITEM
+========================================= */
+.logout-item {
+  &:hover {
+    background: rgba(244, 63, 87, 0.1);
+    color: #f43f57;
+
+    i {
+      color: #f43f57;
+    }
+  }
+}

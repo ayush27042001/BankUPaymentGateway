@@ -1,0 +1,392 @@
+<div class="users-page">
+
+  <!-- SEARCH CARD -->
+  <div class="search-card">
+    <div class="search-wrapper">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Search by email, mobile or ID..." [(ngModel)]="searchText" />
+      </div>
+      <button class="add-btn" (click)="openAddModal()">
+        <i class="bi bi-plus-circle"></i>
+        <span>Add User</span>
+      </button>
+      <button class="export-btn" (click)="exportUsers()">
+        <i class="bi bi-download"></i>
+        <span>Export CSV</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLE CARD -->
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-title">
+        <i class="bi bi-people-fill"></i>
+        User Master List
+      </div>
+      <div class="table-count">Total Records : {{ filteredUsers().length }}</div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Email ID</th>
+            <th>Mobile Number</th>
+            <th>PAN Details</th>
+            <th>Business Type</th>
+            <th>GSTIN</th>
+            <th>Bank Details</th>
+            <th>Business Category</th>
+            <th>KYC Status</th>
+            <th>Account Status</th>
+            <th>Last Login</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of paginatedUsers(); trackBy: trackByUserId">
+            <td><div class="id-badge">#{{ user.userId }}</div></td>
+            <td><div class="table-pill email-pill">{{ user.email }}</div></td>
+            <td><div class="table-pill">{{ user.mobileNumber }}</div></td>
+            <td><div class="table-pill"><strong>{{ user.panNumber }}</strong></div></td>
+            <td><div class="table-pill">{{ user.businessType }}</div></td>
+            <td><div class="table-pill">{{ user.gstin }}</div></td>
+            <td><div class="table-pill">{{ user.bankAccountNumber }}</div></td>
+            <td><div class="table-pill">{{ user.businessCategory }}</div></td>
+            <td>
+              <div class="status-badge" [ngClass]="user.isKycVerified ? 'badge-green' : 'badge-yellow'">
+                <i class="bi" [ngClass]="user.isKycVerified ? 'bi-patch-check-fill' : 'bi-clock-fill'"></i>
+                {{ user.isKycVerified ? 'Verified' : 'Pending' }}
+              </div>
+            </td>
+            <td>
+              <div class="status-badge" [ngClass]="user.isActive ? 'badge-green' : 'badge-red'">
+                <i class="bi bi-circle-fill dot-icon"></i>
+                {{ user.isActive ? 'Active' : 'Inactive' }}
+              </div>
+            </td>
+            <td><div class="table-pill">{{ user.lastLoginDate || '—' }}</div></td>
+            <td>
+              <button class="action-btn" (click)="openViewModal(user)">
+                <i class="bi bi-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination-wrapper">
+    <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+      <i class="bi bi-chevron-left"></i> Previous
+    </button>
+    <div class="pagination-info">
+      Page <strong>{{ currentPage }}</strong> of <strong>{{ totalPages }}</strong>
+    </div>
+    <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+      Next <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+
+</div>
+
+<!-- ================================================
+     KYC VIEW MODAL
+================================================ -->
+<ng-container *ngIf="isViewModalOpen && selectedUser">
+  <div class="modal-backdrop" (click)="closeViewModal()">
+    <div class="kyc-modal" (click)="$event.stopPropagation()">
+
+      <!-- ZONE 1 — HEADER -->
+      <div class="kyc-header">
+        <div class="kyc-avatar"><i class="bi bi-person-fill"></i></div>
+        <div class="kyc-user-info">
+          <div class="kyc-uid">USER #{{ selectedUser.userId }}</div>
+          <div class="kyc-email">{{ selectedUser.email }}</div>
+          <div class="kyc-mobile">
+            <i class="bi bi-phone-fill"></i> {{ selectedUser.mobileNumber }}
+          </div>
+          <div class="kyc-badges">
+            <span class="kbadge" [ngClass]="selectedUser.isActive ? 'kb-green' : 'kb-red'">
+              <i class="bi bi-circle-fill dot-icon"></i>
+              {{ selectedUser.isActive ? 'Active' : 'Inactive' }}
+            </span>
+            <span class="kbadge" [ngClass]="selectedUser.isKycVerified ? 'kb-purple' : 'kb-yellow'">
+              <i class="bi" [ngClass]="selectedUser.isKycVerified ? 'bi-patch-check-fill' : 'bi-hourglass-split'"></i>
+              KYC {{ selectedUser.isKycVerified ? 'Verified' : 'Pending' }}
+            </span>
+          </div>
+        </div>
+        <button class="kyc-close" (click)="closeViewModal()"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <!-- ZONE 2 — BODY -->
+      <div class="kyc-body">
+
+        <!-- PAN DETAILS -->
+        <div class="kyc-section">
+          <div class="kyc-sec-title">
+            <span class="sec-icon icon-purple"><i class="bi bi-credit-card-2-front-fill"></i></span>
+            PAN Details
+          </div>
+          <div class="kyc-grid">
+            <div class="kyc-field">
+              <div class="field-label">PAN Number</div>
+              <div class="field-value mono">{{ selectedUser.panNumber || 'CMHPA4444B' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">Name on PAN</div>
+              <div class="field-value">{{ selectedUser.panName || 'AYUSH KUMAR AWASTHI' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">Date of Birth</div>
+              <div class="field-value">{{ selectedUser.panDob || '20 Sep 2001' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">PAN Verification</div>
+              <div class="status-badge badge-green">
+                <i class="bi bi-patch-check-fill"></i> Verified
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUSINESS DETAILS -->
+        <div class="kyc-section">
+          <div class="kyc-sec-title">
+            <span class="sec-icon icon-blue"><i class="bi bi-briefcase-fill"></i></span>
+            Business Details
+          </div>
+          <div class="kyc-grid">
+            <div class="kyc-field">
+              <div class="field-label">Business Type</div>
+              <div class="field-value">{{ selectedUser.businessType || 'Sole Proprietorship' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">Business Category</div>
+              <div class="field-value">{{ selectedUser.businessCategory || 'Gifts & Novelties' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">GSTIN</div>
+              <div class="field-value mono">{{ selectedUser.gstin || '29ABCDE1234F1Z5' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">Annual Sales</div>
+              <div class="field-value highlight-val">{{ selectedUser.annualSales || '₹ 10,00,000' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BANK DETAILS -->
+        <div class="kyc-section">
+          <div class="kyc-sec-title">
+            <span class="sec-icon icon-green"><i class="bi bi-bank2"></i></span>
+            Bank Details
+          </div>
+          <div class="kyc-grid">
+            <div class="kyc-field">
+              <div class="field-label">Account Holder</div>
+              <div class="field-value">{{ selectedUser.bankHolderName || 'RISHABH PAL' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">Account Number</div>
+              <div class="field-value mono">{{ selectedUser.bankAccountNumber || 'XXXXXX9765' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">IFSC Code</div>
+              <div class="field-value mono">{{ selectedUser.ifscCode || 'SBIN0004587' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">Bank Name</div>
+              <div class="field-value">{{ selectedUser.bankName || 'State Bank of India' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADDRESS DETAILS -->
+        <div class="kyc-section">
+          <div class="kyc-sec-title">
+            <span class="sec-icon icon-orange"><i class="bi bi-geo-alt-fill"></i></span>
+            Address Details
+          </div>
+          <div class="kyc-grid">
+            <div class="kyc-field">
+              <div class="field-label">State</div>
+              <div class="field-value">{{ selectedUser.state || 'Delhi' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">City</div>
+              <div class="field-value">{{ selectedUser.city || 'New Delhi' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">Pincode</div>
+              <div class="field-value mono">{{ selectedUser.pincode || '110001' }}</div>
+            </div>
+            <div class="kyc-field">
+              <div class="field-label">Business Address</div>
+              <div class="field-value">{{ selectedUser.businessAddress || 'No Address Available' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOCUMENT STATUS -->
+        <div class="kyc-section">
+          <div class="kyc-sec-title">
+            <span class="sec-icon icon-red"><i class="bi bi-file-earmark-check-fill"></i></span>
+            Document Status
+          </div>
+          <div class="kyc-doc-grid">
+
+            <div class="kyc-doc-card">
+              <div class="doc-icon-wrap doc-purple"><i class="bi bi-person-vcard-fill"></i></div>
+              <div class="doc-name">PAN Card</div>
+              <div class="status-badge badge-green"><i class="bi bi-check-lg"></i> Uploaded</div>
+            </div>
+
+            <div class="kyc-doc-card">
+              <div class="doc-icon-wrap doc-blue"><i class="bi bi-fingerprint"></i></div>
+              <div class="doc-name">Aadhaar Card</div>
+              <div class="status-badge badge-green"><i class="bi bi-check-lg"></i> Uploaded</div>
+            </div>
+
+            <div class="kyc-doc-card">
+              <div class="doc-icon-wrap doc-green"><i class="bi bi-building-check"></i></div>
+              <div class="doc-name">Business Proof</div>
+              <div class="status-badge badge-green"><i class="bi bi-patch-check-fill"></i> Verified</div>
+            </div>
+
+            <div class="kyc-doc-card">
+              <div class="doc-icon-wrap" [ngClass]="selectedUser.isKycVerified ? 'doc-green' : 'doc-yellow'">
+                <i class="bi bi-shield-check"></i>
+              </div>
+              <div class="doc-name">KYC Status</div>
+              <div class="status-badge" [ngClass]="selectedUser.isKycVerified ? 'badge-green' : 'badge-yellow'">
+                <i class="bi" [ngClass]="selectedUser.isKycVerified ? 'bi-check-lg' : 'bi-hourglass-split'"></i>
+                {{ selectedUser.isKycVerified ? 'Verified' : 'Pending' }}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ZONE 3 — FOOTER -->
+      <div class="kyc-footer">
+        <button class="btn-reject" (click)="rejectUser()">
+          <i class="bi bi-x-circle-fill"></i> Reject
+        </button>
+        <button class="btn-cancel" (click)="closeViewModal()">
+          <i class="bi bi-dash-circle"></i> Close
+        </button>
+        <button class="btn-approve" (click)="approveUser()">
+          <i class="bi bi-check-circle-fill"></i> Approve
+        </button>
+      </div>
+
+    </div>
+  </div>
+</ng-container>
+
+<!-- ================================================
+     ADD USER MODAL
+================================================ -->
+<ng-container *ngIf="isAddModalOpen">
+  <div class="modal-backdrop" (click)="closeAddModal()">
+    <div class="kyc-modal add-modal" (click)="$event.stopPropagation()">
+
+      <div class="kyc-header">
+        <div class="kyc-user-info">
+          <div class="kyc-uid">NEW RECORD</div>
+          <div class="kyc-email">Add New User</div>
+          <div class="kyc-mobile">Fill in the details below to create a user</div>
+        </div>
+        <button class="kyc-close" (click)="closeAddModal()"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <div class="kyc-body">
+        <div class="add-form-grid">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="newUser.email" placeholder="Enter email" />
+          </div>
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="text" [(ngModel)]="newUser.mobileNumber" placeholder="Enter mobile number" />
+          </div>
+          <div class="form-group">
+            <label>PAN Number</label>
+            <input type="text" [(ngModel)]="newUser.panNumber" placeholder="Enter PAN number" />
+          </div>
+          <div class="form-group">
+            <label>Name on PAN</label>
+            <input type="text" [(ngModel)]="newUser.panName" placeholder="Enter PAN holder name" />
+          </div>
+          <div class="form-group">
+            <label>Business Type</label>
+            <input type="text" [(ngModel)]="newUser.businessType" placeholder="Enter business type" />
+          </div>
+          <div class="form-group">
+            <label>Business Category</label>
+            <input type="text" [(ngModel)]="newUser.businessCategory" placeholder="Enter business category" />
+          </div>
+          <div class="form-group">
+            <label>GSTIN</label>
+            <input type="text" [(ngModel)]="newUser.gstin" placeholder="Enter GSTIN" />
+          </div>
+          <div class="form-group">
+            <label>Annual Sales</label>
+            <input type="text" [(ngModel)]="newUser.annualSales" placeholder="Enter annual sales" />
+          </div>
+          <div class="form-group">
+            <label>Account Holder</label>
+            <input type="text" [(ngModel)]="newUser.bankHolderName" placeholder="Enter account holder name" />
+          </div>
+          <div class="form-group">
+            <label>Account Number</label>
+            <input type="text" [(ngModel)]="newUser.bankAccountNumber" placeholder="Enter bank account number" />
+          </div>
+          <div class="form-group">
+            <label>IFSC Code</label>
+            <input type="text" [(ngModel)]="newUser.ifscCode" placeholder="Enter IFSC code" />
+          </div>
+          <div class="form-group">
+            <label>Bank Name</label>
+            <input type="text" [(ngModel)]="newUser.bankName" placeholder="Enter bank name" />
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" [(ngModel)]="newUser.state" placeholder="Enter state" />
+          </div>
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" [(ngModel)]="newUser.city" placeholder="Enter city" />
+          </div>
+          <div class="form-group">
+            <label>Pincode</label>
+            <input type="text" [(ngModel)]="newUser.pincode" placeholder="Enter pincode" />
+          </div>
+          <div class="form-group full-col">
+            <label>Business Address</label>
+            <input type="text" [(ngModel)]="newUser.businessAddress" placeholder="Enter business address" />
+          </div>
+        </div>
+      </div>
+
+      <div class="kyc-footer">
+        <button class="btn-cancel" (click)="closeAddModal()">
+          <i class="bi bi-dash-circle"></i> Cancel
+        </button>
+        <button class="btn-approve" (click)="addUser()">
+          <i class="bi bi-person-plus-fill"></i> Save User
+        </button>
+      </div>
+
+    </div>
+  </div>
+</ng-container>
