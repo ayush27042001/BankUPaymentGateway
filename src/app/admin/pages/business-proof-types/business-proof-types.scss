@@ -7,6 +7,7 @@
   min-height: 100vh;
   // padding: 24px;
   background: #f4f7fb;
+  margin-top: 50px;
 }
 
 /* =========================================
@@ -238,7 +239,9 @@
 /* =========================================
    TABLE PILL
 ========================================= */
-
+.table-row:hover {
+  background: #fdf4ff;
+}
 .table-pill {
   min-height: 54px;
   background: #ffffff;
@@ -252,12 +255,13 @@
   line-height: 1.4;
   color: #0f172a;
   transition: 0.3s ease;
+  white-space: nowrap;
 }
 
 .custom-table tbody tr:hover .table-pill {
   border-color: #c084fc;
+  // background: #fdf4ff;
 }
-
 /* =========================================
    ID BADGE
 ========================================= */
@@ -407,7 +411,7 @@
 ========================================= */
 
 .modal-header {
-  background: linear-gradient(135deg, #6d00ff, #c700ff);
+  background:linear-gradient(135deg, #901299, #c700ff);
   padding: 24px 28px;
   display: flex;
   align-items: flex-start;
@@ -758,6 +762,7 @@
 
   .business-proof-types-page {
     padding: 16px;
+    // margin-top: 590px;
   }
 
   .header-left h2 {

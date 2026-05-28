@@ -811,4 +811,8 @@ $breakpoint-xxl: 1440px;
 .full-width-btn {
   grid-column: span 2;
 }
-
+.chart-wrapper {
+  width: 100%;
+  height: 340px;
+  position: relative;
+}

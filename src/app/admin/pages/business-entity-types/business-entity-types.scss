@@ -201,11 +201,30 @@
   color: #0f172a;
   box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
   transition: 0.3s ease;
+  white-space: nowrap;
 }
 
 .custom-table tbody tr:hover .td-box {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  // transform: translateY(-2px);
+  // box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  background: #fdf4ff;
+   border-color: #c084fc;
+}
+.custom-table tbody tr {
+  transition: 0.3s ease;
+}
+
+.custom-table tbody tr:hover {
+  background: #fdf4ff;
+}
+
+.custom-table tbody tr:hover td {
+  background: #fdf4ff;
+}
+
+.custom-table tbody tr:hover .td-box {
+  background: #fdf4ff;
+  border-color: #c084fc;
 }
 
 .id-box {
@@ -406,7 +425,7 @@
 
 .modal-header-custom {
   padding: 22px 26px;
-  background: linear-gradient(135deg, #76008f, #b300b3);
+  background: linear-gradient(135deg, #901299, #c700ff);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -500,6 +519,8 @@
 /* =========================================
    FORM GRID  (add modal — Bootstrap classes)
 ========================================= */
+
+
 
 .form-grid {
   display: grid;

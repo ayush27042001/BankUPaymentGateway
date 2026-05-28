@@ -50,7 +50,7 @@
 
     <!-- CARD -->
 
-    <div class="stats-card">
+    <!-- <div class="stats-card">
 
       <div class="stats-icon blue-gradient">
         <i class="bi bi-shop"></i>
@@ -76,7 +76,7 @@
 
       </div>
 
-    </div>
+    </div> -->
 
     <!-- CARD -->
 
@@ -226,17 +226,18 @@
 
       </div>
 
-      <div class="chart-placeholder large-placeholder">
+     <div class="chart-wrapper">
 
-        <i class="bi bi-graph-up-arrow"></i>
+  <canvas
+    baseChart
+    [data]="revenueChartData"
+    [options]="revenueChartOptions"
+    [type]="revenueChartType">
+  </canvas>
 
-        <span>
-          Revenue Analytics Chart
-        </span>
+</div>
 
-      </div>
-
-    </div>
+    </div> 
 
     <!-- MERCHANT GROWTH -->
 
@@ -257,16 +258,16 @@
         </button>
 
       </div>
+<div class="chart-wrapper">
 
-      <div class="chart-placeholder medium-placeholder">
+  <canvas
+    baseChart
+    [data]="merchantChartData"
+    [options]="merchantChartOptions"
+    [type]="merchantChartType">
+  </canvas>
 
-        <i class="bi bi-bar-chart"></i>
-
-        <span>
-          Merchant Growth Chart
-        </span>
-
-      </div>
+</div>
 
     </div>
 

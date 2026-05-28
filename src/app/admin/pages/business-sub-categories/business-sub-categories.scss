@@ -165,6 +165,10 @@
    TABLE CARD
 ========================================= */
 
+.table-row:hover {
+  background: #fdf4ff;
+}
+
 .table-card {
   width: 100%;
   background: #ffffff;
@@ -253,6 +257,7 @@
   line-height: 1.4;
   color: #0f172a;
   transition: 0.3s ease;
+  white-space: nowrap;
 }
 
 .custom-table tbody tr:hover .table-pill {
@@ -452,7 +457,7 @@
 ========================================= */
 
 .modal-header {
-  background: linear-gradient(135deg, #6d00ff, #c700ff);
+  background:linear-gradient(135deg, #901299, #c700ff);
   padding: 24px 28px;
   display: flex;
   align-items: flex-start;
