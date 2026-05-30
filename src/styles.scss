@@ -34,3 +34,13 @@ body {
   font-family: "Inter", sans-serif;
 //   overflow-y: hidden;
 }
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}

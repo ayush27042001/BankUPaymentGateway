@@ -130,6 +130,14 @@ $breakpoint-xl: 1200px;
   gap: 10px;
   flex: 1;
   // overflow-y: auto;
+  overflow-x: auto;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   // Tablet
   @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) {

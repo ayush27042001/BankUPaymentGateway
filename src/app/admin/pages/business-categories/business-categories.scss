@@ -6,6 +6,7 @@
   width: 100%;
   min-height: 100vh;
   background: #f4f7fb;
+  margin-top:50px;
 }
 
 /* =========================================
@@ -205,6 +206,14 @@
 ========================================= */
 
 .table-responsive {
+   overflow-x: auto;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
   width: 100%;
   overflow-x: auto;
 }
@@ -440,8 +449,11 @@
 .custom-modal {
   width: 100%;
   max-width: 860px;
-  max-height: 92vh;
+ .custom-modal {
+  max-height: 90vh;
   overflow-y: auto;
+  overflow:hidden;
+}
   background: #ffffff;
   border-radius: 28px;
   animation: modalAnimation 0.3s ease;
@@ -462,6 +474,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
+  border-radius: 28px 28px 0 0;
 
   h3 {
     margin: 0;

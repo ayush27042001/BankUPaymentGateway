@@ -207,6 +207,14 @@
 .table-responsive {
   width: 100%;
   overflow-x: auto;
+   overflow-x: auto;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .custom-table {
