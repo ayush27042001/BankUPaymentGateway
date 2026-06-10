@@ -1,0 +1,516 @@
+<div class="transactions-page">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <h1>
+        Transactions Overview
+      </h1>
+
+      <div class="settlement-badge">
+
+        Total Settlement Amount: ₹0.00
+
+        <i class="bi bi-chevron-right"></i>
+
+      </div>
+
+    </div>
+
+    <button class="analytics-btn">
+
+      <i class="bi bi-bar-chart-fill"></i>
+
+      View Analytics
+
+    </button>
+
+  </div>
+
+  <!-- =========================
+       TABS
+  ========================== -->
+
+  <div class="transaction-tabs">
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'payments'"
+      (click)="setTab('payments')"
+    >
+      Payments
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'refunds'"
+      (click)="setTab('refunds')"
+    >
+      Refunds
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'batchRefunds'"
+      (click)="setTab('batchRefunds')"
+    >
+      Batch Refunds
+    </button>
+
+  </div>
+
+  <!-- ===================================================
+       PAYMENTS TAB
+  ==================================================== -->
+
+  @if (activeTab === 'payments') {
+
+    <!-- Filters -->
+
+    <div class="filters-row">
+
+      <div class="filters-left">
+
+        <select class="filter-control">
+          <option>
+            PayU ID (Transaction ID)
+          </option>
+        </select>
+
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search PayU ID (Transaction ID)"
+        />
+
+        <button class="search-btn">
+          Search
+        </button>
+
+        <button class="filter-btn">
+          <i class="bi bi-calendar3"></i>
+          Last 1 Hour
+          <i class="bi bi-chevron-down"></i>
+        </button>
+
+        <button class="filter-btn">
+          <i class="bi bi-funnel"></i>
+          Filter
+          <i class="bi bi-chevron-down"></i>
+        </button>
+
+      </div>
+
+      <button class="download-btn">
+        <i class="bi bi-download"></i>
+        Download
+        <i class="bi bi-chevron-down"></i>
+      </button>
+
+    </div>
+
+    <!-- Summary Cards -->
+
+    <div class="summary-cards payments-cards">
+
+      <div class="summary-card">
+
+        <div class="card-title">
+          Total Payments
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="card-value">
+          ₹0.00
+        </div>
+
+      </div>
+
+      <div class="summary-card">
+
+        <div class="card-title">
+          Number of Transactions
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="card-value">
+          0
+        </div>
+
+      </div>
+
+      <div class="summary-card">
+
+        <div class="card-title">
+          Success Rate
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="card-value">
+          0%
+        </div>
+
+        <div class="card-subtext">
+          0 total
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Table -->
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>DATE</th>
+
+            <th>PAYU ID (TRANSACTION ID)</th>
+
+            <th>PAYMENT MODE</th>
+
+            <th>EMAIL</th>
+
+            <th>AMOUNT</th>
+
+            <th>STATUS</th>
+
+            <th>
+              <i class="bi bi-gear-fill"></i>
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr>
+
+            <td colspan="7">
+
+              <div class="empty-state">
+
+                <div class="empty-image">
+
+                  <img
+                    src="assets/images/no-data.png"
+                    alt="No Data"
+                  />
+
+                </div>
+
+                <div class="empty-content">
+
+                  <h5>
+                    NO RESULT FOUND
+                  </h5>
+
+                  <h3>
+                    Oops! We didn't find anything
+                  </h3>
+
+                  <p>
+                    Remove the filters or reset the date & try again.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+    <!-- ===================================================
+       REFUNDS TAB
+  ==================================================== -->
+
+  @if (activeTab === 'refunds') {
+
+    <!-- Filters -->
+
+    <div class="filters-row">
+
+      <div class="filters-left">
+
+        <select class="filter-control">
+          <option>
+            PayU ID (Transaction ID)
+          </option>
+        </select>
+
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search PayU ID (Transaction ID)"
+        />
+
+        <button class="search-btn">
+          Search
+        </button>
+
+        <button class="filter-btn">
+          <i class="bi bi-calendar3"></i>
+          4 Jun'26 - 10 Jun'26
+          <i class="bi bi-chevron-down"></i>
+        </button>
+
+        <button class="filter-btn">
+          <i class="bi bi-funnel"></i>
+          Filter
+          <i class="bi bi-chevron-down"></i>
+        </button>
+
+      </div>
+
+      <button class="download-btn">
+        <i class="bi bi-download"></i>
+        Download
+        <i class="bi bi-chevron-down"></i>
+      </button>
+
+    </div>
+
+    <!-- Refund Cards -->
+
+    <div class="summary-cards refunds-cards">
+
+      <div class="summary-card">
+
+        <div class="card-title">
+          Total Refund Amount
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="card-value">
+          ₹0.00
+        </div>
+
+      </div>
+
+      <div class="summary-card">
+
+        <div class="card-title">
+          Number of Refunds
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="card-value">
+          0
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Refund Table -->
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>DATE</th>
+
+            <th>PAYU ID (TRANSACTION ID)</th>
+
+            <th>MERCHANT REFERENCE ID</th>
+
+            <th>REFUND TYPE</th>
+
+            <th>SOURCE</th>
+
+            <th>BANK ARN</th>
+
+            <th>AMOUNT</th>
+
+            <th>STATUS</th>
+
+            <th>PAYMENT AGGREGATOR</th>
+
+            <th>ACTIONS</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr>
+
+            <td colspan="10">
+
+              <div class="empty-state">
+
+                <div class="empty-image">
+
+                  <img
+                    src="assets/images/no-data.png"
+                    alt="No Data"
+                  />
+
+                </div>
+
+                <div class="empty-content">
+
+                  <h5>
+                    NO RESULT FOUND
+                  </h5>
+
+                  <h3>
+                    Oops! We didn't find anything
+                  </h3>
+
+                  <p>
+                    Remove the filters or reset the date & try again.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+    <!-- ===================================================
+       BATCH REFUNDS TAB
+  ==================================================== -->
+
+  @if (activeTab === 'batchRefunds') {
+
+    <div class="filters-row batch-filters">
+
+      <div class="filters-left">
+
+        <button class="filter-btn">
+          <i class="bi bi-calendar3"></i>
+          4 Jun'26 - 10 Jun'26
+          <i class="bi bi-chevron-down"></i>
+        </button>
+
+        <button class="filter-btn">
+          <i class="bi bi-funnel"></i>
+          Filter
+          <i class="bi bi-chevron-down"></i>
+        </button>
+
+      </div>
+
+      <button
+  class="upload-btn"
+  (click)="uploadBatchRefund()"
+>
+  Upload Batch Refund
+</button>
+
+    </div>
+
+    <!-- Batch Refund Table -->
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>CREATED DATE</th>
+
+            <th>BATCH ID</th>
+
+            <th>FILENAME</th>
+
+            <th>TOTAL RECORDS</th>
+
+            <th>QUEUED</th>
+
+            <th>REJECTED</th>
+
+            <th>PROCESSED</th>
+
+            <th>STATUS</th>
+
+            <th>ACTIONS</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr>
+
+            <td colspan="9">
+
+              <div class="empty-state batch-empty-state">
+
+                <div class="empty-image">
+
+                  <img
+                    src="assets/images/no-data.png"
+                    alt="No Data"
+                  />
+
+                </div>
+
+                <div class="empty-content">
+
+                  <h3>
+                    No batch refunds found!
+                  </h3>
+
+                  <p>
+                    Change the date duration or upload a new batch refund
+                  </p>
+
+                  <a href="javascript:void(0)">
+                    Upload Batch Refund
+                  </a>
+
+                </div>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</div>

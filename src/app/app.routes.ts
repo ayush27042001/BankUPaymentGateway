@@ -32,6 +32,20 @@ import { BusinessSubCategories } from './admin/pages/business-sub-categories/bus
 import { BusinessProofTypes } from './admin/pages/business-proof-types/business-proof-types';
 import { PepStatus } from './admin/pages/pep-status/pep-status';
 import { DocumentTypes } from './admin/pages/document-types/document-types';
+import { UserLayout } from './user/layout/user-layout/user-layout';
+
+// user routes 
+
+import { UserDashboard }
+from './user/pages/dashboard/dashboard';
+import { Transactions } from './user/pages/transactions/transactions';
+import { Settlements } from './user/pages/settlements/settlements';
+import { Chargeback } from './user/pages/chargeback/chargeback';
+import { Reports } from './user/pages/reports/reports';
+import { Settings } from './user/pages/settings/settings';
+import { ExploreProducts } from './user/pages/explore-products/explore-products';
+import { Developer } from './user/pages/developer/developer';
+
 export const routes: Routes = [
 
   {
@@ -125,8 +139,69 @@ export const routes: Routes = [
         pathMatch: 'full'
       }
 
+
+
+  
     ]
   },
+
+
+// ==========================================
+  // user ROUTES
+  // ==========================================
+{
+  path: 'user',
+  component: UserLayout,
+  children: [
+
+    {
+      path: 'dashboard',
+      component: UserDashboard
+    },
+
+    {
+      path: 'transactions',
+      component: Transactions
+    },
+
+    {
+      path: 'settlements',
+      component: Settlements
+    },
+
+    {
+      path: 'chargeback',
+      component: Chargeback
+    },
+
+    {
+      path: 'reports',
+      component: Reports
+    },
+
+    {
+      path: 'explore-products',
+      component: ExploreProducts
+    },
+
+    {
+      path: 'settings',
+      component: Settings
+    },
+
+    {
+      path: 'developer',
+      component: Developer
+    },
+
+    {
+      path: '',
+      redirectTo: 'dashboard',
+      pathMatch: 'full'
+    }
+
+  ]
+},
 
   {
     path: '**',

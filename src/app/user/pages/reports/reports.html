@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="reports-wrapper">
+
+  <!-- Header -->
+
+  <div class="page-header">
+    <div>
+      <h2>Reports & Documents</h2>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-download">
+        Download
+      </button>
+
+      <button class="btn-schedule">
+        Schedule
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+
+  <div class="custom-tabs">
+
+    <button
+      [class.active]="activeTab === 'category'"
+      (click)="changeTab('category')">
+      Category
+    </button>
+
+    <button
+      [class.active]="activeTab === 'downloads'"
+      (click)="changeTab('downloads')">
+      Downloads
+    </button>
+
+    <button
+      [class.active]="activeTab === 'schedule'"
+      (click)="changeTab('schedule')">
+      Scheduled
+    </button>
+
+  </div>
+
+  <!-- Category Cards -->
+
+  <div
+    class="row g-4 mt-2"
+    *ngIf="activeTab === 'category'">
+
+    <div
+      class="col-xl-4 col-lg-6 col-md-6"
+      *ngFor="let card of categoryCards">
+
+      <div class="report-card">
+
+        <div class="card-icon">
+          <i class="bi" [ngClass]="card.icon"></i>
+        </div>
+
+        <h4>{{ card.title }}</h4>
+
+        <p>
+          {{ card.description }}
+        </p>
+
+        <a href="#">
+          View Report
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Download Cards -->
+
+  <div
+    class="row g-4 mt-2"
+    *ngIf="activeTab === 'downloads'">
+
+    <div
+      class="col-xl-4 col-lg-6 col-md-6"
+      *ngFor="let card of downloadCards">
+
+      <div class="report-card">
+
+        <h4>{{ card.title }}</h4>
+
+        <p>{{ card.description }}</p>
+
+        <a href="#">
+          Open File
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Schedule Cards -->
+
+  <div
+    class="row g-4 mt-2"
+    *ngIf="activeTab === 'schedule'">
+
+    <div
+      class="col-xl-4 col-lg-6 col-md-6"
+      *ngFor="let card of scheduleCards">
+
+      <div class="report-card">
+
+        <h4>{{ card.title }}</h4>
+
+        <p>{{ card.description }}</p>
+
+        <a href="#">
+          Manage Schedule
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<link
+rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</body>
+</html>

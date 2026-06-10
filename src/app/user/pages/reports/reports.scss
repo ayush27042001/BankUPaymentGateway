@@ -1,0 +1,154 @@
+.reports-wrapper {
+  padding: 24px;
+}
+
+/* Header */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  h2 {
+    margin: 0;
+    font-size: 38px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-download,
+.btn-schedule {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 600;
+  transition: .3s;
+}
+
+.btn-download {
+  background: #9c0bb7;
+  color: white;
+}
+
+.btn-schedule {
+  background: #0f8b77;
+  color: white;
+}
+
+.btn-download:hover,
+.btn-schedule:hover {
+  transform: translateY(-2px);
+}
+
+/* Tabs */
+
+.custom-tabs {
+  display: flex;
+  gap: 40px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 25px;
+
+  button {
+    background: transparent;
+    border: none;
+    padding: 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #64748b;
+    position: relative;
+  }
+
+  button.active {
+    color: #0f172a;
+  }
+
+  button.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 3px;
+    background: #4f46e5;
+    border-radius: 20px;
+  }
+}
+
+/* Cards */
+
+.report-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px;
+  height: 100%;
+  transition: .3s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(0,0,0,.08);
+  }
+
+  h4 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 15px;
+  }
+
+  p {
+    color: #64748b;
+    line-height: 1.7;
+    min-height: 70px;
+  }
+
+  a {
+    color: #0f8b77;
+    font-weight: 600;
+    text-decoration: none;
+  }
+}
+
+.card-icon {
+  width: 60px;
+  height: 60px;
+  background: #eef7f6;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+
+  i {
+    font-size: 24px;
+    color: #0f8b77;
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .custom-tabs {
+    gap: 20px;
+    overflow-x: auto;
+  }
+
+  .page-header h2 {
+    font-size: 30px;
+  }
+}

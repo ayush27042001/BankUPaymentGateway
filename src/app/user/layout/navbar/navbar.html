@@ -1,0 +1,173 @@
+<div class="user-navbar">
+
+  <!-- LEFT -->
+
+  <div class="navbar-left">
+
+    <div class="brand-logo">
+
+      <div class="logo-icon">
+        B
+      </div>
+
+      <span>
+        BankU
+      </span>
+
+    </div>
+
+    <button class="payments-btn">
+
+      <i class="bi bi-wallet2"></i>
+
+      <span>Payments</span>
+
+      <i class="bi bi-chevron-down"></i>
+
+    </button>
+
+  </div>
+
+  <!-- RIGHT -->
+
+  <div class="navbar-right">
+
+    <!-- MODE -->
+
+    <div
+      class="live-mode"
+      (click)="toggleModeDropdown($event)"
+    >
+
+      <div class="status-dot"></div>
+
+      <span>
+        {{ selectedMode }}
+      </span>
+
+      <i
+        class="bi"
+        [ngClass]="
+          isModeDropdownOpen
+            ? 'bi-chevron-up'
+            : 'bi-chevron-down'
+        "
+      ></i>
+
+      @if (isModeDropdownOpen) {
+
+        <div class="mode-dropdown">
+
+          <div
+            class="mode-item"
+            (click)="selectMode('Live Mode')"
+          >
+
+            <span class="green-dot"></span>
+
+            Live Mode
+
+          </div>
+
+          <div
+            class="mode-item"
+            (click)="selectMode('Test Mode')"
+          >
+
+            <span class="yellow-dot"></span>
+
+            Test Mode
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+    <!-- MID -->
+
+    <div class="mid-box">
+
+      MID: 12991266
+
+    </div>
+
+    <!-- BROADCAST -->
+
+    <button class="nav-icon">
+
+      <i class="bi bi-broadcast"></i>
+
+    </button>
+
+    <!-- SUPPORT -->
+
+    <button class="nav-icon">
+
+      <i class="bi bi-headset"></i>
+
+    </button>
+
+    <div class="divider"></div>
+
+    <!-- PROFILE -->
+
+    <div
+      class="profile-wrapper"
+      (click)="toggleProfileDropdown($event)"
+    >
+
+      <div class="profile-avatar">
+
+        R
+
+      </div>
+
+      <i
+        class="bi"
+        [ngClass]="
+          isProfileDropdownOpen
+            ? 'bi-chevron-up'
+            : 'bi-chevron-down'
+        "
+      ></i>
+
+      @if (isProfileDropdownOpen) {
+
+        <div class="profile-dropdown">
+
+          <div class="profile-item">
+
+            <i class="bi bi-person-fill"></i>
+
+            Profile
+
+          </div>
+
+          <div class="profile-item">
+
+            <i class="bi bi-gear-fill"></i>
+
+            Settings
+
+          </div>
+
+          <div class="dropdown-divider"></div>
+
+          <div class="logout-item">
+
+            SIGN OUT
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+</div>

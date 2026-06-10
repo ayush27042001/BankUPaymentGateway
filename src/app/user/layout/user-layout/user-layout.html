@@ -1,0 +1,27 @@
+<div class="user-layout">
+
+  <!-- Sidebar -->
+
+  <app-sidebar></app-sidebar>
+
+  <!-- Main Content -->
+
+  <div class="user-main">
+
+    <!-- Navbar -->
+
+  <app-navbar
+  (modeChanged)="onModeChange($event)"
+></app-navbar>
+
+    <!-- Page Content -->
+
+    <div class="user-content">
+
+      <router-outlet></router-outlet>
+
+    </div>
+
+  </div>
+
+</div>
