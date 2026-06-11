@@ -1,1 +1,379 @@
-<p>developer works!</p>
+<div class="developer-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h2>Developers</h2>
+
+    @if(activeTab === 'webhooks') {
+      <button class="create-btn">
+        Create Webhook
+      </button>
+    }
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'apiKeys'"
+      (click)="changeTab('apiKeys')">
+      API Keys
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'webhooks'"
+      (click)="changeTab('webhooks')">
+      Webhooks
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'logs'"
+      (click)="changeTab('logs')">
+      Webhook Logs
+    </button>
+
+  </div>
+
+  <!-- ===================================================
+       API KEYS TAB
+  ==================================================== -->
+
+  @if(activeTab === 'apiKeys') {
+
+    <div class="section-header">
+
+      <div>
+        <h3>API Key Salt details</h3>
+
+        <p>
+          Use this authentication key for API requests.
+          <a href="#">Learn more about API key & salt</a>
+        </p>
+      </div>
+
+      <button
+        class="link-btn"
+        (click)="regenerateSalt()">
+        Regenerate Salt
+      </button>
+
+    </div>
+
+    <div class="table-card">
+
+      <table>
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>TOKEN</th>
+            <th>LAST UPDATED</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Key</td>
+            <td>{{ apiKey }}</td>
+            <td>--</td>
+            <td>
+              <button
+                class="action-btn"
+                (click)="copyText(apiKey)">
+                Copy Key
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Salt</td>
+            <td>{{ salt }}</td>
+            <td>--</td>
+            <td>
+              <button
+                class="action-btn"
+                (click)="copyText(salt)">
+                Copy Salt
+              </button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- Client Details -->
+
+    <div class="section-header mt-40">
+
+      <div>
+        <h3>Client ID & Client secret details</h3>
+
+        <p>
+          Use to request payment links APIs and refer split payment
+          <a href="#">Learn more about Client ID & Client details</a>
+        </p>
+      </div>
+
+    </div>
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>TOKEN</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Client ID</td>
+
+            <td>{{ clientId }}</td>
+
+            <td>
+              <button
+                class="action-btn"
+                (click)="copyText(clientId)">
+                Copy
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Client Secret</td>
+
+            <td>
+
+              @if(isVerified) {
+                {{ clientSecret }}
+              }
+
+              @else {
+
+                <button
+                  class="view-password-btn"
+                  (click)="openPasswordModal()">
+
+                  🔒 View using password
+
+                </button>
+
+              }
+
+            </td>
+
+            <td>
+              <button
+                class="action-btn"
+                (click)="copyText(clientSecret)">
+                Copy
+              </button>
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+  <!-- ===================================================
+       WEBHOOK TAB
+  ==================================================== -->
+
+  @if(activeTab === 'webhooks') {
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>CREATED ON</th>
+            <th>TYPE</th>
+            <th>EVENT</th>
+            <th>URL</th>
+            <th>REMARKS</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+
+            <td>
+              11 Jun'26
+              <br>
+              11:47:05 AM
+            </td>
+
+            <td>payments</td>
+
+            <td>successful</td>
+
+            <td>
+              https://app.banku.co.in/api/PayuCallBack
+            </td>
+
+            <td>--</td>
+
+            <td class="action-icons">
+
+              <span>🔄</span>
+              <span>✏️</span>
+              <span>🗑️</span>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+  <!-- ===================================================
+       WEBHOOK LOGS TAB
+  ==================================================== -->
+
+  @if(activeTab === 'logs') {
+
+    <div class="filters">
+
+      <select>
+        <option>Transaction ID</option>
+      </select>
+
+      <input
+        type="text"
+        placeholder="Search Transaction ID (Payu ID)"
+      >
+
+      <button class="search-btn">
+        Search
+      </button>
+
+      <input type="date">
+
+      <button class="filter-btn">
+        Filter
+      </button>
+
+    </div>
+
+    <div class="logs-card">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>DATE</th>
+            <th>WEBHOOK URL</th>
+            <th>EVENT TYPE</th>
+            <th>ERROR MESSAGE</th>
+            <th>STATUS</th>
+            <th>HTTP CODE</th>
+          </tr>
+        </thead>
+
+      </table>
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          📦
+        </div>
+
+        <h3>No Result Found</h3>
+
+        <p>
+          Oops! We didn't find anything.
+        </p>
+
+        <span>
+          Remove the filters or reset the date & try again.
+        </span>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>
+
+<!-- ===================================================
+     VERIFY PASSWORD MODAL
+==================================================== -->
+
+@if(showPasswordModal) {
+
+  <div
+    class="modal-backdrop"
+    (click)="closePasswordModal()">
+
+    <div
+      class="password-modal"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+
+        <h3>Verify your password</h3>
+
+        <button
+          class="close-btn"
+          (click)="closePasswordModal()">
+          ✕
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <label>
+          Enter Password
+        </label>
+
+        <input
+          type="password"
+          [(ngModel)]="password"
+          placeholder="Password"
+        >
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="verify-btn"
+          (click)="verifyPassword()">
+
+          Verify
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

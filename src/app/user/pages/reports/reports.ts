@@ -4,7 +4,9 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-chargeback',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule
+  ],
   templateUrl: './reports.html',
   styleUrl: './reports.scss',
 })
@@ -12,47 +14,148 @@ export class Reports {
 
   activeTab: string = 'category';
 
-  categoryCards = [
+  // =========================================
+  // PAYMENT REPORTS
+  // =========================================
+
+  paymentReports = [
     {
       title: 'Transaction',
-      description: 'Fetch transaction data including payment, customer information and status.',
-      icon: 'bi-arrow-down-up'
+      icon: 'bi-arrow-down-up',
+      description:
+        'Fetch the transaction data like payment, customer info, status.'
     },
     {
       title: 'Settlement',
-      description: 'Fetch settlement details with statuses and consolidated information.',
-      icon: 'bi-bank'
+      icon: 'bi-bank',
+      description:
+        'Fetch the settlement details with statuses, service fee and consolidated data.'
     },
     {
       title: 'Refunds',
-      description: 'Fetch initiated refund records and current refund statuses.',
-      icon: 'bi-arrow-counterclockwise'
+      icon: 'bi-arrow-counterclockwise',
+      description:
+        'Fetch the details of refunds that were initiated and their statuses.'
     }
   ];
 
-  downloadCards = [
+  // =========================================
+  // PRODUCT REPORTS
+  // =========================================
+
+  productReports = [
     {
-      title: 'Downloaded Report',
-      description: 'View previously downloaded reports.'
+      title: 'Payouts',
+      icon: 'bi-wallet2',
+      description:
+        'Fetch payouts data like amount disbursed, beneficiary and statuses.'
     },
     {
-      title: 'Monthly Statement',
-      description: 'Download history of generated statements.'
-    }
-  ];
-
-  scheduleCards = [
-    {
-      title: 'Daily Report',
-      description: 'Scheduled every day at 09:00 AM.'
+      title: 'Buttons',
+      icon: 'bi-hand-index-thumb',
+      description:
+        'Fetch transactional data like amount collected and status of payment buttons.'
     },
     {
-      title: 'Weekly Settlement',
-      description: 'Scheduled every Sunday.'
+      title: 'Payment Links',
+      icon: 'bi-link-45deg',
+      description:
+        'Fetch transactional data like amount collected and status of payment links.'
+    },
+    {
+      title: 'Old Payment Link Data',
+      icon: 'bi-link',
+      description:
+        'Fetch transactional data like amount collected and status of old payment links.'
+    },
+    {
+      title: 'Payment Invoices',
+      icon: 'bi-file-earmark-text',
+      description:
+        'Fetch transactional data like amount collected and status of payment invoices.'
+    },
+    {
+      title: 'Refund Wallet',
+      icon: 'bi-wallet',
+      description:
+        'Fetch refund processed, balance and topup information.'
+    },
+    {
+      title: 'Wallets',
+      icon: 'bi-credit-card',
+      description:
+        'Fetch load and unload transaction information.'
+    },
+    {
+      title: 'Loyalty',
+      icon: 'bi-award',
+      description:
+        'Fetch loyalty based transactions such as points earned and burned.'
     }
   ];
 
-  changeTab(tab: string) {
+  // =========================================
+  // FINANCIAL REPORTS
+  // =========================================
+
+  financialReports = [
+    {
+      title: 'TDR Report',
+      description:
+        'These are monthly invoices from PayU for service fees and tax.',
+      action: 'Download Report',
+      isNew: false
+    },
+    {
+      title: 'Billing and Charges',
+      description:
+        'Check all invoices raised by PayU and download charge reports.',
+      action: 'View Report',
+      isNew: true
+    }
+  ];
+
+  // =========================================
+  // TAB CHANGE
+  // =========================================
+
+  setTab(
+    tab: string
+  ): void {
+
     this.activeTab = tab;
+
   }
+
+  // =========================================
+  // DOWNLOAD REPORT
+  // =========================================
+
+  downloadReport(
+    reportName: string
+  ): void {
+
+    console.log(
+      'Download Report:',
+      reportName
+    );
+
+  }
+
+  // =========================================
+  // HEADER BUTTONS
+  // =========================================
+
+  download(): void {
+
+    this.activeTab = 'downloads';
+
+  }
+
+  schedule(): void {
+
+    this.activeTab = 'scheduled';
+
+  }
+
 }

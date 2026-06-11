@@ -1,1 +1,142 @@
-<p>settings works!</p>
+<div class="settings-page">
+
+  <!-- =========================================
+       PAGE HEADER
+  ========================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        Settings
+      </h1>
+
+      <p>
+        Manage your account preferences and platform configuration.
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       GLOBAL SETTINGS
+  ========================================== -->
+
+  <div class="settings-section">
+
+    <h2 class="section-title">
+      Global Settings
+    </h2>
+
+    <div class="settings-grid">
+
+      @for (card of globalSettings; track card.title) {
+
+        <div class="setting-card">
+
+          <div class="card-icon">
+
+            <i
+              class="bi"
+              [ngClass]="card.icon"
+            ></i>
+
+          </div>
+
+          <h3>
+            {{ card.title }}
+          </h3>
+
+          <p>
+            {{ card.description }}
+          </p>
+
+          <div class="card-actions">
+
+            <a
+              href="javascript:void(0)"
+              (click)="handleAction(card)"
+            >
+              {{ card.action }}
+            </a>
+
+            @if (card.secondaryAction) {
+
+              <a
+                href="javascript:void(0)"
+                class="secondary-link"
+                (click)="handleSecondaryAction(card)"
+              >
+                {{ card.secondaryAction }}
+              </a>
+
+            }
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       PRODUCT CONFIGURATION
+  ========================================== -->
+
+  <div class="settings-section">
+
+    <h2 class="section-title">
+      Product Configuration
+    </h2>
+
+    <div class="settings-grid">
+
+      @for (
+        card of productConfigurations;
+        track card.title
+      ) {
+
+        <div class="setting-card">
+
+          <div class="card-icon">
+
+            <i
+              class="bi"
+              [ngClass]="card.icon"
+            ></i>
+
+          </div>
+
+          <h3>
+            {{ card.title }}
+          </h3>
+
+          <p>
+            {{ card.description }}
+          </p>
+
+          <div class="card-actions">
+
+            <a
+              href="javascript:void(0)"
+              (click)="handleAction(card)"
+            >
+              {{ card.action }}
+            </a>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+</div>
