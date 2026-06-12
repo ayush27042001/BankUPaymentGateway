@@ -1,27 +1,20 @@
-<div class="user-layout">
+<div class="user-layout" [class.sidebar-mobile-open]="isMobileSidebarOpen()">
 
-  <!-- Sidebar -->
+  <app-sidebar [isMobileSidebarOpen]="isMobileSidebarOpen"></app-sidebar>
 
-  <app-sidebar></app-sidebar>
-
-  <!-- Main Content -->
+  @if (isMobileSidebarOpen()) {
+    <div class="mobile-sidebar-overlay" (click)="closeMobileSidebar()"></div>
+  }
 
   <div class="user-main">
-
-    <!-- Navbar -->
-
-  <app-navbar
-  (modeChanged)="onModeChange($event)"
-></app-navbar>
-
-    <!-- Page Content -->
+    <app-navbar
+      (modeChanged)="onModeChange($event)"
+      (toggleMobileMenu)="toggleMobileSidebar()"
+    ></app-navbar>
 
     <div class="user-content">
-
       <router-outlet></router-outlet>
-
     </div>
-
   </div>
 
 </div>

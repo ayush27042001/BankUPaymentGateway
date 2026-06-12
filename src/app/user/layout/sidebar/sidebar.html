@@ -1,168 +1,70 @@
-<div class="user-sidebar">
-
-  <!-- Logo -->
-
+<div class="sidebar">
   <div class="sidebar-logo">
-
-    <div class="logo-box">
-      B
-    </div>
-
+    <div class="logo-icon">B</div>
     <div class="logo-text">
-      BankU
+      <h2>BankU</h2>
+      <span>User Panel</span>
+    </div>
+  </div>
+
+  <div class="sidebar-menu">
+    <a routerLink="/user/dashboard" routerLinkActive="active-menu" class="menu-item">
+      <div class="menu-left"><i class="bi bi-grid"></i><span>Dashboard</span></div>
+    </a>
+
+    <div class="menu-section">TRACK</div>
+
+    <a routerLink="/user/transactions" routerLinkActive="active-menu" class="menu-item">
+      <div class="menu-left"><i class="bi bi-arrow-left-right"></i><span>Transactions</span></div>
+    </a>
+
+    <a routerLink="/user/settlements" routerLinkActive="active-menu" class="menu-item">
+      <div class="menu-left"><i class="bi bi-bank"></i><span>Settlements</span></div>
+    </a>
+
+    <a routerLink="/user/chargeback" routerLinkActive="active-menu" class="menu-item">
+      <div class="menu-left"><i class="bi bi-shield-exclamation"></i><span>Chargeback</span></div>
+    </a>
+
+    <a routerLink="/user/reports" routerLinkActive="active-menu" class="menu-item">
+      <div class="menu-left"><i class="bi bi-file-earmark-bar-graph"></i><span>Reports</span></div>
+    </a>
+
+    <div class="menu-section">PAYMENT PRODUCTS</div>
+
+    <div class="menu-item submenu-toggle" (click)="togglePaymentProducts()">
+      <div class="menu-left"><i class="bi bi-box"></i><span>Payment Products</span></div>
+      <i class="bi" [class.bi-chevron-down]="paymentProductsExpanded" [class.bi-chevron-right]="!paymentProductsExpanded"></i>
     </div>
 
+    @if (paymentProductsExpanded) {
+      <div class="submenu">
+        <a class="submenu-item" routerLink="/user/payment-products" routerLinkActive="active-submenu"><i class="bi bi-cart"></i> Manage Checkout</a>
+        <a class="submenu-item" routerLink="/user/payment-products" routerLinkActive="active-submenu"><i class="bi bi-tools"></i> Payment Tools</a>
+        <a class="submenu-item" routerLink="/user/payment-products" routerLinkActive="active-submenu"><i class="bi bi-arrow-repeat"></i> Subscriptions</a>
+      </div>
+    }
+
+    <a routerLink="/user/explore-products" routerLinkActive="active-menu" class="menu-item">
+      <div class="menu-left"><i class="bi bi-compass"></i><span>Explore Products</span></div>
+    </a>
+
+    <a routerLink="/user/settings" routerLinkActive="active-menu" class="menu-item">
+      <div class="menu-left"><i class="bi bi-gear"></i><span>Settings</span></div>
+    </a>
+
+    <a routerLink="/user/developer" routerLinkActive="active-menu" class="menu-item">
+      <div class="menu-left"><i class="bi bi-code-square"></i><span>Developer</span></div>
+    </a>
   </div>
 
-  <!-- Dashboard -->
-
-  <a
-    class="menu-item"
-    routerLink="/user/dashboard"
-    routerLinkActive="active-menu">
-
-    <i class="bi bi-grid"></i>
-
-    <span>
-      Business Summary
-    </span>
-
-  </a>
-
-  <!-- Section -->
-
-  <div class="menu-section">
-    TRACK
-  </div>
-
-  <a
-    class="menu-item"
-    routerLink="/user/transactions"
-    routerLinkActive="active-menu">
-
-    <i class="bi bi-arrow-left-right"></i>
-    <span>Transactions</span>
-
-  </a>
-
-  <a
-    class="menu-item"
-    routerLink="/user/settlements"
-    routerLinkActive="active-menu">
-
-    <i class="bi bi-bank"></i>
-    <span>Settlements</span>
-
-  </a>
-
-  <a
-    class="menu-item"
-    routerLink="/user/chargeback"
-    routerLinkActive="active-menu">
-
-    <i class="bi bi-bank"></i>
-    <span>Chargeback</span>
-
-  </a>
-
-  <a
-    class="menu-item"
-    routerLink="/user/reports"
-    routerLinkActive="active-menu">
-
-    <i class="bi bi-file-earmark-bar-graph"></i>
-    <span>Reports</span>
-
-  </a>
-
-  <!-- Section -->
-
-  <div class="menu-section">
-    PAYMENT PRODUCTS
-  </div>
-
-  <div
-    class="menu-item expandable"
-    (click)="togglePaymentProducts()">
-
-    <div class="menu-left">
-
-      <i class="bi bi-box"></i>
-
-      <span>
-        Payment Products
-      </span>
-
+  <div class="sidebar-footer">
+    <div class="admin-profile">
+      <div class="profile-avatar">R</div>
+      <div class="profile-info">
+        <h4>Merchant</h4>
+        <span>User</span>
+      </div>
     </div>
-
-    <i
-      class="bi"
-      [ngClass]="
-        paymentProductsExpanded
-          ? 'bi-chevron-up'
-          : 'bi-chevron-down'
-      ">
-    </i>
-
   </div>
-
-  @if (paymentProductsExpanded) {
-
-    <div class="submenu">
-
-      <a
-        class="submenu-item"
-        routerLink="/user/payment-products"
-        routerLinkActive="active-menu">
-        Manage Checkout
-      </a>
-
-      <a
-        class="submenu-item"
-        routerLink="/user/payment-products"
-        routerLinkActive="active-menu">
-        Payment Tools
-      </a>
-
-      <a
-        class="submenu-item"
-        routerLink="/user/payment-products"
-        routerLinkActive="active-menu">
-        Subscriptions
-      </a>
-
-    </div>
-
-  }
-
-  <a
-    class="menu-item"
-    routerLink="/user/explore-products"
-    routerLinkActive="active-menu">
-
-    <i class="bi bi-compass"></i>
-    <span>Explore Products</span>
-
-  </a>
-
-  <a
-    class="menu-item"
-    routerLink="/user/settings"
-    routerLinkActive="active-menu">
-
-    <i class="bi bi-gear"></i>
-    <span>Settings</span>
-
-  </a>
-
-  <a
-    class="menu-item"
-    routerLink="/user/developer"
-    routerLinkActive="active-menu">
-
-    <i class="bi bi-code-square"></i>
-    <span>Developer</span>
-
-  </a>
-
 </div>

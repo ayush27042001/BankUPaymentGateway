@@ -1,5 +1,4 @@
 .chargeback-page {
-  padding: 24px;
 }
 
 /* =========================================
@@ -17,10 +16,12 @@
   h1 {
     margin: 0;
 
-    font-size: 36px;
+    font-size: 42px;
     font-weight: 700;
 
     color: #111827;
+
+    @media (max-width: 768px) { font-size: 28px; }
   }
 }
 
@@ -131,32 +132,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  padding: 20px 24px;
-
+  padding: 14px 18px;
   cursor: pointer;
-
   border-bottom: 1px solid #f1f5f9;
 }
 
 .analysis-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-
-  font-size: 20px;
+  gap: 8px;
+  font-size: 16px;
   font-weight: 600;
-
   color: #111827;
 }
 
 .analysis-header > i {
-  font-size: 22px;
+  font-size: 18px;
   color: #64748b;
 }
 
 .analysis-body {
-  padding: 24px;
+  padding: 16px;
 }
 
 /* =========================================
@@ -176,22 +172,14 @@
 
 .filter-grid input,
 .filter-grid select {
-  height: 50px;
-
+  height: 40px;
   width: 100%;
-
   border: 1px solid #d1d5db;
-
-  border-radius: 10px;
-
-  padding: 0 16px;
-
+  border-radius: 8px;
+  padding: 0 12px;
   outline: none;
-
-  font-size: 14px;
-
+  font-size: 13px;
   background: #ffffff;
-
   transition: 0.3s;
 }
 
@@ -221,11 +209,9 @@
 .search-btn,
 .reset-btn,
 .export-btn {
-  height: 46px;
-
-  padding: 0 20px;
-
-  border-radius: 10px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
 
   border: none;
 
@@ -338,17 +324,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  width: 140px;
-  height: 140px;
-
-  border-radius: 24px;
-
+  width: 100px;
+  height: 100px;
+  border-radius: 18px;
   background: #faf5ff;
 }
 
 .empty-icon i {
-  font-size: 70px;
+  font-size: 48px;
   color: #800180;
 }
 
@@ -398,10 +381,6 @@
 ========================================= */
 
 @media (max-width: 768px) {
-
-  .chargeback-page {
-    padding: 16px;
-  }
 
   .page-header {
     flex-direction: column;

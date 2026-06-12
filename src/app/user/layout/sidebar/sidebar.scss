@@ -1,203 +1,138 @@
-.user-sidebar {
-  width: 280px;
-  min-width: 280px;
-  height: 100vh;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+.sidebar {
+  height: 100vh; background: #ffffff; border-right: 1px solid #ececec;
+  display: flex; flex-direction: column; justify-content: space-between;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1); z-index: 1000;
+  overflow-y: auto;
+
+  @media (min-width: $breakpoint-lg) { width: 280px; padding: 24px 18px; }
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) { width: 90px; padding: 20px 12px; }
+  @media (max-width: $breakpoint-md - 1px) { width: 280px; padding: 24px 18px; box-shadow: none; }
+}
+
+.sidebar-logo {
+  position: sticky;
+  top: -24px;
+
+  z-index: 100;
 
   background: #ffffff;
 
-  border-right: 1px solid #e7edf5;
-
-  padding: 20px 16px;
-
-  overflow-y: auto;
-
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-/* =========================
-   LOGO
-========================= */
-
-.sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 
-  margin-bottom: 30px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
 
-.logo-box {
-  width: 48px;
-  height: 48px;
+.logo-icon {
+  width: 54px; height: 54px; border-radius: 16px;
+  background: linear-gradient(135deg, #690169, #c026d3);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 24px; font-weight: 700;
 
-  border-radius: 14px;
-
-  background: linear-gradient(
-    135deg,
-    #901299,
-    #c700ff
-  );
-
-  color: #ffffff;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 20px;
-  font-weight: 800;
+  @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) { width:48px; height:48px; font-size:20px; }
 }
 
 .logo-text {
-  font-size: 24px;
-  font-weight: 800;
-  color: #1a1a1a;
-}
+  h2 { margin:0; font-size:24px; font-weight:700; color:#690169; }
+  span { font-size:13px; color:#7a7a7a; }
 
-/* =========================
-   MENU SECTION
-========================= */
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) { display: none; }
+}
 
 .menu-section {
   margin: 24px 0 12px;
+  font-size: 12px; font-weight: 700; color: #94a3b8;
+  letter-spacing: 1px; text-transform: uppercase;
 
-  font-size: 12px;
-  font-weight: 700;
-
-  color: #94a3b8;
-
-  letter-spacing: 1px;
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) { display: none; }
 }
-
-/* =========================
-   MENU ITEM
-========================= */
 
 .menu-item {
-  width: 100%;
+  min-height: 54px; border-radius: 16px; padding: 0 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  color: #5e5e5e; text-decoration: none; cursor: pointer;
+  transition: all 0.3s ease; font-size: 15px; font-weight: 500;
+  margin-bottom: 4px;
 
-  height: 52px;
+  .menu-left { display: flex; align-items: center; gap: 12px; }
+  i { font-size: 18px; }
+  span { color: inherit; }
 
-  border-radius: 14px;
+  &:hover { background: rgba(105,1,105,0.08); color: #690169; }
 
-  padding: 0 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  text-decoration: none;
-
-  color: #475569;
-
-  font-size: 15px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: 0.3s ease;
-
-  margin-bottom: 6px;
-
-  .menu-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  i {
-    font-size: 18px;
-  }
-
-  span {
-    color: inherit;
-  }
-
-  &:hover {
-    background: #fdf4ff;
-    color: #800180;
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
+    min-height:48px; border-radius:12px; padding:0; justify-content:center;
+    span { display: none; } i { font-size: 20px; }
   }
 }
-
-/* =========================
-   ACTIVE MENU
-========================= */
 
 .active-menu {
-  background: #f3e8ff;
-
-  color: #800180;
-
-  border-left: 4px solid #800180;
+  background: linear-gradient(135deg, #690169, #8d028d);
+  color: #ffffff !important;
+  box-shadow: 0 10px 25px rgba(105,1,105,0.25);
+  i { color: #fff; }
 }
 
-/* =========================
-   SUBMENU
-========================= */
-
 .submenu {
-  padding-left: 20px;
+  margin-top: 10px; margin-left: 20px; padding-left: 12px;
+  border-left: 2px dashed rgba(105,1,105,0.15);
+  display: flex; flex-direction: column; gap: 8px;
 
-  margin-bottom: 10px;
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) { display: none; }
 }
 
 .submenu-item {
-  display: flex;
-  align-items: center;
-
-  height: 42px;
-
-  color: #64748b;
-
-  font-size: 14px;
-  font-weight: 500;
-
-  text-decoration: none;
-
-  transition: 0.3s ease;
+  min-height: 42px; border-radius: 12px; padding: 10px 14px;
+  color: #6a6a6a; font-size: 14px; text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+  transition: all 0.3s ease;
 
   &:hover {
-    color: #800180;
+    background: rgba(243,144,33,0.12); color: #f39021; transform: translateX(4px);
   }
 }
 
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 991px) {
-
-  .user-sidebar {
-    width: 240px;
-    min-width: 240px;
-  }
-
+.sidebar-footer {
+  margin-top: auto;
 }
 
-@media (max-width: 768px) {
+.admin-profile {
+  background: #f8f8f8; border-radius: 18px; padding: 14px;
+  display: flex; align-items: center; gap: 14px;
+  transition: all 0.3s ease;
 
-  .user-sidebar {
-    width: 80px;
-    min-width: 80px;
+  &:hover { background: rgba(105,1,105,0.08); transform: translateY(-2px); }
 
-    padding: 20px 10px;
+  @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) {
+    justify-content:center; padding:12px; border-radius:12px;
+    .profile-info { display: none; }
   }
+}
 
-  .logo-text,
-  .menu-item span,
-  .menu-section,
-  .submenu {
-    display: none;
-  }
+.admin-profile .profile-avatar {
+  width: 50px; height: 50px; border-radius: 14px;
+  background: linear-gradient(135deg, #690169, #c026d3);
+  color: #fff; font-weight: 700; font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+}
 
-  .menu-item {
-    justify-content: center;
-    padding: 0;
-  }
+.profile-info {
+  h4 { margin: 0; font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  span { font-size: 12px; color: #888; }
+}
 
+.sidebar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
 }

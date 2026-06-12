@@ -1,19 +1,16 @@
 .dashboard-page {
-  padding: 24px;
 }
-
-/* =========================================
-   WELCOME
-========================================= */
 
 .welcome-section {
   margin-bottom: 24px;
 
   h1 {
     margin: 0;
-    font-size: 52px;
-    font-weight: 300;
-    color: #1f2937;
+    font-size: 42px;
+    font-weight: 700;
+    color: #111827;
+
+    @media (max-width: 768px) { font-size: 28px; }
   }
 }
 
@@ -22,78 +19,54 @@
 ========================================= */
 
 .integration-section {
-  background: linear-gradient(
-    135deg,
-    #faf5ff,
-    #ffffff
-  );
-
+  background: linear-gradient(135deg, #faf5ff, #ffffff);
   border: 1px solid #e9d5ff;
-
-  border-radius: 24px;
-
-  padding: 28px;
-
-  margin-bottom: 24px;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
 
   h3 {
-    margin: 0 0 24px;
-
-    font-size: 22px;
+    margin: 0 0 16px;
+    font-size: 18px;
     font-weight: 700;
-
     color: #111827;
   }
 }
 
 .integration-grid {
   display: grid;
-
   grid-template-columns: repeat(3, 1fr);
-
-  gap: 24px;
+  gap: 16px;
 }
 
 .integration-card {
   background: #ffffff;
-
   border: 1px solid #ede9fe;
-
-  border-radius: 24px;
-
+  border-radius: 16px;
   overflow: hidden;
-
   transition: 0.3s ease;
 
   &:hover {
-    transform: translateY(-5px);
-
-    box-shadow: 0 20px 40px rgba(128, 1, 128, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(128, 1, 128, 0.08);
   }
 }
 
-
 .card-image {
-  height: 180px;
-
-  background: linear-gradient(
-    135deg,
-    #fdf4ff,
-    #f3e8ff
-  );
-
+  height: 120px;
+  background: linear-gradient(135deg, #fdf4ff, #f3e8ff);
   display: flex;
   align-items: center;
   justify-content: center;
 
   i {
-    font-size: 70px;
+    font-size: 48px;
     color: #800180;
   }
 }
 
 .card-content {
-  padding: 24px;
+  padding: 16px;
 }
 
 .card-header {
@@ -192,99 +165,72 @@
 ========================================= */
 
 .payment-status-card {
-  padding: 28px;
+  padding: 20px;
 }
 
 .card-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 12px;
 
-  margin-bottom: 16px;
-
-  h2 {
-    margin: 0;
-  }
-
-  a {
-    color: #800180;
-    cursor: pointer;
-    font-weight: 600;
-  }
+  h2 { margin: 0; font-size: 18px; }
+  a { color: #800180; cursor: pointer; font-weight: 600; font-size: 14px; }
 }
 
 .status-description {
   color: #64748b;
-
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+  font-size: 14px;
 }
 
 .payment-modes {
   display: flex;
-
   justify-content: space-between;
-
-  gap: 16px;
-
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .mode-item {
   flex: 1;
-
   text-align: center;
 }
 
 .mode-icon {
-  width: 70px;
-  height: 70px;
-
-  margin: 0 auto 12px;
-
-  border-radius: 18px;
-
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 8px;
+  border-radius: 14px;
   background: #fdf4ff;
-
   display: flex;
   align-items: center;
   justify-content: center;
 
-  i {
-    font-size: 28px;
-    color: #800180;
-  }
+  i { font-size: 22px; color: #800180; }
 }
+
+.mode-item span { font-size: 12px; }
 
 .activate-row {
   background: #faf5ff;
-
-  border-radius: 18px;
-
-  padding: 20px;
-
+  border-radius: 14px;
+  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  h4 {
-    margin: 0;
-  }
+  h4 { margin: 0; font-size: 16px; }
 }
 
 .activate-btn {
   border: none;
-
-  padding: 12px 20px;
-
-  border-radius: 12px;
-
+  padding: 10px 16px;
+  border-radius: 10px;
   background: #800180;
-
   color: #ffffff;
-
   font-weight: 700;
-
   cursor: pointer;
+  font-size: 14px;
 }
 
 /* =========================================
@@ -300,51 +246,36 @@
 
 .payment-handle-card,
 .explore-products-card {
-  padding: 24px;
+  padding: 16px;
+  border-radius: 16px;
 
-  h3 {
-    margin: 0 0 12px;
-  }
-
-  p {
-    color: #64748b;
-  }
+  h3 { margin: 0 0 8px; font-size: 18px; }
+  p { color: #64748b; font-size: 14px; }
 }
 
 .handle-link {
-  padding: 14px;
-
+  padding: 12px;
   background: #fdf4ff;
-
   border: 1px solid #e9d5ff;
-
-  border-radius: 12px;
-
-  margin: 16px 0;
-
+  border-radius: 10px;
+  margin: 12px 0;
   word-break: break-all;
-
   color: #800180;
+  font-size: 13px;
 }
 
 .handle-actions {
   display: flex;
-
-  gap: 12px;
+  gap: 8px;
 }
 
-.share-btn,
-.copy-btn,
-.explore-btn {
+.share-btn, .copy-btn, .explore-btn {
   border: none;
-
-  padding: 12px 18px;
-
-  border-radius: 12px;
-
+  padding: 10px 14px;
+  border-radius: 10px;
   cursor: pointer;
-
   font-weight: 600;
+  font-size: 13px;
 }
 
 .share-btn {
@@ -383,13 +314,10 @@
 
 .share-modal {
   width: 100%;
-  max-width: 650px;
-
+  max-width: 520px;
   background: #ffffff;
-
-  border-radius: 24px;
-
-  padding: 28px;
+  border-radius: 18px;
+  padding: 20px;
 }
 
 .share-header {
@@ -495,10 +423,6 @@
 
 @media (max-width: 768px) {
 
-  .dashboard-page {
-    padding: 16px;
-  }
-
   .welcome-section h1 {
     font-size: 34px;
   }
@@ -530,20 +454,11 @@
 ========================================= */
 
 .hosted-checkout-wrapper {
-
-  background: linear-gradient(
-    90deg,
-    #f5fbfd,
-    #fdf8ff
-  );
-
+  background: linear-gradient(90deg, #f5fbfd, #fdf8ff);
   border: 1px solid #e7edf5;
-
-  border-radius: 24px;
-
-  padding: 24px;
-
-  margin-bottom: 24px;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
 }
 
 .checkout-header {
@@ -588,12 +503,9 @@
 }
 
 .checkout-body {
-
   display: grid;
-
-  grid-template-columns: 420px 1fr;
-
-  gap: 32px;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
 }
 
 .checkout-left {
@@ -615,52 +527,35 @@
 }
 
 .step-circle {
-
-  width: 52px;
-
-  height: 52px;
-
-  min-width: 52px;
-
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
   border-radius: 50%;
-
-  border: 3px solid #f39021;
-
+  border: 2px solid #f39021;
   background: #fff;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
-  font-size: 20px;
-
+  font-size: 16px;
   font-weight: 700;
-
-  color: #052c38;
+  color: #052c38; 
 }
 
 .active-step .step-circle {
 
-  background: #0f8a76;
+  background: #800180;
 
-  border-color: #0f8a76;
+  border-color: #800180;
 
   color: #fff;
 }
 
 .step-content {
-
   flex: 1;
-
   background: #ffffff;
-
-  border-radius: 18px;
-
+  border-radius: 14px;
   border: 1px solid #e7edf5;
-
-  padding: 20px;
+  padding: 14px;
 }
 
 .step-header {
@@ -677,16 +572,11 @@
 }
 
 .checkout-preview {
-
   background: #ffffff;
-
-  border-radius: 24px;
-
+  border-radius: 16px;
   overflow: hidden;
-
   border: 1px solid #edf2f7;
-
-  min-height: 450px;
+  min-height: 350px;
 }
 
 .preview-image {
@@ -712,7 +602,7 @@
 
     transform: translateY(-4px);
 
-    border-color: #0f8a76;
+    border-color: #800180;
 
     box-shadow:
       0 10px 25px
@@ -722,11 +612,11 @@
 
 .active-card {
 
-  border: 2px solid #0f8a76 !important;
+  border: 2px solid #800180 !important;
 
   box-shadow:
     0 10px 30px
-    rgba(15,138,118,.12);
+    rgba(128,1,128,.12);
 }
 /* =========================================
    STEP BODY

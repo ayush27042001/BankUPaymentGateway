@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 import { Sidebar } from '../sidebar/sidebar';
 import { Navbar } from '../navbar/navbar';
@@ -8,6 +9,7 @@ import { Navbar } from '../navbar/navbar';
   selector: 'app-user-layout',
   standalone: true,
   imports: [
+    CommonModule,
     RouterOutlet,
     Sidebar,
     Navbar
@@ -19,17 +21,18 @@ export class UserLayout {
 
   currentMode: 'live' | 'test' = 'live';
 
-  onModeChange(
-    mode: 'live' | 'test'
-  ): void {
+  isMobileSidebarOpen = signal(false);
 
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen.update(v => !v);
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen.set(false);
+  }
+
+  onModeChange(mode: 'live' | 'test'): void {
     this.currentMode = mode;
-
-    console.log(
-      'Current Mode:',
-      this.currentMode
-    );
-
   }
 
 }

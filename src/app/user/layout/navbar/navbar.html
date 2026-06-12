@@ -1,171 +1,131 @@
 <div class="user-navbar">
 
-  <!-- LEFT -->
-
   <div class="navbar-left">
 
-    <div class="brand-logo">
-
-      <div class="logo-icon">
-        B
-      </div>
-
-      <span>
-        BankU
-      </span>
-
-    </div>
-
-    <button class="payments-btn">
-
-      <i class="bi bi-wallet2"></i>
-
-      <span>Payments</span>
-
-      <i class="bi bi-chevron-down"></i>
-
+    <button class="mobile-menu-toggle" (click)="onMenuToggle()" aria-label="Toggle sidebar menu">
+      <i class="bi bi-list"></i>
     </button>
+
+    <div class="page-info">
+      <h2>UserPanel</h2>
+      <span>Welcome back, User 👋</span>
+    </div>
 
   </div>
 
-  <!-- RIGHT -->
-
   <div class="navbar-right">
 
-    <!-- MODE -->
+   <div
+  class="product-switcher"
+  (click)="toggleProductDropdown($event)"
+>
 
-    <div
-      class="live-mode"
-      (click)="toggleModeDropdown($event)"
-    >
+  <div class="product-selected">
 
-      <div class="status-dot"></div>
+    <div class="product-icon">
+      <i class="bi bi-wallet2"></i>
+    </div>
 
-      <span>
-        {{ selectedMode }}
-      </span>
+    <span>{{ selectedProduct }}</span>
 
-      <i
-        class="bi"
-        [ngClass]="
-          isModeDropdownOpen
-            ? 'bi-chevron-up'
-            : 'bi-chevron-down'
-        "
-      ></i>
+    <i
+      class="bi"
+      [ngClass]="productDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'"
+    ></i>
 
-      @if (isModeDropdownOpen) {
+  </div>
 
-        <div class="mode-dropdown">
+  @if (productDropdownOpen) {
 
-          <div
-            class="mode-item"
-            (click)="selectMode('Live Mode')"
-          >
+    <div class="product-dropdown">
 
-            <span class="green-dot"></span>
-
-            Live Mode
-
-          </div>
-
-          <div
-            class="mode-item"
-            (click)="selectMode('Test Mode')"
-          >
-
-            <span class="yellow-dot"></span>
-
-            Test Mode
-
-          </div>
-
+      <div
+        class="product-item active"
+        (click)="selectProduct('Payments')"
+      >
+        <div class="item-icon">
+          <i class="bi bi-wallet2"></i>
         </div>
 
-      }
+        <span>Payments</span>
+      </div>
+
+      <div
+        class="product-item"
+        (click)="selectProduct('PayU Insights')"
+      >
+        <div class="item-icon">
+          <i class="bi bi-bar-chart"></i>
+        </div>
+
+        <span>PayU Insights</span>
+      </div>
+
+      <div
+        class="product-item"
+        (click)="selectProduct('FlexiCash')"
+      >
+        <div class="item-icon">
+          <i class="bi bi-cash-coin"></i>
+        </div>
+
+        <span>FlexiCash</span>
+      </div>
 
     </div>
 
-    <!-- MID -->
+  }
+
+</div>
+
+    <div class="live-mode" (click)="toggleModeDropdown($event)">
+      <div class="status-dot"></div>
+      <span>{{ selectedMode }}</span>
+      <i class="bi" [ngClass]="isModeDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      @if (isModeDropdownOpen) {
+        <div class="mode-dropdown">
+          <div class="mode-item" (click)="selectMode('Live Mode')">
+            <span class="green-dot"></span> Live Mode
+          </div>
+          <div class="mode-item" (click)="selectMode('Test Mode')">
+            <span class="yellow-dot"></span> Test Mode
+          </div>
+        </div>
+      }
+    </div>
 
     <div class="mid-box">
-
       MID: 12991266
-
     </div>
 
-    <!-- BROADCAST -->
+    <div class="navbar-icon notification-icon" role="button" tabindex="0">
+      <i class="bi bi-bell"></i>
+      @if (notifications > 0) {
+        <span class="notification-badge">{{ notifications > 99 ? '99+' : notifications }}</span>
+      }
+    </div>
 
-    <button class="nav-icon">
-
+    <div class="navbar-icon" role="button" tabindex="0">
       <i class="bi bi-broadcast"></i>
-
-    </button>
-
-    <!-- SUPPORT -->
-
-    <button class="nav-icon">
-
-      <i class="bi bi-headset"></i>
-
-    </button>
+    </div>
 
     <div class="divider"></div>
 
-    <!-- PROFILE -->
-
-    <div
-      class="profile-wrapper"
-      (click)="toggleProfileDropdown($event)"
-    >
-
-      <div class="profile-avatar">
-
-        R
-
+    <div class="admin-profile-navbar" role="button" tabindex="0" (click)="toggleProfileDropdown($event)">
+      <div class="profile-avatar">R</div>
+      <div class="profile-details">
+        <h4>User </h4>
+        <!-- <span>Merchant</span> -->
       </div>
-
-      <i
-        class="bi"
-        [ngClass]="
-          isProfileDropdownOpen
-            ? 'bi-chevron-up'
-            : 'bi-chevron-down'
-        "
-      ></i>
-
+      <i class="bi" [ngClass]="isProfileDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
       @if (isProfileDropdownOpen) {
-
         <div class="profile-dropdown">
-
-          <div class="profile-item">
-
-            <i class="bi bi-person-fill"></i>
-
-            Profile
-
-          </div>
-
-          <div class="profile-item">
-
-            <i class="bi bi-gear-fill"></i>
-
-            Settings
-
-          </div>
-
+          <div class="profile-item"><i class="bi bi-person-fill"></i> Profile</div>
+          <div class="profile-item"><i class="bi bi-gear-fill"></i> Settings</div>
           <div class="dropdown-divider"></div>
-
-          <div class="logout-item">
-
-            SIGN OUT
-
-          </div>
-
+          <div class="logout-item">SIGN OUT</div>
         </div>
-
       }
-
     </div>
 
   </div>

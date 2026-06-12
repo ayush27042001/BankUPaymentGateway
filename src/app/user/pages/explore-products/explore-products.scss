@@ -1,5 +1,4 @@
 .explore-products-page {
-  padding: 24px;
 }
 
 /* =========================================
@@ -25,6 +24,8 @@
     font-size: 42px;
     font-weight: 700;
     color: #111827;
+
+    @media (max-width: 768px) { font-size: 28px; }
   }
 }
 
@@ -217,38 +218,29 @@
 
 .product-card {
   background: #ffffff;
-
   border: 1px solid #e5e7eb;
-
-  border-radius: 18px;
-
-  padding: 22px;
-
+  border-radius: 14px;
+  padding: 16px;
   transition: 0.3s;
 
   &:hover {
     transform: translateY(-3px);
-
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
   }
 
   h4 {
-    margin: 18px 0 10px;
-
-    font-size: 30px;
+    margin: 12px 0 8px;
+    font-size: 20px;
     font-weight: 700;
-
     color: #111827;
   }
 
   p {
     margin: 0;
-
     color: #6b7280;
-
-    line-height: 1.7;
-
-    min-height: 60px;
+    line-height: 1.6;
+    min-height: 40px;
+    font-size: 13px;
   }
 }
 
@@ -259,21 +251,15 @@
 }
 
 .card-icon {
-  width: 64px;
-  height: 64px;
-
-  border-radius: 16px;
-
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   background: rgba(128, 1, 128, 0.08);
-
   display: flex;
   align-items: center;
   justify-content: center;
 
-  i {
-    font-size: 30px;
-    color: #800180;
-  }
+  i { font-size: 24px; color: #800180; }
 }
 
 .status-badge {
@@ -375,10 +361,6 @@
 ========================================= */
 
 @media (max-width: 768px) {
-
-  .explore-products-page {
-    padding: 16px;
-  }
 
   .page-header {
     flex-direction: column;

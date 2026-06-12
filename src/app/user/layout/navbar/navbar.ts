@@ -18,39 +18,83 @@ import { CommonModule } from '@angular/common';
 })
 export class Navbar {
 
-  /* =========================================
-     MODE CHANGE EVENT
-  ========================================= */
+  @Output()
+  modeChanged = new EventEmitter<'live' | 'test'>();
 
   @Output()
-  modeChanged =
-    new EventEmitter<'live' | 'test'>();
+  toggleMobileMenu = new EventEmitter<void>();
 
-  /* =========================================
-     MODE DROPDOWN
-  ========================================= */
+  // =========================
+  // MODE DROPDOWN
+  // =========================
 
   isModeDropdownOpen = false;
 
   selectedMode = 'Live Mode';
 
-  toggleModeDropdown(
-    event: Event
-  ): void {
+  // =========================
+  // PROFILE DROPDOWN
+  // =========================
 
+  isProfileDropdownOpen = false;
+
+  // =========================
+  // PRODUCT DROPDOWN
+  // =========================
+
+  productDropdownOpen = false;
+
+  selectedProduct = 'Payments';
+
+  // =========================
+  // NOTIFICATIONS
+  // =========================
+
+  notifications = 3;
+
+  // =========================
+  // MOBILE MENU
+  // =========================
+
+  onMenuToggle(): void {
+    this.toggleMobileMenu.emit();
+  }
+
+  // =========================
+  // PRODUCT SWITCHER
+  // =========================
+
+  toggleProductDropdown(event: Event): void {
+    event.stopPropagation();
+
+    this.productDropdownOpen =
+      !this.productDropdownOpen;
+
+    this.isModeDropdownOpen = false;
+    this.isProfileDropdownOpen = false;
+  }
+
+  selectProduct(product: string): void {
+    this.selectedProduct = product;
+
+    this.productDropdownOpen = false;
+  }
+
+  // =========================
+  // MODE DROPDOWN
+  // =========================
+
+  toggleModeDropdown(event: Event): void {
     event.stopPropagation();
 
     this.isModeDropdownOpen =
       !this.isModeDropdownOpen;
 
     this.isProfileDropdownOpen = false;
-
+    this.productDropdownOpen = false;
   }
 
-  selectMode(
-    mode: string
-  ): void {
-
+  selectMode(mode: string): void {
     this.selectedMode = mode;
 
     this.isModeDropdownOpen = false;
@@ -60,31 +104,25 @@ export class Navbar {
         ? 'live'
         : 'test'
     );
-
   }
 
-  /* =========================================
-     PROFILE DROPDOWN
-  ========================================= */
+  // =========================
+  // PROFILE DROPDOWN
+  // =========================
 
-  isProfileDropdownOpen = false;
-
-  toggleProfileDropdown(
-    event: Event
-  ): void {
-
+  toggleProfileDropdown(event: Event): void {
     event.stopPropagation();
 
     this.isProfileDropdownOpen =
       !this.isProfileDropdownOpen;
 
     this.isModeDropdownOpen = false;
-
+    this.productDropdownOpen = false;
   }
 
-  /* =========================================
-     CLOSE DROPDOWNS
-  ========================================= */
+  // =========================
+  // CLOSE ALL DROPDOWNS
+  // =========================
 
   @HostListener('document:click')
   closeAllDropdowns(): void {
@@ -93,6 +131,7 @@ export class Navbar {
 
     this.isProfileDropdownOpen = false;
 
+    this.productDropdownOpen = false;
   }
 
 }

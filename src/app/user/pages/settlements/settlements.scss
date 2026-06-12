@@ -1,5 +1,4 @@
 .settlements-page {
-  padding: 24px;
 }
 
 /* =========================================
@@ -15,9 +14,11 @@
 
   h1 {
     margin: 0;
-    font-size: 36px;
+    font-size: 42px;
     font-weight: 700;
     color: #111827;
+
+    @media (max-width: 768px) { font-size: 28px; }
   }
 }
 
@@ -90,42 +91,32 @@
 
 .summary-card {
   background: #ffffff;
-
   border: 1px solid #e5e7eb;
-
-  border-radius: 16px;
-
-  padding: 24px;
-
-  min-height: 130px;
+  border-radius: 14px;
+  padding: 16px;
+  min-height: 100px;
 }
 
 .card-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-
-  font-size: 14px;
+  gap: 6px;
+  font-size: 13px;
   font-weight: 600;
-
   color: #111827;
 }
 
 .card-value {
-  margin-top: 12px;
-
-  font-size: 38px;
+  margin-top: 8px;
+  font-size: 28px;
   font-weight: 700;
-
   color: #111827;
 }
 
 .card-subtitle {
-  margin-top: 10px;
-
+  margin-top: 6px;
   color: #6b7280;
-
-  font-size: 15px;
+  font-size: 13px;
 }
 
 /* =========================================
@@ -495,9 +486,6 @@
 }
 
 @media (max-width: 768px) {
-  .settlements-page {
-    padding: 16px;
-  }
 
   .page-header {
     flex-direction: column;
