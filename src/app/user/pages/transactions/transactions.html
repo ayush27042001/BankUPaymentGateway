@@ -22,7 +22,7 @@
 
     </div>
 
-    <button class="analytics-btn">
+    <button class="analytics-btn" (click)="viewAnalytics()">
 
       <i class="bi bi-bar-chart-fill"></i>
 
@@ -76,29 +76,107 @@
 
       <div class="filters-left">
 
-        <select class="filter-control">
-          <option>
-            PayU ID (Transaction ID)
-          </option>
-        </select>
+       <div class="custom-dropdown">
+
+  <div
+    class="dropdown-btn"
+    (click)="toggleSearchDropdown($event)">
+
+    <span>{{ selectedSearchField }}</span>
+
+    <i
+  class="bi"
+  [ngClass]="
+    showSearchDropdown
+      ? 'bi-chevron-up'
+      : 'bi-chevron-down'
+  ">
+</i>
+
+  </div>
+
+  @if(showSearchDropdown){
+
+    <div
+      class="dropdown-menu"
+      (click)="$event.stopPropagation()">
+
+      @for(option of searchOptions; track option){
+
+        <div
+          class="dropdown-item"
+          (click)="selectSearchField(option)">
+
+          {{ option }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
 
         <input
           type="text"
           class="search-input"
           placeholder="Search PayU ID (Transaction ID)"
+          [(ngModel)]="searchQuery"
         />
 
-        <button class="search-btn">
+        <button class="search-btn" (click)="searchTransactions()">
           Search
         </button>
 
-        <button class="filter-btn">
-          <i class="bi bi-calendar3"></i>
-          Last 1 Hour
-          <i class="bi bi-chevron-down"></i>
-        </button>
+      <div class="custom-dropdown">
 
-        <button class="filter-btn">
+  <div
+    class="dropdown-btn"
+    (click)="toggleDateDropdown($event)">
+
+    <span>
+      <i class="bi bi-calendar3"></i>
+      {{ selectedDate }}
+    </span>
+
+   <i
+  class="bi"
+  [ngClass]="
+    showDateDropdown
+      ? 'bi-chevron-up'
+      : 'bi-chevron-down'
+  ">
+</i>
+
+  </div>
+
+  @if(showDateDropdown){
+
+    <div
+      class="dropdown-menu date-dropdown"
+      (click)="$event.stopPropagation()">
+
+      @for(date of dateOptions; track date){
+
+        <div
+          class="dropdown-item"
+          (click)="selectDate(date)">
+
+          {{ date }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
+
+        <button class="filter-btn" (click)="toggleFilterPanel()">
           <i class="bi bi-funnel"></i>
           Filter
           <i class="bi bi-chevron-down"></i>
@@ -106,13 +184,142 @@
 
       </div>
 
-      <button class="download-btn">
-        <i class="bi bi-download"></i>
-        Download
-        <i class="bi bi-chevron-down"></i>
-      </button>
+    <div class="custom-dropdown">
+
+  <div
+    class="download-btn"
+    (click)="toggleDownloadDropdown($event)">
+
+    <i class="bi bi-download"></i>
+
+    Download
+
+   <i
+  class="bi"
+  [ngClass]="
+    showDownloadDropdown
+      ? 'bi-chevron-up'
+      : 'bi-chevron-down'
+  ">
+</i>
+
+  </div>
+
+  @if(showDownloadDropdown){
+
+    <div
+      class="dropdown-menu download-dropdown"
+      (click)="$event.stopPropagation()">
+
+      @for(option of downloadOptions; track option){
+
+        <div
+          class="dropdown-item"
+          (click)="selectDownload(option)">
+
+          {{ option }}
+
+        </div>
+
+      }
 
     </div>
+
+  }
+
+</div>
+    </div>
+
+    @if (showFilterPanel) {
+
+    <div class="filter-panel">
+
+      <div class="filter-header">
+
+        <h3>Filters</h3>
+
+        <div class="filter-search">
+
+          <input
+            type="text"
+            placeholder="Search inside filters..."
+          />
+
+          <button>Search</button>
+
+        </div>
+
+      </div>
+
+      <div class="filter-body">
+
+        <div class="filter-column">
+
+          <h4>SOURCE FILTERS</h4>
+
+          @for(source of sourceFilters; track source){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isSourceSelected(source)"
+                (change)="toggleSourceFilter(source)"
+              />
+
+              <span>{{ source }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+        <div class="filter-column">
+
+          <h4>TRANSACTION STATUS</h4>
+
+          @for(status of transactionStatus; track status){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isStatusSelected(status)"
+                (change)="toggleStatusFilter(status)"
+              />
+
+              <span>{{ status }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="filter-footer">
+
+        <button
+          class="reset-btn"
+          (click)="clearFilters()"
+        >
+          Reset
+        </button>
+
+        <button
+          class="apply-btn"
+          (click)="applyFilters()"
+        >
+          Apply
+        </button>
+
+      </div>
+
+    </div>
+
+    }
 
     <!-- Summary Cards -->
 
@@ -251,43 +458,219 @@
 
       <div class="filters-left">
 
-        <select class="filter-control">
-          <option>
-            PayU ID (Transaction ID)
-          </option>
-        </select>
+       <div class="custom-dropdown">
+
+  <div
+    class="dropdown-btn"
+    (click)="toggleSearchDropdown($event)">
+
+    <span>{{ selectedSearchField }}</span>
+
+    <i
+  class="bi"
+  [ngClass]="
+    showSearchDropdown
+      ? 'bi-chevron-up'
+      : 'bi-chevron-down'
+  ">
+</i>
+
+  </div>
+
+  @if(showSearchDropdown){
+
+    <div
+      class="dropdown-menu"
+      (click)="$event.stopPropagation()">
+
+      @for(option of searchOptions; track option){
+
+        <div
+          class="dropdown-item"
+          (click)="selectSearchField(option)">
+
+          {{ option }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
 
         <input
           type="text"
           class="search-input"
           placeholder="Search PayU ID (Transaction ID)"
+          [(ngModel)]="searchQuery"
         />
 
-        <button class="search-btn">
+        <button class="search-btn" (click)="searchTransactions()">
           Search
         </button>
+<div class="custom-dropdown">
 
-        <button class="filter-btn">
-          <i class="bi bi-calendar3"></i>
-          4 Jun'26 - 10 Jun'26
-          <i class="bi bi-chevron-down"></i>
-        </button>
+  <div
+    class="filter-btn"
+    (click)="toggleDateDropdown($event)">
 
-        <button class="filter-btn">
-          <i class="bi bi-funnel"></i>
-          Filter
-          <i class="bi bi-chevron-down"></i>
-        </button>
+    <i class="bi bi-calendar3"></i>
+
+    {{ selectedDate }}
+
+    <i
+      class="bi"
+      [ngClass]="showDateDropdown ? 'bi-chevron-up' : 'bi-chevron-down'">
+    </i>
+
+  </div>
+
+  @if(showDateDropdown){
+
+    <div
+      class="dropdown-menu date-dropdown"
+      (click)="$event.stopPropagation()">
+
+      @for(date of dateOptions; track date){
+
+        <div
+          class="dropdown-item"
+          (click)="selectDate(date)">
+
+          {{ date }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
+
+       <button
+  class="filter-btn"
+  (click)="toggleFilterPanel()">
+
+  <i class="bi bi-funnel"></i>
+
+  Filter
+
+  <i
+  class="bi"
+  [ngClass]="
+    showFilterPanel
+      ? 'bi-chevron-up'
+      : 'bi-chevron-down'
+  ">
+</i>
+
+</button>
 
       </div>
 
-      <button class="download-btn">
+      <button class="download-btn" (click)="downloadReport()">
         <i class="bi bi-download"></i>
         Download
         <i class="bi bi-chevron-down"></i>
       </button>
 
     </div>
+
+    @if (showFilterPanel) {
+
+    <div class="filter-panel">
+
+      <div class="filter-header">
+
+        <h3>Filters</h3>
+
+        <div class="filter-search">
+
+          <input
+            type="text"
+            placeholder="Search inside filters..."
+          />
+
+          <button>Search</button>
+
+        </div>
+
+      </div>
+
+      <div class="filter-body">
+
+        <div class="filter-column">
+
+          <h4>SOURCE FILTERS</h4>
+
+          @for(source of sourceFilters; track source){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isSourceSelected(source)"
+                (change)="toggleSourceFilter(source)"
+              />
+
+              <span>{{ source }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+        <div class="filter-column">
+
+          <h4>TRANSACTION STATUS</h4>
+
+          @for(status of transactionStatus; track status){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isStatusSelected(status)"
+                (change)="toggleStatusFilter(status)"
+              />
+
+              <span>{{ status }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="filter-footer">
+
+        <button
+          class="reset-btn"
+          (click)="clearFilters()"
+        >
+          Reset
+        </button>
+
+        <button
+          class="apply-btn"
+          (click)="applyFilters()"
+        >
+          Apply
+        </button>
+
+      </div>
+
+    </div>
+
+    }
 
     <!-- Refund Cards -->
 
@@ -411,13 +794,48 @@
 
       <div class="filters-left">
 
-        <button class="filter-btn">
-          <i class="bi bi-calendar3"></i>
-          4 Jun'26 - 10 Jun'26
-          <i class="bi bi-chevron-down"></i>
-        </button>
+        <div class="custom-dropdown">
 
-        <button class="filter-btn">
+  <div
+    class="filter-btn"
+    (click)="toggleDateDropdown($event)">
+
+    <i class="bi bi-calendar3"></i>
+
+    {{ selectedDate }}
+
+    <i
+      class="bi"
+      [ngClass]="showDateDropdown ? 'bi-chevron-up' : 'bi-chevron-down'">
+    </i>
+
+  </div>
+
+  @if(showDateDropdown){
+
+    <div
+      class="dropdown-menu date-dropdown"
+      (click)="$event.stopPropagation()">
+
+      @for(date of dateOptions; track date){
+
+        <div
+          class="dropdown-item"
+          (click)="selectDate(date)">
+
+          {{ date }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
+
+        <button class="filter-btn" (click)="toggleFilterPanel()">
           <i class="bi bi-funnel"></i>
           Filter
           <i class="bi bi-chevron-down"></i>
@@ -433,6 +851,97 @@
 </button>
 
     </div>
+
+    @if (showFilterPanel) {
+
+    <div class="filter-panel">
+
+      <div class="filter-header">
+
+        <h3>Filters</h3>
+
+        <div class="filter-search">
+
+          <input
+            type="text"
+            placeholder="Search inside filters..."
+          />
+
+          <button>Search</button>
+
+        </div>
+
+      </div>
+
+      <div class="filter-body">
+
+        <div class="filter-column">
+
+          <h4>SOURCE FILTERS</h4>
+
+          @for(source of sourceFilters; track source){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isSourceSelected(source)"
+                (change)="toggleSourceFilter(source)"
+              />
+
+              <span>{{ source }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+        <div class="filter-column">
+
+          <h4>TRANSACTION STATUS</h4>
+
+          @for(status of transactionStatus; track status){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isStatusSelected(status)"
+                (change)="toggleStatusFilter(status)"
+              />
+
+              <span>{{ status }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="filter-footer">
+
+        <button
+          class="reset-btn"
+          (click)="clearFilters()"
+        >
+          Reset
+        </button>
+
+        <button
+          class="apply-btn"
+          (click)="applyFilters()"
+        >
+          Apply
+        </button>
+
+      </div>
+
+    </div>
+
+    }
 
     <!-- Batch Refund Table -->
 

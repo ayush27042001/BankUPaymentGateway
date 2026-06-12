@@ -173,13 +173,29 @@
 
             </td>
 
-            <td>
-              <button
-                class="action-btn"
-                (click)="copyText(clientSecret)">
-                Copy
-              </button>
-            </td>
+           <td>
+
+  @if(isVerified) {
+
+    <button
+      class="action-btn"
+      (click)="copyText(clientSecret)">
+      Copy
+    </button>
+
+  }
+
+  @else {
+
+    <button
+      class="action-btn disabled-btn"
+      disabled>
+      Locked
+    </button>
+
+  }
+
+</td>
 
           </tr>
 

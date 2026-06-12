@@ -48,8 +48,67 @@ export class Developer {
   }
 
   copyText(value: string): void {
-    navigator.clipboard.writeText(value);
+
+  if (!value) {
+    return;
   }
+
+  if (
+    navigator &&
+    navigator.clipboard &&
+    window.isSecureContext
+  ) {
+
+    navigator.clipboard.writeText(value)
+      .then(() => {
+
+        alert('Copied Successfully');
+
+      })
+      .catch(() => {
+
+        this.fallbackCopy(value);
+
+      });
+
+    return;
+  }
+
+  this.fallbackCopy(value);
+}
+
+private fallbackCopy(
+  value: string
+): void {
+
+  const textarea =
+    document.createElement('textarea');
+
+  textarea.value = value;
+
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-999999px';
+  textarea.style.top = '-999999px';
+
+  document.body.appendChild(textarea);
+
+  textarea.focus();
+  textarea.select();
+
+  try {
+
+    document.execCommand('copy');
+
+    alert('Copied Successfully');
+
+  } catch {
+
+    alert('Copy Failed');
+
+  }
+
+  document.body.removeChild(textarea);
+}
 
   regenerateSalt(): void {
     alert('Salt regenerated successfully');

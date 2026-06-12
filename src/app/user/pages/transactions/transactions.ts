@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 type TransactionTab =
   | 'payments'
@@ -14,7 +15,8 @@ type TransactionTab =
   selector: 'app-transactions',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
   templateUrl: './transactions.html',
   styleUrl: './transactions.scss'
@@ -109,6 +111,16 @@ export class Transactions {
   ];
 
   /* =========================================
+     SEARCH / FILTER STATE
+  ========================================= */
+
+  searchQuery = '';
+
+  selectedSources: string[] = [];
+
+  selectedStatuses: string[] = [];
+
+  /* =========================================
      TABS
   ========================================= */
 
@@ -123,18 +135,12 @@ export class Transactions {
      SEARCH DROPDOWN
   ========================================= */
 
-  toggleSearchDropdown(
-    event: Event
-  ): void {
+toggleSearchDropdown(event: Event): void {
 
-    event.stopPropagation();
+  event.stopPropagation();
 
-    this.showSearchDropdown =
-      !this.showSearchDropdown;
-
-    this.showDateDropdown = false;
-    this.showDownloadDropdown = false;
-  }
+  this.showSearchDropdown = !this.showSearchDropdown;
+}
 
   selectSearchField(
     field: string
@@ -214,6 +220,16 @@ export class Transactions {
 
   clearFilters(): void {
 
+    this.searchQuery = '';
+
+    this.selectedSources = [];
+
+    this.selectedStatuses = [];
+
+    this.selectedSearchField = 'PayU ID (Transaction ID)';
+
+    this.selectedDate = 'Last 1 Hour';
+
     console.log(
       'Filters Reset'
     );
@@ -222,10 +238,53 @@ export class Transactions {
   applyFilters(): void {
 
     console.log(
-      'Filters Applied'
+      'Filters Applied',
+      {
+        sources: this.selectedSources,
+        statuses: this.selectedStatuses,
+        date: this.selectedDate,
+        searchField: this.selectedSearchField,
+        query: this.searchQuery
+      }
     );
 
     this.showFilterPanel = false;
+  }
+
+  /* =========================================
+     SOURCE / STATUS TOGGLE
+  ========================================= */
+
+  toggleSourceFilter(source: string): void {
+
+    const idx = this.selectedSources.indexOf(source);
+
+    if (idx > -1) {
+      this.selectedSources.splice(idx, 1);
+    } else {
+      this.selectedSources.push(source);
+    }
+  }
+
+  toggleStatusFilter(status: string): void {
+
+    const idx = this.selectedStatuses.indexOf(status);
+
+    if (idx > -1) {
+      this.selectedStatuses.splice(idx, 1);
+    } else {
+      this.selectedStatuses.push(status);
+    }
+  }
+
+  isSourceSelected(source: string): boolean {
+
+    return this.selectedSources.indexOf(source) > -1;
+  }
+
+  isStatusSelected(status: string): boolean {
+
+    return this.selectedStatuses.indexOf(status) > -1;
   }
 
   /* =========================================
@@ -242,7 +301,8 @@ export class Transactions {
   searchTransactions(): void {
 
     console.log(
-      'Search Clicked'
+      'Search:',
+      this.searchQuery
     );
   }
 
