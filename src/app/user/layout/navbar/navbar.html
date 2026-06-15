@@ -6,10 +6,7 @@
       <i class="bi bi-list"></i>
     </button>
 
-    <div class="page-info">
-      <h2>UserPanel</h2>
-      <span>Welcome back, User 👋</span>
-    </div>
+   
 
   </div>
 
@@ -20,61 +17,7 @@
   (click)="toggleProductDropdown($event)"
 >
 
-  <div class="product-selected">
-
-    <div class="product-icon">
-      <i class="bi bi-wallet2"></i>
-    </div>
-
-    <span>{{ selectedProduct }}</span>
-
-    <i
-      class="bi"
-      [ngClass]="productDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'"
-    ></i>
-
-  </div>
-
-  @if (productDropdownOpen) {
-
-    <div class="product-dropdown">
-
-      <div
-        class="product-item active"
-        (click)="selectProduct('Payments')"
-      >
-        <div class="item-icon">
-          <i class="bi bi-wallet2"></i>
-        </div>
-
-        <span>Payments</span>
-      </div>
-
-      <div
-        class="product-item"
-        (click)="selectProduct('PayU Insights')"
-      >
-        <div class="item-icon">
-          <i class="bi bi-bar-chart"></i>
-        </div>
-
-        <span>PayU Insights</span>
-      </div>
-
-      <div
-        class="product-item"
-        (click)="selectProduct('FlexiCash')"
-      >
-        <div class="item-icon">
-          <i class="bi bi-cash-coin"></i>
-        </div>
-
-        <span>FlexiCash</span>
-      </div>
-
-    </div>
-
-  }
+ 
 
 </div>
 

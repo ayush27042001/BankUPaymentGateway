@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-settlements',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
   templateUrl: './settlements.html',
   styleUrl: './settlements.scss'
@@ -45,6 +47,12 @@ export class Settlements {
     'Last 30 Days',
     'Custom Range'
   ];
+
+  showCustomDatePicker = false;
+
+  customFromDate = '';
+
+  customToDate = '';
 
   // =========================================
   // STATUS OPTIONS
@@ -96,6 +104,17 @@ export class Settlements {
   ): void {
 
     this.dateRange = value;
+
+    if (value === 'Custom Range') {
+
+      this.showCustomDatePicker = true;
+
+      this.isDateDropdownOpen = false;
+
+      return;
+    }
+
+    this.showCustomDatePicker = false;
 
     this.isDateDropdownOpen = false;
 
@@ -211,6 +230,44 @@ export class Settlements {
 
     this.isFilterDropdownOpen = false;
 
+    this.showCustomDatePicker = false;
+
+    this.customFromDate = '';
+
+    this.customToDate = '';
+
+  }
+
+  // =========================================
+  // CUSTOM DATE RANGE
+  // =========================================
+
+  applyCustomDateRange(): void {
+
+    if (this.customFromDate && this.customToDate) {
+
+      this.dateRange =
+        `${this.customFromDate} - ${this.customToDate}`;
+    }
+
+    this.showCustomDatePicker = false;
+
+    this.isDateDropdownOpen = false;
+
+    console.log(
+      'Date Range Applied',
+      this.customFromDate,
+      this.customToDate
+    );
+  }
+
+  closeCustomDateRange(): void {
+
+    this.customFromDate = '';
+
+    this.customToDate = '';
+
+    this.showCustomDatePicker = false;
   }
 
   // =========================================

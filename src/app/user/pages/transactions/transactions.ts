@@ -61,6 +61,12 @@ export class Transactions {
     'Custom Range'
   ];
 
+  showCustomDatePicker = false;
+
+  customFromDate = '';
+
+  customToDate = '';
+
   /* =========================================
      DOWNLOAD DROPDOWN
   ========================================= */
@@ -169,13 +175,50 @@ toggleSearchDropdown(event: Event): void {
   }
 
   selectDate(
-    date: string
-  ): void {
+  date: string
+): void {
 
-    this.selectedDate = date;
+  this.selectedDate = date;
+
+  if (date === 'Custom Range') {
+
+    this.showCustomDatePicker = true;
 
     this.showDateDropdown = false;
+
+    return;
   }
+
+  this.showCustomDatePicker = false;
+
+  this.showDateDropdown = false;
+}
+applyCustomDateRange(): void {
+
+  if (this.customFromDate && this.customToDate) {
+
+    this.selectedDate =
+      `${this.customFromDate} - ${this.customToDate}`;
+  }
+
+  this.showCustomDatePicker = false;
+
+  this.showDateDropdown = false;
+
+  console.log(
+    'Date Range Applied',
+    this.customFromDate,
+    this.customToDate
+  );
+}
+closeCustomDateRange(): void {
+
+  this.customFromDate = '';
+
+  this.customToDate = '';
+
+  this.showCustomDatePicker = false;
+}
 
   /* =========================================
      DOWNLOAD DROPDOWN
@@ -229,6 +272,12 @@ toggleSearchDropdown(event: Event): void {
     this.selectedSearchField = 'PayU ID (Transaction ID)';
 
     this.selectedDate = 'Last 1 Hour';
+
+    this.showCustomDatePicker = false;
+
+    this.customFromDate = '';
+
+    this.customToDate = '';
 
     console.log(
       'Filters Reset'
@@ -286,6 +335,129 @@ toggleSearchDropdown(event: Event): void {
 
     return this.selectedStatuses.indexOf(status) > -1;
   }
+/* =========================================
+   COLUMN CONFIGURATION
+========================================= */
+
+showColumnConfigModal = false;
+
+availableColumns: string[] = [
+  'Date',
+  'PayU ID (Transaction ID)',
+  'Payment Mode',
+  'Email',
+  'Amount',
+  'Status',
+  'Merchant Reference ID',
+  'Refund Type',
+  'Source',
+  'Bank ARN',
+  'Payment Aggregator',
+  'Actions'
+];
+
+/* Actual table columns */
+selectedColumns: string[] = [
+  'Date',
+  'PayU ID (Transaction ID)',
+  'Payment Mode',
+  'Email',
+  'Amount',
+  'Status'
+];
+
+/* Temporary popup columns */
+tempSelectedColumns: string[] = [];
+
+/* Open popup */
+openColumnConfig(): void {
+
+  this.tempSelectedColumns = [
+    ...this.selectedColumns
+  ];
+
+  this.showColumnConfigModal = true;
+}
+
+/* Close popup */
+closeColumnConfig(): void {
+
+  this.showColumnConfigModal = false;
+}
+
+/* Checkbox checked state */
+isColumnSelected(
+  column: string
+): boolean {
+
+  return this.tempSelectedColumns.includes(
+    column
+  );
+}
+
+/* Add / Remove from available list */
+toggleColumn(
+  column: string
+): void {
+
+  const index =
+    this.tempSelectedColumns.indexOf(
+      column
+    );
+
+  if (index > -1) {
+
+    this.tempSelectedColumns.splice(
+      index,
+      1
+    );
+
+  } else {
+
+    this.tempSelectedColumns.push(
+      column
+    );
+  }
+}
+
+/* Remove from selected list */
+removeColumn(
+  column: string
+): void {
+
+  this.tempSelectedColumns =
+    this.tempSelectedColumns.filter(
+      item => item !== column
+    );
+}
+
+/* Apply configuration */
+applyColumnConfiguration(): void {
+
+  this.selectedColumns = [
+    ...this.tempSelectedColumns
+  ];
+
+  this.closeColumnConfig();
+
+  console.log(
+    'Applied Columns:',
+    this.selectedColumns
+  );
+}
+
+/* Reset */
+resetColumnConfiguration(): void {
+
+  this.tempSelectedColumns = [
+    'Date',
+    'PayU ID (Transaction ID)',
+    'Payment Mode',
+    'Email',
+    'Amount',
+    'Status'
+  ];
+}
 
   /* =========================================
      ACTIONS

@@ -175,6 +175,52 @@
 
 </div>
 
+@if (showCustomDatePicker) {
+
+  <div class="inline-date-range">
+
+    <div class="date-field">
+
+      <label>From</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customFromDate"
+      />
+
+    </div>
+
+    <div class="date-field">
+
+      <label>To</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customToDate"
+      />
+
+    </div>
+
+    <button
+      class="apply-range-btn"
+      (click)="applyCustomDateRange()"
+    >
+      Apply
+    </button>
+
+    <button
+      class="cancel-range-btn"
+      (click)="closeCustomDateRange()"
+    >
+      Cancel
+    </button>
+
+  </div>
+
+}
+
   <div class="dropdown-wrapper">
 
   <button

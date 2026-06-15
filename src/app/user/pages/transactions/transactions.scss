@@ -242,6 +242,223 @@
   font-size: 12px;
 }
 /* =========================================
+   COLUMN CONFIGURATION MODAL CONTENT
+========================================= */
+
+.config-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid #ececec;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+  }
+}
+
+.close-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #6b7280;
+  transition: .25s;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+}
+
+.config-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  padding: 20px 22px;
+}
+
+.config-section {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px;
+  background: #ffffff;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+
+  span:first-child {
+    color: #800180;
+    font-size: 13px;
+    font-weight: 700;
+  }
+}
+
+.count-badge {
+  min-width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #800180;
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.search-box {
+  height: 44px;
+  border: 1px solid #d8dce3;
+  border-radius: 10px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+
+  i {
+    color: #9ca3af;
+  }
+
+  input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+  }
+}
+
+.column-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.column-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+
+  input {
+    accent-color: #800180;
+  }
+
+  span {
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.selected-column {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.column-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  span {
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.remove-icon {
+  font-size: 18px;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: .2s;
+
+  &:hover {
+    color: #ef4444;
+  }
+}
+
+.config-info {
+  margin-top: 14px;
+  border: 1px solid #e9d5ff;
+  background: #faf5ff;
+  border-radius: 10px;
+  padding: 12px;
+
+  color: #6b7280;
+  font-size: 13px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.config-footer {
+  padding: 16px 22px;
+  border-top: 1px solid #ececec;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.reset-config-btn {
+  height: 42px;
+  padding: 0 18px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #800180;
+  }
+}
+
+.apply-config-btn {
+  height: 42px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 10px;
+  background: #800180;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #690069;
+  }
+}
+
+.settings-column {
+  width: 60px;
+  text-align: center;
+
+  i {
+    color: #800180;
+    cursor: pointer;
+    font-size: 16px;
+  }
+}
+/* =========================================
    TABLE
 ========================================= */
 
@@ -285,6 +502,172 @@
   padding: 16px;
 
   border-bottom: 1px solid #f3f4f6;
+}
+
+
+.column-config-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  z-index: 99999 !important;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 20px;
+
+  overflow-y: auto;
+}
+
+.column-config-modal {
+  width: 100%;
+  max-width: 860px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 16px;
+
+  overflow: hidden;
+
+  margin-top: 20px;
+
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+.custom-range-popup {
+  position: absolute;
+
+  top: 60px;
+  left: 0;
+
+  width: 760px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 16px;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .12);
+
+  z-index: 99999;
+}
+
+.custom-range-header {
+  padding: 16px 20px;
+
+  border-bottom: 1px solid #ececec;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h4 {
+    margin: 0;
+  }
+
+  button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+}
+
+.custom-range-body {
+  padding: 30px;
+
+  min-height: 300px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #6b7280;
+}
+
+.custom-range-footer {
+  padding: 16px 20px;
+
+  border-top: 1px solid #ececec;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.inline-date-range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.date-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+  }
+}
+
+.date-input {
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 14px;
+  color: #111827;
+  outline: none;
+  cursor: pointer;
+
+  &:focus {
+    border-color: #800180;
+  }
+}
+
+.apply-range-btn {
+  height: 44px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 8px;
+  background: #800180;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: .2s;
+
+  &:hover {
+    background: #690069;
+  }
+}
+
+.cancel-range-btn {
+  height: 44px;
+  padding: 0 18px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: .2s;
+
+  &:hover {
+    border-color: #800180;
+    color: #800180;
+  }
 }
 /* =========================================
    EMPTY STATE

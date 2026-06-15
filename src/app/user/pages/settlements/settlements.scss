@@ -472,6 +472,81 @@
 }
 
 /* =========================================
+   INLINE DATE RANGE
+========================================= */
+
+.inline-date-range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.date-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+  }
+}
+
+.date-input {
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 14px;
+  color: #111827;
+  outline: none;
+  cursor: pointer;
+
+  &:focus {
+    border-color: #800180;
+  }
+}
+
+.apply-range-btn {
+  height: 44px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 8px;
+  background: #800180;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: .2s;
+
+  &:hover {
+    background: #690069;
+  }
+}
+
+.cancel-range-btn {
+  height: 44px;
+  padding: 0 18px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: .2s;
+
+  &:hover {
+    border-color: #800180;
+    color: #800180;
+  }
+}
+
+/* =========================================
    RESPONSIVE
 ========================================= */
 

@@ -176,6 +176,52 @@
 
 </div>
 
+@if (showCustomDatePicker) {
+
+  <div class="inline-date-range">
+
+    <div class="date-field">
+
+      <label>From</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customFromDate"
+      />
+
+    </div>
+
+    <div class="date-field">
+
+      <label>To</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customToDate"
+      />
+
+    </div>
+
+    <button
+      class="apply-range-btn"
+      (click)="applyCustomDateRange()"
+    >
+      Apply
+    </button>
+
+    <button
+      class="cancel-range-btn"
+      (click)="closeCustomDateRange()"
+    >
+      Cancel
+    </button>
+
+  </div>
+
+}
+
         <button class="filter-btn" (click)="toggleFilterPanel()">
           <i class="bi bi-funnel"></i>
           Filter
@@ -378,25 +424,26 @@
 
         <thead>
 
-          <tr>
+       <tr>
 
-            <th>DATE</th>
+  @for(column of selectedColumns; track column){
 
-            <th>PAYU ID (TRANSACTION ID)</th>
+    <th>
+      {{ column | uppercase }}
+    </th>
 
-            <th>PAYMENT MODE</th>
+  }
 
-            <th>EMAIL</th>
+  <th class="settings-column">
 
-            <th>AMOUNT</th>
+    <i
+      class="bi bi-gear-fill"
+      (click)="openColumnConfig()">
+    </i>
 
-            <th>STATUS</th>
+  </th>
 
-            <th>
-              <i class="bi bi-gear-fill"></i>
-            </th>
-
-          </tr>
+</tr>
 
         </thead>
 
@@ -442,7 +489,173 @@
         </tbody>
 
       </table>
+@if(showColumnConfigModal){
 
+<div
+  class="column-config-backdrop"
+  (click)="closeColumnConfig()">
+
+  <div
+    class="column-config-modal"
+    (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+
+    <div class="config-header">
+
+      <h2>Column Configuration</h2>
+
+      <button
+        class="close-btn"
+        (click)="closeColumnConfig()">
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    </div>
+
+    <!-- Body -->
+
+    <div class="config-body">
+
+      <!-- Available Columns -->
+
+      <div class="config-section">
+
+        <div class="section-title">
+
+          <span>AVAILABLE COLUMNS</span>
+
+          <span class="count-badge">
+            {{ availableColumns.length }}
+          </span>
+
+        </div>
+
+        <div class="search-box">
+
+          <i class="bi bi-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search columns">
+
+        </div>
+
+        <div class="column-list">
+
+        @for(column of availableColumns; track column){
+
+  <label class="column-item">
+
+    <input
+      type="checkbox"
+      [checked]="isColumnSelected(column)"
+      (change)="toggleColumn(column)">
+
+    <span>
+      {{ column }}
+    </span>
+
+  </label>
+
+}
+
+        </div>
+
+      </div>
+
+      <!-- Selected Columns -->
+
+      <div class="config-section">
+
+        <div class="section-title">
+
+          <span>SELECTED COLUMNS</span>
+
+          <span class="count-badge">
+          {{ tempSelectedColumns.length }}
+          </span>
+
+        </div>
+
+        <div class="search-box">
+
+          <i class="bi bi-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search selected">
+
+        </div>
+
+        <div class="column-list">
+
+        @for(column of tempSelectedColumns; track column){
+
+  <div class="selected-column">
+
+    <div class="column-left">
+
+      <i class="bi bi-grip-vertical"></i>
+
+      <span>
+        {{ column }}
+      </span>
+
+    </div>
+
+    <i
+      class="bi bi-x remove-icon"
+      (click)="removeColumn(column)">
+    </i>
+
+  </div>
+
+}
+
+        </div>
+
+        <div class="config-info">
+
+          <i class="bi bi-info-circle"></i>
+
+          Please select the columns from available section for more customisation
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+
+    <div class="config-footer">
+
+     <button
+  class="reset-config-btn"
+  (click)="resetColumnConfiguration()">
+
+  Reset To Default
+
+</button>
+
+    <button
+  class="apply-config-btn"
+  (click)="applyColumnConfiguration()">
+
+  Apply Configuration
+
+</button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
     </div>
 
   }
@@ -551,6 +764,52 @@
   }
 
 </div>
+
+@if (showCustomDatePicker) {
+
+  <div class="inline-date-range">
+
+    <div class="date-field">
+
+      <label>From</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customFromDate"
+      />
+
+    </div>
+
+    <div class="date-field">
+
+      <label>To</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customToDate"
+      />
+
+    </div>
+
+    <button
+      class="apply-range-btn"
+      (click)="applyCustomDateRange()"
+    >
+      Apply
+    </button>
+
+    <button
+      class="cancel-range-btn"
+      (click)="closeCustomDateRange()"
+    >
+      Cancel
+    </button>
+
+  </div>
+
+}
 
        <button
   class="filter-btn"
@@ -834,6 +1093,52 @@
   }
 
 </div>
+
+@if (showCustomDatePicker) {
+
+  <div class="inline-date-range">
+
+    <div class="date-field">
+
+      <label>From</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customFromDate"
+      />
+
+    </div>
+
+    <div class="date-field">
+
+      <label>To</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customToDate"
+      />
+
+    </div>
+
+    <button
+      class="apply-range-btn"
+      (click)="applyCustomDateRange()"
+    >
+      Apply
+    </button>
+
+    <button
+      class="cancel-range-btn"
+      (click)="closeCustomDateRange()"
+    >
+      Cancel
+    </button>
+
+  </div>
+
+}
 
         <button class="filter-btn" (click)="toggleFilterPanel()">
           <i class="bi bi-funnel"></i>
