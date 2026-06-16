@@ -1,0 +1,654 @@
+<div class="payment-gateway-page">
+
+  <!-- =========================================
+       PAGE HEADER
+  ========================================== -->
+
+  <div class="page-header">
+
+    <div class="page-title">
+
+      <h2>Payment Gateway</h2>
+
+      <p>
+        Integrate BankU Payment Gateway with your application using
+        Web Checkout, Mobile SDK or Plugins.
+      </p>
+
+    </div>
+
+    <button class="primary-btn">
+
+      <i class="bi bi-journal-text"></i>
+
+      API Documentation
+
+    </button>
+
+  </div>
+
+  <!-- =========================================
+       TABS
+  ========================================== -->
+
+  <div class="gateway-tabs">
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'web'"
+      (click)="changeTab('web')">
+
+      <i class="bi bi-globe"></i>
+
+      Web Checkout
+
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'sdk'"
+      (click)="changeTab('sdk')">
+
+      <i class="bi bi-phone"></i>
+
+      Mobile SDK
+
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'plugin'"
+      (click)="changeTab('plugin')">
+
+      <i class="bi bi-grid"></i>
+
+      Plugins
+
+    </button>
+
+  </div>
+
+  <!-- =========================================
+       WEB CHECKOUT
+  ========================================== -->
+
+  @if(activeTab === 'web'){
+
+  <div class="integration-section">
+
+    <div class="section-header">
+
+      <h3>
+
+        Web Checkout Integration
+
+      </h3>
+
+      <p>
+
+        Choose the integration method that best suits your business.
+
+      </p>
+
+    </div>
+
+    <div class="integration-grid">
+
+      @for(item of webCheckoutOptions; track item.id){
+
+      <div
+        class="integration-card"
+        [class.active]="selectedWebCheckout === item.id"
+        (click)="selectWebCheckout(item.id)">
+
+        <div class="card-header">
+
+          <div class="radio">
+
+            <i
+              class="bi"
+              [class.bi-record-circle-fill]="selectedWebCheckout===item.id"
+              [class.bi-circle]="selectedWebCheckout!==item.id">
+            </i>
+
+          </div>
+
+          <div>
+
+            <h4>
+
+              {{ item.title }}
+
+            </h4>
+
+            <p>
+
+              {{ item.description }}
+
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="card-footer">
+
+          <button
+            class="outline-btn"
+            (click)="viewDocumentation(item.documentation); $event.stopPropagation()">
+
+            <i class="bi bi-box-arrow-up-right"></i>
+
+            View Documentation
+
+          </button>
+
+        </div>
+
+      </div>
+
+      }
+
+    </div>
+
+  </div>
+
+ 
+<!-- Client ID & Client Secret -->
+
+<div class="client-secret-card">
+
+  <h3>Client ID & Client Secret Details</h3>
+
+  <p>
+    Client Id & Client Secret is used to authenticate certain APIs such as
+    APIs to create payment links and refer split payment merchants.
+  </p>
+
+  <button
+    class="banku-btn"
+    (click)="openClientSecretPopup()">
+
+    Get Client Details
+
+  </button>
+
+</div>}
+  <!-- =========================================
+     MOBILE SDK
+========================================= -->
+
+@if(activeTab === 'sdk'){
+
+<div class="integration-section">
+
+  <div class="section-header">
+
+    <h3>
+
+      Mobile SDK Integration
+
+    </h3>
+
+    <p>
+
+      Integrate BankU Mobile SDK into your Android, iOS or Flutter application.
+
+    </p>
+
+  </div>
+
+  <div class="integration-grid">
+
+    @for(item of mobileSdkOptions; track item.id){
+
+    <div
+      class="integration-card"
+      [class.active]="selectedSdk === item.id"
+      (click)="selectSdk(item.id)">
+
+      <div class="card-header">
+
+        <div class="radio">
+
+          <i
+            class="bi"
+            [class.bi-record-circle-fill]="selectedSdk===item.id"
+            [class.bi-circle]="selectedSdk!==item.id">
+          </i>
+
+        </div>
+
+        <div>
+
+          <h4>
+
+            {{ item.title }}
+
+          </h4>
+
+          <p>
+
+            {{ item.description }}
+
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+
+        <button
+          class="outline-btn"
+          (click)="viewDocumentation(item.documentation); $event.stopPropagation()">
+
+          <i class="bi bi-box-arrow-up-right"></i>
+
+          View Documentation
+
+        </button>
+
+      </div>
+
+    </div>
+
+    }
+
+  </div>
+
+</div>
+
+<!-- Client ID & Client Secret -->
+
+<div class="client-secret-card">
+
+  <h3>Client ID & Client Secret Details</h3>
+
+  <p>
+    Client Id & Client Secret is used to authenticate certain APIs such as
+    APIs to create payment links and refer split payment merchants.
+  </p>
+
+  <button
+    class="banku-btn"
+    (click)="openClientSecretPopup()">
+
+    Get Client Details
+
+  </button>
+
+</div>}
+
+
+
+
+<!-- =========================================
+     MOBILE SDK
+========================================= -->
+
+@if(activeTab === 'sdk'){
+
+<div class="integration-section">
+
+  <div class="section-header">
+
+    <h3>
+
+      Mobile SDK Integration
+
+    </h3>
+
+    <p>
+
+      Integrate BankU Mobile SDK into your Android, iOS or Flutter application.
+
+    </p>
+
+  </div>
+
+  <div class="integration-grid">
+
+    @for(item of mobileSdkOptions; track item.id){
+
+    <div
+      class="integration-card"
+      [class.active]="selectedSdk === item.id"
+      (click)="selectSdk(item.id)">
+
+      <div class="card-header">
+
+        <div class="radio">
+
+          <i
+            class="bi"
+            [class.bi-record-circle-fill]="selectedSdk===item.id"
+            [class.bi-circle]="selectedSdk!==item.id">
+          </i>
+
+        </div>
+
+        <div>
+
+          <h4>
+
+            {{ item.title }}
+
+          </h4>
+
+          <p>
+
+            {{ item.description }}
+
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+
+        <button
+          class="outline-btn"
+          (click)="viewDocumentation(item.documentation); $event.stopPropagation()">
+
+          <i class="bi bi-box-arrow-up-right"></i>
+
+          View Documentation
+
+        </button>
+
+      </div>
+
+    </div>
+
+    }
+
+  </div>
+
+</div>
+
+}
+
+<!-- =========================================
+     PLUGIN
+========================================= -->
+
+@if(activeTab === 'plugin'){
+
+<div class="integration-section">
+
+  <div class="section-header">
+
+    <h3>
+
+      Plugin Integration
+
+    </h3>
+
+    <p>
+
+      Install official BankU plugins into your eCommerce platform.
+
+    </p>
+
+  </div>
+
+  <div class="integration-grid">
+
+    @for(item of pluginOptions; track item.id){
+
+    <div
+      class="integration-card"
+      [class.active]="selectedPlugin === item.id"
+      (click)="selectPlugin(item.id)">
+
+      <div class="card-header">
+
+        <div class="radio">
+
+          <i
+            class="bi"
+            [class.bi-record-circle-fill]="selectedPlugin===item.id"
+            [class.bi-circle]="selectedPlugin!==item.id">
+          </i>
+
+        </div>
+
+        <div>
+
+          <h4>
+
+            {{ item.title }}
+
+          </h4>
+
+          <p>
+
+            {{ item.description }}
+
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+
+        <button
+          class="outline-btn"
+          (click)="viewDocumentation(item.documentation); $event.stopPropagation()">
+
+          <i class="bi bi-box-arrow-up-right"></i>
+
+          View Documentation
+
+        </button>
+
+      </div>
+
+    </div>
+
+    }
+
+  </div>
+
+</div>
+
+<!-- Client ID & Client Secret -->
+
+<div class="client-secret-card">
+
+  <h3>Client ID & Client Secret Details</h3>
+
+  <p>
+    Client Id & Client Secret is used to authenticate certain APIs such as
+    APIs to create payment links and refer split payment merchants.
+  </p>
+
+  <button
+    class="banku-btn"
+    (click)="openClientSecretPopup()">
+
+    Get Client Details
+
+  </button>
+
+</div>}
+@if(showClientSecretPopup){
+
+<div class="popup-overlay">
+
+  <div class="password-popup">
+
+    <button
+      class="close-popup"
+      (click)="closeClientSecretPopup()">
+
+      <i class="bi bi-x-lg"></i>
+
+    </button>
+
+    <h2>Enter Password</h2>
+
+    <input
+      type="password"
+      [(ngModel)]="password"
+      placeholder="Enter your password">
+
+    <div class="popup-footer">
+
+      <button
+        class="banku-btn"
+        (click)="verifyPassword()">
+
+        Proceed
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
+<!-- =========================================
+     MERCHANT CREDENTIALS
+========================================= -->
+
+<!-- =========================================
+     KEY SALT DETAILS
+========================================= -->
+
+<div class="credential-card">
+
+  <!-- Header -->
+
+  <div class="credential-header">
+
+    <h3>Key Salt Details</h3>
+
+    <div class="live-mode">
+
+      <span class="live-dot"></span>
+
+      <span>Live Mode</span>
+
+    </div>
+
+  </div>
+
+  <!-- Information Box -->
+
+  <div class="credential-info">
+
+    <p>
+      Use the Merchant code and the Secret key to authenticate your requests
+      when using the API and web services to create a transaction.
+      Here is what you can refer to get started with BankU Hosted Checkout.
+    </p>
+
+    <ul>
+
+      <li>
+        <a href="#">
+          Developer Documentation Portal
+        </a>
+      </li>
+
+      <li>
+        <a href="#">
+          BankU Hosted Checkout
+        </a>
+      </li>
+
+    </ul>
+
+  </div>
+
+  <!-- Merchant Key -->
+
+  <div class="credential-item">
+
+    <label>
+
+      Merchant Key
+
+    </label>
+
+    <div class="input-group">
+
+      <input
+        type="text"
+        [value]="merchantKey"
+        readonly>
+
+      <button
+        type="button"
+        (click)="copyMerchantKey()">
+
+        <i class="bi bi-copy"></i>
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Active Salt -->
+
+  <div class="salt-card">
+
+    <div
+      class="salt-header"
+      (click)="showSalt = !showSalt">
+
+      <span>
+
+        Active Salt
+
+      </span>
+
+      <i
+        class="bi"
+        [ngClass]="showSalt ? 'bi-chevron-up' : 'bi-chevron-down'">
+
+      </i>
+
+    </div>
+
+    @if(showSalt){
+
+      <div class="salt-body">
+
+        <label>
+
+          Merchant Salt
+
+        </label>
+
+        <div class="input-group">
+
+          <input
+            type="text"
+            [value]="secretSalt"
+            readonly>
+
+          <button
+            type="button"
+            (click)="copySecretSalt()">
+
+            <i class="bi bi-copy"></i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

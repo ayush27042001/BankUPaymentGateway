@@ -45,6 +45,14 @@ import { Reports } from './user/pages/reports/reports';
 import { Settings } from './user/pages/settings/settings';
 import { ExploreProducts } from './user/pages/explore-products/explore-products';
 import { Developer } from './user/pages/developer/developer';
+import { PaymentLinkComponent } from './user/pages/payment-link/payment-link';
+import { Payout } from './user/pages/payout/payout';
+import { PaymentGateway  } from './user/pages/payment-gateway/payment-gateway';
+
+import { CheckoutCustomization  } from './user/pages/checkout-customization/checkout-customization';
+
+import { PaymentMode  } from './user/pages/payment-mode/payment-mode';
+
 
 export const routes: Routes = [
 
@@ -69,11 +77,7 @@ export const routes: Routes = [
   { path: 'status-tracker', component: StatusTrackerComponent, canActivate: [authGuard] },
   { path: 'onboarding-rejected', component: OnboardingRejectedComponent, canActivate: [authGuard] },
 
-  {
-    path: 'connect-platform',
-    component: ConnectPlatformComponent,
-    canActivate: [authGuard]
-  },
+  // (duplicate "connect-platform" route removed)
 
   // ==========================================
   // ADMIN ROUTES
@@ -82,6 +86,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayout,
+    // canActivate: [authGuard],
 
     children: [
 
@@ -107,10 +112,6 @@ export const routes: Routes = [
      {
   path: 'masters/business-entity-types',
   component: BusinessEntityTypes
-},
-{
-  path: 'masters/business-categories',
-  component: BusinessCategories
 },
 {
   path: 'masters/business-categories',
@@ -152,6 +153,7 @@ export const routes: Routes = [
 {
   path: 'user',
   component: UserLayout,
+  // canActivate: [authGuard],
   children: [
 
     {
@@ -180,6 +182,16 @@ export const routes: Routes = [
     },
 
     {
+      path: 'payout',
+      component: Payout
+    },
+
+{
+  path: 'payment-link',
+  component: PaymentLinkComponent
+},
+
+    {
       path: 'explore-products',
       component: ExploreProducts
     },
@@ -198,8 +210,21 @@ export const routes: Routes = [
       path: '',
       redirectTo: 'dashboard',
       pathMatch: 'full'
-    }
+    },
+{
+  path: 'payment-gateway',
+  component: PaymentGateway 
+},
 
+{
+  path: 'checkout-customization',
+  component: CheckoutCustomization 
+},
+
+{
+  path: 'payment-mode',
+  component: PaymentMode 
+},
   ]
 },
 

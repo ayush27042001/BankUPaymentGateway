@@ -30,6 +30,10 @@
       <div class="menu-left"><i class="bi bi-file-earmark-bar-graph"></i><span>Reports</span></div>
     </a>
 
+    <a routerLink="/user/payout" routerLinkActive="active-menu" class="menu-item">
+      <div class="menu-left"><i class="bi bi-wallet2"></i><span>Payout</span></div>
+    </a>
+
     <div class="menu-section">PAYMENT PRODUCTS</div>
 
     <div class="menu-item submenu-toggle" (click)="togglePaymentProducts()">
@@ -39,12 +43,48 @@
 
     @if (paymentProductsExpanded) {
       <div class="submenu">
-        <a class="submenu-item" routerLink="/user/payment-products" routerLinkActive="active-submenu"><i class="bi bi-cart"></i> Manage Checkout</a>
-        <a class="submenu-item" routerLink="/user/payment-products" routerLinkActive="active-submenu"><i class="bi bi-tools"></i> Payment Tools</a>
-        <a class="submenu-item" routerLink="/user/payment-products" routerLinkActive="active-submenu"><i class="bi bi-arrow-repeat"></i> Subscriptions</a>
+        <a class="submenu-item" routerLink="/user/payment-gateway" routerLinkActive="active-submenu"><i class="bi bi-cart"></i>Payment Gateway</a>
+        <a class="submenu-item" routerLink="/user/checkout-customization" routerLinkActive="active-submenu"><i class="bi bi-tools"></i> Checkout Customization</a>
+        <a class="submenu-item" routerLink="/user/payment-mode" routerLinkActive="active-submenu"><i class="bi bi-arrow-repeat"></i> Payment Mode</a>
       </div>
     }
 
+    <div class="menu-section">PAYMENT TOOLS</div>
+
+<div
+  class="menu-item submenu-toggle"
+  (click)="togglePaymentTools()">
+
+  <div class="menu-left">
+    <i class="bi bi-tools"></i>
+    <span>Payment Tools</span>
+  </div>
+
+  <i
+    class="bi"
+    [class.bi-chevron-down]="paymentToolsExpanded"
+    [class.bi-chevron-right]="!paymentToolsExpanded">
+  </i>
+
+</div>
+
+@if (paymentToolsExpanded) {
+
+  <div class="submenu">
+
+    <a
+      class="submenu-item"
+      routerLink="/user/payment-link"
+      routerLinkActive="active-submenu">
+
+      <i class="bi bi-link-45deg"></i>
+      Payment Link
+
+    </a>
+
+  </div>
+
+}
     <a routerLink="/user/explore-products" routerLinkActive="active-menu" class="menu-item">
       <div class="menu-left"><i class="bi bi-compass"></i><span>Explore Products</span></div>
     </a>
