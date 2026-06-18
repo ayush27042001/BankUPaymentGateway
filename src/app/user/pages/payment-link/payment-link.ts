@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 // export class PaymentLinkComponent implements OnInit {
 
@@ -28,17 +29,33 @@ type MainTab =
   styleUrl: './payment-link.scss'
 })
 export class PaymentLinkComponent {
+  constructor(private router: Router) {}
 
   /* ===========================================
       TOP TABS
   =========================================== */
 
   activeTab: MainTab = 'links';
+  actionMode: 'list' | 'create' | 'bulk' = 'list';
 
   setTab(tab: MainTab) {
-
     this.activeTab = tab;
+  }
 
+  setActionMode(mode: 'list' | 'create' | 'bulk') {
+    this.actionMode = mode;
+    if (mode !== 'list') {
+      this.activeTab = 'links';
+    }
+    this.closeAllPopups();
+  }
+
+  goToCreate(){
+    this.router.navigate(['/user/payment-link/create']);
+  }
+
+  goToBulk(){
+    this.router.navigate(['/user/payment-link/bulk']);
   }
 
   /* ===========================================
@@ -373,6 +390,8 @@ bulkStatus = {
 showDateDropdown = false;
 showDateCalendar = false;
 selectedDateOption = 'Last 7 Days';
+selectedStart: Date | null = null;
+selectedEnd: Date | null = null;
 
 dateOptions = [
   'Today',
@@ -412,9 +431,6 @@ rightYear = 2026;
 leftCalendar:any[]=[];
 rightCalendar:any[]=[];
 
-selectedStart:Date|null=null;
-selectedEnd:Date|null=null;
-
 fromDate = "12 Jun'26";
 
 toDate = "18 Jun'26";
@@ -422,21 +438,21 @@ toDate = "18 Jun'26";
 // ======================================
 
 toggleDateDropdown(){
-
-  this.showDateDropdown = !this.showDateDropdown;
+  const nextState = !this.showDateDropdown;
+  this.showDateDropdown = nextState;
+  this.showDateCalendar = false;
+  this.selectedStart = null;
+  this.selectedEnd = null;
 
   this.showBulkFilter = false;
   this.showFilter = false;
   this.showPurpose = false;
   this.showDownload = false;
-
 }
 
 closeDatePopups(){
-
   this.showDateDropdown = false;
   this.showDateCalendar = false;
-
 }
 
 selectDate(item: string){
@@ -587,11 +603,64 @@ applyDateRange(){
 }
 
 resetDateRange(){
-
   this.selectedDateOption = 'Last 7 Days';
+  this.selectedStart = null;
+  this.selectedEnd = null;
   this.fromDate = "12 Jun'26";
   this.toDate = "18 Jun'26";
+}
 
+selectCalendarDay(day: Date | null){
+  if (!day) {
+    return;
+  }
+
+  this.selectedDateOption = 'Custom Range';
+
+  if (!this.selectedStart || (this.selectedStart && this.selectedEnd)) {
+    this.selectedStart = day;
+    this.selectedEnd = null;
+  } else if (day < this.selectedStart) {
+    this.selectedStart = day;
+    this.selectedEnd = null;
+  } else {
+    this.selectedEnd = day;
+  }
+
+  this.fromDate = this.formatDate(this.selectedStart);
+  this.toDate = this.selectedEnd ? this.formatDate(this.selectedEnd) : this.fromDate;
+}
+
+formatDate(date: Date | null){
+  if (!date) {
+    return '';
+  }
+
+  const day = date.getDate();
+  const month = this.months[date.getMonth()].slice(0, 3);
+  const year = date.getFullYear().toString().slice(-2);
+
+  return `${day} ${month}'${year}`;
+}
+
+isDayActive(day: Date | null){
+  if (!day || !this.selectedStart) {
+    return false;
+  }
+
+  if (this.selectedEnd) {
+    return day.getTime() === this.selectedStart.getTime() || day.getTime() === this.selectedEnd.getTime();
+  }
+
+  return day.getTime() === this.selectedStart.getTime();
+}
+
+isDayInRange(day: Date | null){
+  if (!day || !this.selectedStart || !this.selectedEnd) {
+    return false;
+  }
+
+  return day.getTime() > this.selectedStart.getTime() && day.getTime() < this.selectedEnd.getTime();
 }
 
 // ======================================

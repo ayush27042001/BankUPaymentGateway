@@ -46,6 +46,8 @@ import { Settings } from './user/pages/settings/settings';
 import { ExploreProducts } from './user/pages/explore-products/explore-products';
 import { Developer } from './user/pages/developer/developer';
 import { PaymentLinkComponent } from './user/pages/payment-link/payment-link';
+import { PaymentLinkCreateComponent } from './user/pages/payment-link/payment-link-create';
+import { PaymentLinkBulkComponent } from './user/pages/payment-link/payment-link-bulk';
 import { Payout } from './user/pages/payout/payout';
 import { PaymentGateway  } from './user/pages/payment-gateway/payment-gateway';
 
@@ -189,6 +191,14 @@ export const routes: Routes = [
 {
   path: 'payment-link',
   component: PaymentLinkComponent
+},
+{
+  path: 'payment-link/create',
+  component: PaymentLinkCreateComponent
+},
+{
+  path: 'payment-link/bulk',
+  component: PaymentLinkBulkComponent
 },
 
     {

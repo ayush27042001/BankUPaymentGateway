@@ -235,15 +235,21 @@
  position:relative;
     background:#fff;
     border-radius:14px;
-    overflow:hidden;
+    overflow:auto; /* allow horizontal scrolling when columns overflow */
+    -webkit-overflow-scrolling:touch;
     border:1px solid #e5e7eb;
 
+}
+
+.table-inner{
+  min-width:900px; /* ensures table can expand horizontally */
 }
 
 table{
 
     width:100%;
     border-collapse:collapse;
+    min-width:900px;
 
 }
 
@@ -260,13 +266,22 @@ th{
     color:#475569;
     font-size:15px;
     font-weight:600;
+    white-space:nowrap; /* prevent headers from wrapping */
 
 }
 
 td{
 
-    padding:40px;
+    padding:20px 24px; /* smaller horizontal padding to fit more columns */
+    white-space:nowrap; /* keep cell content on one line to preserve column widths */
 
+}
+
+/* ensure horizontal scrolling looks and behaves well on small screens */
+@media(max-width:991px){
+  .table-wrapper{ overflow:auto; }
+  table{ min-width:700px; }
+  td{ padding:12px 10px; }
 }
 
 .setting-btn{

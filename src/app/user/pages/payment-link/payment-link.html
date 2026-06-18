@@ -18,7 +18,7 @@
 
     <div class="header-actions">
 
-      <button class="primary-btn">
+      <button class="primary-btn" (click)="goToCreate()">
 
         <i class="bi bi-plus-circle"></i>
 
@@ -26,7 +26,7 @@
 
       </button>
 
-      <button class="secondary-btn">
+      <button class="secondary-btn" (click)="goToBulk()">
 
         <i class="bi bi-upload"></i>
 
@@ -147,11 +147,91 @@
 
   </div>
 
+  @if(actionMode==='create'){
+
+  <div class="action-panel">
+
+    <div class="action-panel-header">
+
+      <h3>Create New Payment Link</h3>
+
+      <button class="secondary-btn" (click)="setActionMode('list')">
+
+        <i class="bi bi-chevron-left"></i>
+
+        Back to Payment Links
+
+      </button>
+
+    </div>
+
+    <div class="action-panel-body">
+
+      <p>
+
+        Use this section to create a new payment link. Fill in the required details and proceed.
+
+      </p>
+
+      <div class="action-card">
+
+        <h4>Payment link details</h4>
+
+        <p>Form fields go here.</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  }
+
+  @if(actionMode==='bulk'){
+
+  <div class="action-panel">
+
+    <div class="action-panel-header">
+
+      <h3>Bulk Create Payment Links</h3>
+
+      <button class="secondary-btn" (click)="setActionMode('list')">
+
+        <i class="bi bi-chevron-left"></i>
+
+        Back to Payment Links
+
+      </button>
+
+    </div>
+
+    <div class="action-panel-body">
+
+      <p>
+
+        Upload a CSV to create payment links in bulk.
+
+      </p>
+
+      <div class="action-card">
+
+        <h4>Bulk upload</h4>
+
+        <p>Upload component or instructions go here.</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  }
+
   <!-- =========================================
        PAYMENT LINKS TAB
   ========================================== -->
 
-  @if(activeTab==='links'){
+  @if(activeTab==='links' && actionMode==='list'){
 
   <div class="payment-links-wrapper">
 
@@ -302,8 +382,9 @@
 
                     <div
                         class="day"
-                        [class.active]="day==12 || day==18"
-                        [class.in-range]="day>=12 && day<=18">
+                        [class.active]="isDayActive(day)"
+                        [class.in-range]="isDayInRange(day)"
+                        (click)="selectCalendarDay(day)">
 
                         {{day?.getDate() || ''}}
 
@@ -333,7 +414,11 @@
 
                    @for(day of rightCalendar; track day){
 
-                    <div class="day">
+                    <div
+                        class="day"
+                        [class.active]="isDayActive(day)"
+                        [class.in-range]="isDayInRange(day)"
+                        (click)="selectCalendarDay(day)">
 
                         {{day?.getDate() || ''}}
 
