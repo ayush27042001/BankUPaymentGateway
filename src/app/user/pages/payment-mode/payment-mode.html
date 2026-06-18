@@ -1,1 +1,284 @@
-<p>payment-mode works!</p>
+<div class="payment-mode-page">
+
+  <!-- =========================================
+       PAGE HEADER
+  ========================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h2>
+
+        Manage Payment Methods
+
+      </h2>
+
+      <p>
+
+        Enable, disable and manage payment methods for your customers.
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       TOP TABS
+  ========================================== -->
+
+  <div class="top-tabs">
+
+    <button
+      class="tab"
+      [class.active]="activeTab==='methods'"
+      (click)="setTab('methods')">
+
+      Payment Methods
+
+    </button>
+
+    <button
+      class="tab"
+      [class.active]="activeTab==='reminders'"
+      (click)="setTab('reminders')">
+
+      Payment Link Reminders
+
+    </button>
+
+  </div>
+
+  <!-- =========================================
+       PAYMENT METHODS
+  ========================================== -->
+
+  @if(activeTab==='methods'){
+
+  <div class="payment-wrapper">
+
+    <!-- ===========================
+         LEFT MENU
+    ============================ -->
+
+    <div class="payment-sidebar">
+
+      @for(category of paymentCategories;track category.name){
+
+      <div
+        class="sidebar-item"
+        [class.active]="selectedCategory===category.name"
+        (click)="selectCategory(category.name)">
+
+        <i [class]="category.icon"></i>
+
+        <span>
+
+          {{category.name}}
+
+        </span>
+
+      </div>
+
+      }
+
+    </div>
+
+    <!-- ===========================
+         RIGHT PANEL
+    ============================ -->
+
+    <div class="payment-content">
+
+      <div class="content-header">
+
+        <h3>
+
+          {{selectedCategory}}
+
+        </h3>
+
+        <p>
+
+          {{selectedDescription}}
+
+        </p>
+
+      </div>
+
+      <div class="payment-list">
+
+        @for(item of filteredMethods;track item.name){
+
+        <div class="payment-card">
+
+  <div class="payment-left">
+
+    <div
+      class="payment-icon"
+      [style.background]="item.color">
+
+      <i [class]="item.icon"></i>
+
+    </div>
+
+    <div>
+
+      <h4>{{ item.name }}</h4>
+
+      <small>{{ item.type }}</small>
+
+    </div>
+
+  </div>
+
+  <div class="payment-right">
+
+    <span class="status active">
+      Active
+    </span>
+
+  </div>
+
+</div>
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+  }
+
+  <!-- =========================================
+       PAYMENT LINK REMINDERS
+  ========================================== -->
+
+  @else {
+
+  <div class="reminder-wrapper">
+
+    <!-- CARD 1 -->
+
+    <div class="reminder-card">
+
+      <div class="reminder-title">
+
+        <i class="bi bi-bell-fill"></i>
+
+        <span>
+
+          Payment Link Reminder (Expiry)
+
+        </span>
+
+      </div>
+
+      <div class="reminder-body">
+
+        <div class="left">
+
+          <h4>
+
+            Links With Expiry Date
+
+          </h4>
+
+          <p>
+
+            Configure reminder before payment link expires.
+
+          </p>
+
+        </div>
+
+        <div class="right">
+
+          <label>
+
+            Days Before Expiry
+
+          </label>
+
+          <input
+            type="number"
+            placeholder="Enter days">
+
+          <button>
+
+            Save Reminder
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- CARD 2 -->
+
+    <div class="reminder-card">
+
+      <div class="reminder-title">
+
+        <i class="bi bi-clock-history"></i>
+
+        <span>
+
+          Payment Link Reminder (No Expiry)
+
+        </span>
+
+      </div>
+
+      <div class="reminder-body">
+
+        <div class="left">
+
+          <h4>
+
+            Links Without Expiry
+
+          </h4>
+
+          <p>
+
+            Configure reminder after payment link creation.
+
+          </p>
+
+        </div>
+
+        <div class="right">
+
+          <label>
+
+            Days After Creation
+
+          </label>
+
+          <input
+            type="number"
+            placeholder="Enter days">
+
+          <button>
+
+            Save Reminder
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  }
+
+</div>

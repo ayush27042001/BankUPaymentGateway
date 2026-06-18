@@ -1,0 +1,774 @@
+/* ===========================================
+   PAGE
+=========================================== */
+
+.checkout-page {
+  padding: 24px;
+  background: #f5f7fb;
+  min-height: 100vh;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.checkout-page * {
+  box-sizing: border-box;
+}
+
+/* ===========================================
+   HEADER
+=========================================== */
+
+.page-header {
+  margin-bottom: 25px;
+
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #16324f;
+    margin: 0;
+  }
+
+  p {
+    margin-top: 8px;
+    color: #6b7280;
+    font-size: 15px;
+  }
+}
+
+/* ===========================================
+   TOP TABS
+=========================================== */
+
+.top-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #dfe4ea;
+  overflow-x: auto;
+
+  .tab {
+    background: transparent;
+    border: none;
+    padding: 14px 24px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #6b7280;
+    white-space: nowrap;
+    transition: .3s;
+
+    &:hover {
+      color: #009688;
+    }
+
+    &.active {
+      color: #009688;
+      border-bottom: 3px solid #009688;
+    }
+  }
+}
+
+/* ===========================================
+   BODY LAYOUT
+=========================================== */
+
+.customization-wrapper {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ===========================================
+   LEFT PANEL
+=========================================== */
+
+.left-panel {
+  width: 330px;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+/* ===========================================
+   SETTING CARD
+=========================================== */
+
+.setting-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.06);
+  border: 1px solid #edf1f5;
+
+  h4 {
+    margin: 0 0 16px;
+    color: #16324f;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  small {
+    display: block;
+    margin-top: 10px;
+    color: #8a8a8a;
+    font-size: 12px;
+  }
+}
+
+/* ===========================================
+   UPLOAD BUTTON
+=========================================== */
+
+.upload-btn {
+  width: 100%;
+  height: 46px;
+  border: 2px dashed #cfd8dc;
+  background: #fafafa;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #009688;
+  font-weight: 600;
+  transition: .3s;
+
+  i {
+    margin-right: 8px;
+  }
+
+  &:hover {
+    border-color: #009688;
+    background: #ecfffb;
+  }
+}
+
+/* ===========================================
+   COLORS
+=========================================== */
+
+.color-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.color {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: .25s;
+
+  &:hover {
+    transform: scale(1.08);
+  }
+
+  &.active {
+    border-color: #16324f;
+  }
+}
+
+/* ===========================================
+   SELECT
+=========================================== */
+
+select {
+  width: 100%;
+  height: 46px;
+  border-radius: 10px;
+  border: 1px solid #d7dde5;
+  padding: 0 14px;
+  outline: none;
+  font-size: 14px;
+}
+
+/* ===========================================
+   RIGHT — PREVIEW SECTION
+   (single source of truth, no duplicates)
+=========================================== */
+
+.preview-section {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.preview-box {
+  width: 100%;
+  background: #eef2f8;
+  border-radius: 18px;
+  border: 1px solid #e1e7ee;
+  min-height: 640px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+/* Scaler wrapper: this is what actually shrinks
+   the preview to fit inside .preview-box without
+   leaving blank space or causing overflow */
+
+.preview-scaler {
+  --scale: 1;
+  transform: scale(var(--scale));
+  transform-origin: center center;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   DESKTOP PREVIEW
+========================================== */
+
+.desktop-preview {
+  width: 850px;
+  height: 600px;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  border: 1px solid #e7e7e7;
+  box-shadow: 0 20px 60px rgba(0,0,0,.08);
+}
+
+/* LEFT column of desktop preview */
+
+.desktop-left {
+  width: 300px;
+  flex-shrink: 0;
+  background: #fafafa;
+  border-right: 1px solid #ececec;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.merchant-top {
+  padding: 36px 28px;
+  text-align: center;
+}
+
+.merchant-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  object-fit: cover;
+  margin-bottom: 16px;
+  border: 1px solid #eee;
+  background: #fff;
+}
+
+.merchant-top h4 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+}
+
+.merchant-price {
+  padding: 28px;
+}
+
+.merchant-price small {
+  color: #888;
+  font-size: 14px;
+}
+
+.price-row {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.amount {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.desktop-bottom {
+  padding: 28px;
+  border-top: 1px solid #ececec;
+}
+
+.secure-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #6b7280;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+/* RIGHT column of desktop preview */
+
+.desktop-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.desktop-header {
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  padding: 0 24px;
+  font-weight: 600;
+}
+
+.payment-title {
+  padding: 20px 28px;
+  font-weight: 700;
+  color: #555;
+  border-bottom: 1px solid #ececec;
+  font-size: 14px;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.payment-list {
+  flex: 1;
+  overflow: auto;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 28px;
+  border-bottom: 1px solid #f1f1f1;
+  cursor: pointer;
+  transition: .25s;
+
+  &:hover {
+    background: #faf5ff;
+  }
+}
+
+.payment-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  span {
+    font-size: 16px;
+    color: #333;
+  }
+}
+
+.desktop-footer {
+  padding: 18px 28px;
+  border-top: 1px solid #ececec;
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   MOBILE PREVIEW
+========================================== */
+
+.mobile-preview {
+  width: 360px;
+  min-height: 700px;
+  background: #fff;
+  border-radius: 36px;
+  overflow: hidden;
+  border: 10px solid #222;
+  box-shadow: 0 18px 60px rgba(0,0,0,.15);
+}
+
+.mobile-status {
+  height: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 13px;
+  background: #fff;
+}
+
+.status-icons {
+  display: flex;
+  gap: 8px;
+}
+
+.mobile-header {
+  padding: 18px;
+  color: #fff;
+}
+
+.mobile-merchant {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #fff;
+  object-fit: cover;
+}
+
+.mobile-price-card {
+  text-align: center;
+  padding: 24px;
+
+  h2 {
+    font-size: 34px;
+    margin: 8px 0;
+  }
+
+  p {
+    color: #777;
+    font-size: 13px;
+  }
+}
+
+.mobile-method-list {
+  padding: 0 18px;
+}
+
+.mobile-method-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+}
+
+.method-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #f4f4f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mobile-action {
+  padding: 24px;
+}
+
+.pay-btn {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .3s;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.mobile-footer {
+  text-align: center;
+  padding: 18px;
+  color: #777;
+  font-size: 13px;
+  border-top: 1px solid #eee;
+}
+
+/* ==========================================
+   DEVICE SWITCH
+========================================== */
+
+.device-switch {
+  display: flex;
+  gap: 14px;
+
+  button {
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: .25s;
+
+    &.active {
+      background: #800080;
+      color: #fff;
+      border-color: #800080;
+    }
+
+    &:hover {
+      border-color: #800080;
+    }
+  }
+}
+
+/*==========================================
+  FEATURE TAB
+==========================================*/
+
+.feature-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.05);
+
+  h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  > p {
+    margin: 10px 0 24px;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+}
+
+.feature-box {
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 22px;
+  transition: .25s;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  p {
+    padding: 18px 20px;
+    margin: 0;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+}
+
+.recommended {
+  border: 1px solid #d8b4fe;
+  background: #faf5ff;
+
+  .feature-top {
+    background: #f3e8ff;
+  }
+}
+
+.custom {
+  border: 1px solid #bfdbfe;
+  background: #f8fbff;
+
+  .feature-top {
+    background: #edf4ff;
+  }
+}
+
+.feature-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  i {
+    font-size: 18px;
+    color: #6d28d9;
+  }
+
+  span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+  }
+}
+
+.set-order-btn {
+  margin: 0 20px 20px auto;
+  display: block;
+  border: 1px solid #7c3aed;
+  background: #fff;
+  color: #7c3aed;
+  border-radius: 10px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .25s;
+
+  &:hover {
+    background: #7c3aed;
+    color: #fff;
+  }
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+
+  input {
+    display: none;
+  }
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background: #d1d5db;
+  border-radius: 40px;
+  transition: .3s;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: .3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+}
+
+.switch input:checked + .slider {
+  background: #7c3aed;
+
+  &::before {
+    transform: translateX(24px);
+  }
+}
+
+/* ===========================================
+   RESPONSIVE
+   This is the core fix: instead of letting the
+   850px desktop preview / 330px left-panel overflow
+   the viewport, we stack the layout and scale the
+   preview down via --scale custom property at each
+   breakpoint, so everything stays inside one view.
+=========================================== */
+
+@media (max-width: 1400px) {
+
+  .preview-scaler {
+    --scale: 0.9;
+  }
+}
+
+@media (max-width: 1200px) {
+
+  .customization-wrapper {
+    flex-direction: column;
+  }
+
+  .left-panel {
+    width: 100%;
+  }
+
+  .preview-section {
+    width: 100%;
+  }
+
+  .preview-scaler {
+    --scale: 1;
+  }
+
+  .preview-box {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 900px) {
+
+  .preview-scaler:not(.is-mobile) {
+    --scale: 0.78;
+  }
+}
+
+@media (max-width: 640px) {
+
+  .checkout-page {
+    padding: 16px;
+  }
+
+  .preview-scaler:not(.is-mobile) {
+    --scale: 0.6;
+  }
+
+  .preview-scaler.is-mobile {
+    --scale: 0.85;
+  }
+
+  .device-switch {
+    width: 100%;
+
+    button {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+}
+
+@media (max-width: 420px) {
+
+  .preview-scaler:not(.is-mobile) {
+    --scale: 0.46;
+  }
+
+  .preview-scaler.is-mobile {
+    --scale: 0.72;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .feature-card {
+    padding: 16px;
+  }
+
+  .feature-top {
+    padding: 14px;
+  }
+
+  .feature-box p {
+    padding: 14px;
+  }
+
+  .set-order-btn {
+    width: calc(100% - 40px);
+  }
+}
