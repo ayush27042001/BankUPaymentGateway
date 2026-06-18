@@ -109,11 +109,6 @@ bulkStatus = {
 
 };
 
-toggleBulkFilter(){
-
-  this.showBulkFilter=!this.showBulkFilter;
-
-}
 
 
   showDownload = false;
@@ -211,6 +206,26 @@ toggleBulkFilter(){
 
   }
 
+  /* ===========================================
+      CLOSE ALL POPUPS
+  =========================================== */
+
+  closeAllPopups() {
+
+    this.showFilter = false;
+
+    this.showPurpose = false;
+
+    this.showDownload = false;
+
+    this.showDateDropdown = false;
+
+    this.showDateCalendar = false;
+
+    this.showBulkFilterDropdown = false;
+
+  }
+
   availableColumns = [
 
     'Created On',
@@ -251,6 +266,41 @@ toggleBulkFilter(){
 
   ];
 
+  availableSearch = '';
+  selectedSearch = '';
+
+  get filteredAvailableColumns(): string[] {
+    const filter = this.availableSearch.trim().toLowerCase();
+    return filter ? this.availableColumns.filter(col => col.toLowerCase().includes(filter)) : this.availableColumns;
+  }
+
+  get filteredSelectedColumns(): string[] {
+    const filter = this.selectedSearch.trim().toLowerCase();
+    return filter ? this.selectedColumns.filter(col => col.toLowerCase().includes(filter)) : this.selectedColumns;
+  }
+
+
+  tableData: Array<Record<string, string>> = [
+    {
+      'Created On': "12 Jun'26",
+      'Purpose Of Payment': 'Subscription Payment',
+      'Invoice ID': 'INV-1001',
+      'Amount': '₹2,500',
+      'Payment Link': 'pay.link/abcd',
+      'Payment Type': 'Standard',
+      'Status': 'Active'
+    },
+    {
+      'Created On': "10 Jun'26",
+      'Purpose Of Payment': 'Invoice Payment',
+      'Invoice ID': 'INV-1002',
+      'Amount': '₹7,800',
+      'Payment Link': 'pay.link/efgh',
+      'Payment Type': 'Partial',
+      'Status': 'Expired'
+    }
+  ];
+
   applyConfiguration() {
 
     this.showColumnConfig = false;
@@ -279,13 +329,49 @@ toggleBulkFilter(){
 
   }
 
+  isColumnSelected(column: string): boolean {
+
+    return this.selectedColumns.includes(column);
+
+  }
+
+  toggleColumnSelection(column: string): void {
+
+    if (this.isColumnSelected(column)) {
+
+      this.removeColumn(column);
+
+    } else {
+
+      this.selectedColumns.push(column);
+
+    }
+
+  }
+
+  removeColumn(column: string): void {
+
+    this.selectedColumns = this.selectedColumns.filter(col => col !== column);
+
+  }
+
+  closeOnBackdropClick(event: MouseEvent): void {
+
+    if (event.target === event.currentTarget) {
+
+      this.closeColumnConfig();
+
+    }
+
+  }
+
 
 // ======================================
 // DATE RANGE PICKER
 // ======================================
 
-showDateFilter = false;
-
+showDateDropdown = false;
+showDateCalendar = false;
 selectedDateOption = 'Last 7 Days';
 
 dateOptions = [
@@ -335,23 +421,47 @@ toDate = "18 Jun'26";
 
 // ======================================
 
-toggleDateFilter(){
+toggleDateDropdown(){
 
-  this.showDateFilter = !this.showDateFilter;
+  this.showDateDropdown = !this.showDateDropdown;
 
-  this.showFilter=false;
-  this.showPurpose=false;
-  this.showDownload=false;
+  this.showBulkFilter = false;
+  this.showFilter = false;
+  this.showPurpose = false;
+  this.showDownload = false;
 
 }
 
-// ======================================
+closeDatePopups(){
 
-selectDate(item:string){
+  this.showDateDropdown = false;
+  this.showDateCalendar = false;
 
-  this.selectedDateOption=item;
+}
 
-  switch(item){
+selectDate(item: string){
+
+  this.selectedDateOption = item;
+
+  if (item === 'Custom Range') {
+
+    this.showDateCalendar = true;
+    this.showDateDropdown = false;
+    this.loadCalendars();
+    return;
+
+  }
+
+  // Quick date selection
+  this.setQuickDate(item);
+  this.showDateDropdown = false;
+  this.showDateCalendar = false;
+
+}
+
+setQuickDate(option: string){
+
+  switch(option){
 
     case 'Today':
 
@@ -377,15 +487,12 @@ selectDate(item:string){
       this.toDate="18 Jun'26";
       break;
 
-    case 'Custom Range':
-
-      this.fromDate='';
-      this.toDate='';
-      break;
-
   }
 
 }
+
+// ======================================
+
 loadCalendars(){
 
     this.leftCalendar=this.createCalendar(
@@ -474,19 +581,56 @@ nextMonth(){
 
 applyDateRange(){
 
-  this.showDateFilter=false;
+  this.showDateDropdown = false;
+  this.showDateCalendar = false;
+
+}
+
+resetDateRange(){
+
+  this.selectedDateOption = 'Last 7 Days';
+  this.fromDate = "12 Jun'26";
+  this.toDate = "18 Jun'26";
 
 }
 
 // ======================================
+// BULK FILTER
+// ======================================
 
-resetDateRange(){
+showBulkFilterDropdown = false;
 
-  this.selectedDateOption='Last 7 Days';
+bulkFilterOptions = [
+  'All',
+  'Pending',
+  'Completed',
+  'Failed'
+];
 
-  this.fromDate="12 Jun'26";
+selectedBulkFilter = 'All';
 
-  this.toDate="18 Jun'26";
+toggleBulkFilterDropdown(){
+
+  this.showBulkFilterDropdown = !this.showBulkFilterDropdown;
+
+  this.showDateDropdown = false;
+  this.showFilter = false;
+  this.showPurpose = false;
+  this.showDownload = false;
 
 }
+
+closeBulkFilterPopup(){
+
+  this.showBulkFilterDropdown = false;
+
+}
+
+selectBulkFilter(option: string){
+
+  this.selectedBulkFilter = option;
+  this.showBulkFilterDropdown = false;
+
+}
+
 }

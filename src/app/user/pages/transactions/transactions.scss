@@ -48,11 +48,11 @@
 
   border-radius: 12px;
 
-  border: 1px solid #0f8a76;
+  border: 1px solid #800180;
 
   background: #ffffff;
 
-  color: #0f8a76;
+  color: #800180;
 
   font-weight: 600;
 
@@ -258,6 +258,22 @@
     font-weight: 700;
     color: #111827;
   }
+}
+
+.apply-btn-style {
+  background: #800180;
+
+  color: #ffffff;
+
+  border: 1px solid #800180;
+
+  font-weight: 600;
+}
+
+.apply-btn-style:hover {
+  background: #6d0570;
+
+  border: 1px solid #6d0570;
 }
 
 .close-btn {
@@ -519,6 +535,17 @@
   justify-content: flex-end;
 
   transition: opacity 0.3s ease;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 999;
+  cursor: pointer;
 }
 
 .column-config-modal {

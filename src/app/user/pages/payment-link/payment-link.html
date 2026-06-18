@@ -155,6 +155,11 @@
 
   <div class="payment-links-wrapper">
 
+    <!-- BACKDROP OVERLAY -->
+    @if(showFilter || showPurpose || showDownload || showDateDropdown || showDateCalendar || showBulkFilterDropdown){
+      <div class="backdrop" (click)="closeAllPopups()"></div>
+    }
+
     <!-- =========================
          FILTER BAR
     ========================== -->
@@ -167,7 +172,7 @@
 
   <button
     class="filter-btn"
-    (click)="toggleDateFilter()">
+    (click)="toggleDateDropdown()">
 
     <i class="bi bi-calendar3"></i>
 
@@ -177,7 +182,28 @@
 
   </button>
 
- @if(showDateFilter){
+ @if(showDateDropdown){
+
+<div class="date-dropdown-menu">
+
+    @for(item of dateOptions; track item){
+
+    <div
+        class="dropdown-item"
+        [class.active]="selectedDateOption===item"
+        (click)="selectDate(item)">
+
+        {{item}}
+
+    </div>
+
+    }
+
+</div>
+
+}
+
+ @if(showDateCalendar){
 
 <div class="date-range-popup">
 
@@ -216,13 +242,13 @@
 
             <div class="month">
 
-                <button>
+                <button (click)="previousMonth()">
 
                     <i class="bi bi-arrow-left"></i>
 
                 </button>
 
-                <span>JUNE 2026</span>
+                <span>{{months[leftMonth]}} {{leftYear}}</span>
 
                 <button>
 
@@ -240,9 +266,9 @@
 
                 </button>
 
-                <span>JULY 2026</span>
+                <span>{{months[rightMonth]}} {{rightYear}}</span>
 
-                <button>
+                <button (click)="nextMonth()">
 
                     <i class="bi bi-arrow-right"></i>
 
@@ -262,13 +288,11 @@
 
                 <div class="week">
 
-                    <span>Su</span>
-                    <span>Mo</span>
-                    <span>Tu</span>
-                    <span>We</span>
-                    <span>Th</span>
-                    <span>Fr</span>
-                    <span>Sa</span>
+                    @for(day of weekDays; track day){
+
+                    <span>{{day}}</span>
+
+                    }
 
                 </div>
 
@@ -281,7 +305,7 @@
                         [class.active]="day==12 || day==18"
                         [class.in-range]="day>=12 && day<=18">
 
-                        {{day}}
+                        {{day?.getDate() || ''}}
 
                     </div>
 
@@ -297,13 +321,11 @@
 
                 <div class="week">
 
-                    <span>Su</span>
-                    <span>Mo</span>
-                    <span>Tu</span>
-                    <span>We</span>
-                    <span>Th</span>
-                    <span>Fr</span>
-                    <span>Sa</span>
+                    @for(day of weekDays; track day){
+
+                    <span>{{day}}</span>
+
+                    }
 
                 </div>
 
@@ -313,7 +335,7 @@
 
                     <div class="day">
 
-                        {{day}}
+                        {{day?.getDate() || ''}}
 
                     </div>
 
@@ -560,19 +582,9 @@ class="reset-btn"
 
           <tr>
 
-            <th>Created On</th>
-
-            <th>Purpose</th>
-
-            <th>Invoice ID</th>
-
-            <th>Amount</th>
-
-            <th>Payment Link</th>
-
-            <th>Payment Type</th>
-
-            <th>Status</th>
+            @for(col of selectedColumns; track col){
+              <th>{{ col }}</th>
+            }
 
             <th>
 
@@ -592,32 +604,34 @@ class="reset-btn"
 
         <tbody>
 
-          <tr>
-
-            <td
-              colspan="8">
-
-              <div class="empty-state">
-
-                <i class="bi bi-inbox"></i>
-
-                <h3>
-
-                  No Result Found
-
-                </h3>
-
-                <p>
-
-                  Oops! We didn't find anything.
-
-                </p>
-
-              </div>
-
-            </td>
-
-          </tr>
+          @if(tableData.length > 0){
+            @for(row of tableData; track row){
+              <tr>
+                @for(col of selectedColumns; track col){
+                  <td>{{ row[col] || '' }}</td>
+                }
+                <td>
+                  <button class="setting-btn">
+                    <i class="bi bi-three-dots"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          } @else {
+            <tr>
+              <td [attr.colspan]="selectedColumns.length + 1">
+                <div class="empty-state">
+                  <i class="bi bi-inbox"></i>
+                  <h3>
+                    No Result Found
+                  </h3>
+                  <p>
+                    Oops! We didn't find anything.
+                  </p>
+                </div>
+              </td>
+            </tr>
+          }
 
         </tbody>
 
@@ -637,6 +651,11 @@ class="reset-btn"
 
 <div class="bulk-wrapper">
 
+  <!-- BACKDROP OVERLAY -->
+  @if(showDateDropdown || showDateCalendar || showBulkFilterDropdown){
+    <div class="backdrop" (click)="closeAllPopups()"></div>
+  }
+
   <!-- FILTER BAR -->
 
   <div class="filter-bar">
@@ -645,7 +664,7 @@ class="reset-btn"
 
       <button
         class="filter-btn"
-        (click)="toggleDateFilter()">
+        (click)="toggleDateDropdown()">
 
         <i class="bi bi-calendar3"></i>
 
@@ -655,19 +674,245 @@ class="reset-btn"
 
       </button>
 
+      @if(showDateDropdown){
+
+      <div class="date-dropdown-menu">
+
+        @for(item of dateOptions; track item){
+
+        <div
+            class="dropdown-item"
+            [class.active]="selectedDateOption===item"
+            (click)="selectDate(item)">
+
+            {{item}}
+
+        </div>
+
+        }
+
+      </div>
+
+      }
+
+      @if(showDateCalendar){
+
+      <div class="date-range-popup">
+
+          <!-- LEFT MENU -->
+
+          <div class="range-sidebar">
+
+              @for(item of dateOptions; track item){
+
+              <div
+                  class="range-item"
+                  [class.active]="selectedDateOption===item"
+                  (click)="selectDate(item)">
+
+                  {{item}}
+
+              </div>
+
+              }
+
+              <div class="range-note">
+
+                  Maximum range selection is 90 days.
+
+              </div>
+
+          </div>
+
+          <!-- RIGHT -->
+
+          <div class="range-content">
+
+              <!-- HEADER -->
+
+              <div class="calendar-header">
+
+                  <div class="month">
+
+                      <button (click)="previousMonth()">
+
+                          <i class="bi bi-arrow-left"></i>
+
+                      </button>
+
+                      <span>{{months[leftMonth]}} {{leftYear}}</span>
+
+                      <button>
+
+                          <i class="bi bi-chevron-down"></i>
+
+                      </button>
+
+                  </div>
+
+                  <div class="month">
+
+                      <button>
+
+                          <i class="bi bi-chevron-down"></i>
+
+                      </button>
+
+                      <span>{{months[rightMonth]}} {{rightYear}}</span>
+
+                      <button (click)="nextMonth()">
+
+                          <i class="bi bi-arrow-right"></i>
+
+                      </button>
+
+                  </div>
+
+              </div>
+
+              <!-- CALENDAR -->
+
+              <div class="calendar-wrapper">
+
+                  <!-- Month 1 -->
+
+                  <div class="calendar">
+
+                      <div class="week">
+
+                          @for(day of weekDays; track day){
+
+                          <span>{{day}}</span>
+
+                          }
+
+                      </div>
+
+                      <div class="days">
+
+                        @for(day of leftCalendar; track day){
+
+                          <div
+                              class="day"
+                              [class.active]="day==12 || day==18"
+                              [class.in-range]="day>=12 && day<=18">
+
+                              {{day?.getDate() || ''}}
+
+                          </div>
+
+                          }
+
+                      </div>
+
+                  </div>
+
+                  <!-- Month 2 -->
+
+                  <div class="calendar">
+
+                      <div class="week">
+
+                          @for(day of weekDays; track day){
+
+                          <span>{{day}}</span>
+
+                          }
+
+                      </div>
+
+                      <div class="days">
+
+                         @for(day of rightCalendar; track day){
+
+                          <div class="day">
+
+                              {{day?.getDate() || ''}}
+
+                          </div>
+
+                          }
+
+                      </div>
+
+                  </div>
+
+              </div>
+
+              <!-- FOOTER -->
+
+              <div class="range-footer">
+
+                  <input
+                      type="text"
+                      [value]="fromDate"
+                      readonly>
+
+                  <span>:</span>
+
+                  <input
+                      type="text"
+                      [value]="toDate"
+                      readonly>
+
+                 <button
+      class="reset-btn"
+      (click)="resetDateRange()">
+
+                      Reset
+
+                  </button>
+
+                  <button
+                      class="apply-btn"
+                      (click)="applyDateRange()">
+
+                      Apply
+
+                  </button>
+
+              </div>
+
+          </div>
+
+      </div>
+
+      }
+
     </div>
 
     <button
       class="filter-btn"
-      (click)="toggleBulkFilter()">
+      (click)="toggleBulkFilterDropdown()">
 
       <i class="bi bi-funnel"></i>
 
-      Filter
+      {{selectedBulkFilter}}
 
       <i class="bi bi-chevron-down"></i>
 
     </button>
+
+    @if(showBulkFilterDropdown){
+
+    <div class="bulk-filter-dropdown">
+
+      @for(option of bulkFilterOptions; track option){
+
+      <div
+        class="dropdown-item"
+        [class.active]="selectedBulkFilter===option"
+        (click)="selectBulkFilter(option)">
+
+        {{option}}
+
+      </div>
+
+      }
+
+    </div>
+
+    }
 
     <div class="search-box">
 
@@ -851,11 +1096,11 @@ class="reset-btn"
 
 @if(showColumnConfig){
 
-<div class="modal-overlay">
+<div class="sidebar-overlay" (click)="closeOnBackdropClick($event)">
 
-  <div class="column-modal">
+  <div class="column-sidebar">
 
-    <div class="modal-header">
+    <div class="sidebar-header">
 
       <h2>
 
@@ -864,6 +1109,7 @@ class="reset-btn"
       </h2>
 
       <button
+        class="close-btn"
         (click)="closeColumnConfig()">
 
         <i class="bi bi-x-lg"></i>
@@ -872,31 +1118,42 @@ class="reset-btn"
 
     </div>
 
-    <div class="modal-body">
+    <div class="sidebar-body">
 
-      <!-- LEFT -->
+      <!-- LEFT SECTION - AVAILABLE COLUMNS -->
 
-      <div class="column-box">
+      <div class="column-section">
 
-        <h4>
+        <div class="section-header">
 
-          Available Columns
+          <h4>
 
-        </h4>
+            Available Columns
+
+          </h4>
+
+          <span class="count-badge">{{ availableColumns.length }}</span>
+
+        </div>
 
         <input
           type="text"
-          placeholder="Search">
+          class="search-input"
+          placeholder="Search columns"
+          [(ngModel)]="availableSearch">
 
         <div class="column-list">
 
-          @for(item of availableColumns;track item){
+          @for(col of filteredAvailableColumns; track col){
 
-          <label>
+          <label class="column-item">
 
-            <input type="checkbox">
+            <input 
+              type="checkbox"
+              [checked]="isColumnSelected(col)"
+              (change)="toggleColumnSelection(col)">
 
-            {{item}}
+            <span>{{col}}</span>
 
           </label>
 
@@ -906,35 +1163,49 @@ class="reset-btn"
 
       </div>
 
-      <!-- RIGHT -->
+      <!-- RIGHT SECTION - SELECTED COLUMNS -->
 
-      <div class="column-box">
+      <div class="column-section">
 
-        <h4>
+        <div class="section-header">
 
-          Selected Columns
+          <h4>
 
-        </h4>
+            Selected Columns
+
+          </h4>
+
+          <span class="count-badge">{{ selectedColumns.length }}</span>
+
+        </div>
 
         <input
           type="text"
-          placeholder="Search">
+          class="search-input"
+          placeholder="Search selected"
+          [(ngModel)]="selectedSearch">
 
-        <div class="column-list">
+        <div class="column-list selected-list">
 
-          @for(item of selectedColumns;track item){
+          @for(col of filteredSelectedColumns; track col){
 
           <div class="selected-item">
 
-            <span>
+            <span class="item-content">
 
               <i class="bi bi-grip-vertical"></i>
 
-              {{item}}
+              {{col}}
 
             </span>
 
-            <i class="bi bi-x-lg"></i>
+            <button 
+              class="remove-btn"
+              (click)="removeColumn(col)">
+
+              <i class="bi bi-x-lg"></i>
+
+            </button>
 
           </div>
 
@@ -946,7 +1217,7 @@ class="reset-btn"
 
     </div>
 
-    <div class="modal-footer">
+    <div class="sidebar-footer">
 
       <button
         class="reset-btn"
