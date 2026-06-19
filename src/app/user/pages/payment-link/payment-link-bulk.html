@@ -1,8 +1,363 @@
-<div class="action-panel bulk">
-  <div class="action-panel-header">
-    <h3>Bulk Create Payment Links</h3>
+<div class="page-header">
+
+  <div class="header-left">
+
+    <h2>Generate Bulk Payment links</h2>
+
+    <p>
+      Create multiple payment links at once by uploading a .csv file in the sample format.
+      Save your time and avoid the hassle of creating multiple individual links.
+    </p>
+
   </div>
-  <div class="action-panel-body">
-    <p>Upload CSV to bulk create payment links.</p>
+
+  <div class="header-right">
+
+    <button class="instruction-btn">
+
+      View Instructions
+
+    </button>
+
   </div>
+
 </div>
+<!-- =========================================
+UPLOAD FILE CARD
+========================================= -->
+
+<div class="upload-card">
+
+  <h3>Upload File</h3>
+
+  <p class="upload-desc">
+
+    Download a Sample file or select your file to upload.
+    Re-arrange the uploaded file column according to your need.
+
+  </p>
+
+  <div class="upload-body">
+
+    <!-- Upload -->
+
+    <div class="upload-left">
+
+      <button class="browse-btn">
+
+        <i class="bi bi-upload"></i>
+
+        <span>Select file from your library</span>
+
+      </button>
+
+      <small>
+
+        Maximum Upload should be 20 Mb
+
+      </small>
+
+    </div>
+
+    <!-- Download -->
+
+    <div class="upload-right">
+
+      <div class="download-link">
+
+        <i class="bi bi-download"></i>
+
+        <div>
+
+          <h5>Download Sample File</h5>
+
+          <span>
+            Download sample file and use if don't have a file type already
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+<!-- =========================================
+BATCH DETAILS
+========================================= -->
+
+<div class="batch-card">
+
+  <div class="batch-grid">
+
+    <!-- Batch ID -->
+
+    <div class="form-group">
+
+      <label>
+
+        Batch ID
+
+        <span>(Optional)</span>
+
+      </label>
+
+      <input
+        type="text"
+        placeholder="">
+
+    </div>
+
+    <!-- Batch Description -->
+
+    <div class="form-group">
+
+      <label>
+
+        Batch description
+
+      </label>
+
+      <input
+        type="text"
+        placeholder="">
+
+    </div>
+
+  </div>
+
+  <!-- Communication -->
+
+  <div class="channel-section">
+
+    <h4>
+
+      Communication Channel Type
+
+      <span>(select one or more)</span>
+
+    </h4>
+
+    <div class="channel-row">
+
+      <label class="check-item">
+
+        <input type="checkbox">
+
+        <span>Email</span>
+
+      </label>
+
+      <label class="check-item">
+
+        <input type="checkbox">
+
+        <span>SMS</span>
+
+      </label>
+
+    </div>
+
+  </div>
+
+  <!-- Reminder -->
+
+  <div class="reminder-box">
+
+    <i class="bi bi-exclamation-circle-fill"></i>
+
+    <span>
+
+      Reminders is not set for payment links.
+
+      Set it up on
+
+      <a href="javascript:void(0)">
+
+        Reminder settings
+
+      </a>
+
+    </span>
+
+  </div>
+
+</div>
+<!-- =========================================
+CUSTOMER DATA CAPTURE
+========================================= -->
+
+<div class="customer-card">
+
+  <div
+    class="customer-header"
+    (click)="customerExpanded=!customerExpanded">
+
+    <h3>
+
+      Customer Data Capture
+
+    </h3>
+
+    <i
+      class="bi"
+      [class.bi-chevron-up]="customerExpanded"
+      [class.bi-chevron-down]="!customerExpanded">
+
+    </i>
+
+  </div>
+
+  @if(customerExpanded){
+
+  <div class="customer-body">
+
+    <label class="customer-check">
+
+      <input type="checkbox">
+
+      Customer Name
+
+    </label>
+
+    <label class="customer-check">
+
+      <input type="checkbox">
+
+      Customer Address
+
+    </label>
+
+    <label class="customer-check">
+
+      <input
+        type="checkbox"
+        checked>
+
+      Customer Email
+
+    </label>
+
+    <label class="customer-check">
+
+      <input
+        type="checkbox"
+        checked>
+
+      Customer Phone
+
+    </label>
+<button
+  class="add-field-btn"
+  (click)="openFieldModal()">
+
+  <i class="bi bi-plus-lg"></i>
+
+  Add new Fields
+
+  <i class="bi bi-info-circle"></i>
+
+</button>
+
+  </div>
+
+  }
+
+</div>
+@if(showFieldModal){
+
+<div class="modal-overlay">
+
+  <div class="field-modal">
+
+    <div class="modal-body">
+
+      <h2>Create New Field</h2>
+
+      <!-- Field Type -->
+
+      <div class="form-group">
+
+        <label>Field Type</label>
+
+        <select>
+
+          <option>Field Type</option>
+
+          <option>Text</option>
+
+          <option>Number</option>
+
+          <option>Email</option>
+
+          <option>Date</option>
+
+        </select>
+
+      </div>
+
+      <!-- Mandatory -->
+
+      <label class="mandatory-check">
+
+        <input type="checkbox">
+
+        Mark as mandatory
+
+      </label>
+
+      <!-- Field Name -->
+
+      <div class="form-group">
+
+        <label>Field Name</label>
+
+        <input
+          type="text"
+          maxlength="100">
+
+        <small>0/100</small>
+
+      </div>
+
+      <!-- Alert -->
+
+      <div class="info-box">
+
+        <i class="bi bi-info-circle-fill"></i>
+
+        <span>
+
+          Collecting customer's Aadhaar and PAN details is restricted!
+
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="closeFieldModal()">
+
+        Cancel
+
+      </button>
+
+      <button class="add-btn">
+
+        Add Field
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-payment-link-create',
@@ -13,7 +14,12 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './payment-link-create.scss'
 })
 export class PaymentLinkCreateComponent {
+ constructor(private router: Router) {}
+ goBackToPaymentLinks() {
 
+  this.router.navigate(['/user/payment-link']);
+
+}
   /* ==========================================
      PAYMENT LINK DETAILS
   ========================================== */
@@ -63,110 +69,104 @@ export class PaymentLinkCreateComponent {
   ========================================== */
 
   toggleExpiry() {
-
     this.showExpiryDropdown = !this.showExpiryDropdown;
-
   }
 
   selectExpiry(item: string) {
-
     this.selectedExpiry = item;
-
     this.showExpiryDropdown = false;
-
   }
 
   toggleMoreDetails() {
-
     this.showMoreDetails = !this.showMoreDetails;
-
   }
 
   /* ==========================================
-   CUSTOMER TARGETING
-========================================== */
+     CUSTOMER TARGETING
+  ========================================== */
 
-customerName = '';
+  customerName = '';
 
-customerMobile = '';
+  customerMobile = '';
 
-customerEmail = '';
+  customerEmail = '';
 
-sendSms = true;
+  /* ==========================================
+     CUSTOMER DATA CAPTURE
+  ========================================== */
 
-sendEmail = false;
+  fieldTypes = ['Text', 'Number', 'Email', 'Date', 'Dropdown'];
 
-prefillCustomer = true;
+  showFieldPopup = false;
 
-allowEditCustomer = false;
+  editingFieldIndex: number | null = null;
 
+  newFieldType = 'Text';
 
-/* ==========================================
-   CUSTOMER DATA CAPTURE
-========================================== */
+  newFieldName = '';
 
-collectName = true;
+  customFields: { type: string; label: string }[] = [];
 
-collectMobile = true;
-
-collectEmail = true;
-
-collectAddress = false;
-
-collectCity = false;
-
-collectState = false;
-
-collectPincode = false;
-
-collectGST = false;
-
-collectPAN = false;
-
-customFields = [
-  {
-    label: 'Custom Field 1',
-    required: false
+  openAddFieldPopup() {
+    this.editingFieldIndex = null;
+    this.newFieldType = 'Text';
+    this.newFieldName = '';
+    this.showFieldPopup = true;
   }
-];
-addCustomField() {
 
-  this.customFields.push({
+  openEditFieldPopup(index: number) {
+    this.editingFieldIndex = index;
+    const field = this.customFields[index];
+    this.newFieldType = field.type;
+    this.newFieldName = field.label;
+    this.showFieldPopup = true;
+  }
 
-    label: 'New Field',
+  saveField() {
+    if (!this.newFieldName.trim()) return;
+    if (this.editingFieldIndex !== null) {
+      this.customFields[this.editingFieldIndex] = {
+        type: this.newFieldType,
+        label: this.newFieldName
+      };
+    } else {
+      this.customFields.push({
+        type: this.newFieldType,
+        label: this.newFieldName
+      });
+    }
+    this.showFieldPopup = false;
+  }
 
-    required: false
+  cancelFieldPopup() {
+    this.showFieldPopup = false;
+  }
 
-  });
+  removeField(index: number) {
+    this.customFields.splice(index, 1);
+  }
 
-}
+  /* ==========================================
+     PREVIEW DATA
+  ========================================== */
 
-removeField(index:number){
+  merchantName = 'BankU India';
 
-  this.customFields.splice(index,1);
+  paymentTitle = 'Payment Request';
 
-}
-/* ==========================================
-   PREVIEW DATA
-========================================== */
+  currency = '₹';
 
-merchantName = 'BankU India';
+  previewAmount = 0;
 
-paymentTitle = 'Payment Request';
+  paymentDueDate = '19 Jun 2026 | 10:38 AM';
 
-currency = '₹';
+  merchantLogo = 'assets/images/logo.png';
 
-previewAmount = 0;
-
-paymentDueDate = '19 Jun 2026 | 10:38 AM';
-
-merchantLogo = 'assets/images/logo.png';
-
-paymentModes = [
-  'UPI',
-  'Credit / Debit Card',
-  'Net Banking',
-  'Wallet',
-  'EMI'
-];
+  paymentModes = [
+    'UPI',
+    'Credit / Debit Card',
+    'Net Banking',
+    'Wallet',
+    'EMI'
+  ];
 }
