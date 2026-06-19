@@ -200,13 +200,13 @@ select {
   background: #eef2f8;
   border-radius: 18px;
   border: 1px solid #e1e7ee;
-  min-height: 640px;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 24px;
   margin-bottom: 20px;
   overflow: hidden;
+  min-height: 520px;
 }
 
 /* Scaler wrapper: this is what actually shrinks
@@ -214,10 +214,10 @@ select {
    leaving blank space or causing overflow */
 
 .preview-scaler {
-  --scale: 1;
-  transform: scale(var(--scale));
-  transform-origin: center center;
-  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* ==========================================
@@ -225,8 +225,9 @@ select {
 ========================================== */
 
 .desktop-preview {
-  width: 850px;
-  height: 600px;
+  width: 100%;
+  max-width: 780px;
+  height: 520px;
   background: #fff;
   border-radius: 18px;
   overflow: hidden;
@@ -238,7 +239,7 @@ select {
 /* LEFT column of desktop preview */
 
 .desktop-left {
-  width: 300px;
+  width: 260px;
   flex-shrink: 0;
   background: #fafafa;
   border-right: 1px solid #ececec;
@@ -379,13 +380,15 @@ select {
 ========================================== */
 
 .mobile-preview {
-  width: 360px;
-  min-height: 700px;
+  width: 300px;
+  min-height: 560px;
   background: #fff;
   border-radius: 36px;
   overflow: hidden;
   border: 10px solid #222;
   box-shadow: 0 18px 60px rgba(0,0,0,.15);
+  display: flex;
+  flex-direction: column;
 }
 
 .mobile-status {
@@ -406,6 +409,7 @@ select {
 .mobile-header {
   padding: 18px;
   color: #fff;
+  flex-shrink: 0;
 }
 
 .mobile-merchant {
@@ -424,28 +428,32 @@ select {
 
 .mobile-price-card {
   text-align: center;
-  padding: 24px;
+  padding: 16px;
+  flex-shrink: 0;
 
   h2 {
-    font-size: 34px;
-    margin: 8px 0;
+    font-size: 28px;
+    margin: 6px 0;
   }
 
   p {
     color: #777;
     font-size: 13px;
+    margin: 4px 0;
   }
 }
 
 .mobile-method-list {
   padding: 0 18px;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .mobile-method-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
+  padding: 12px 0;
   border-bottom: 1px solid #eee;
   cursor: pointer;
 
@@ -468,7 +476,8 @@ select {
 }
 
 .mobile-action {
-  padding: 24px;
+  padding: 16px;
+  flex-shrink: 0;
 }
 
 .pay-btn {
@@ -488,10 +497,11 @@ select {
 
 .mobile-footer {
   text-align: center;
-  padding: 18px;
+  padding: 12px;
   color: #777;
   font-size: 13px;
   border-top: 1px solid #eee;
+  flex-shrink: 0;
 }
 
 /* ==========================================
@@ -675,19 +685,9 @@ select {
 
 /* ===========================================
    RESPONSIVE
-   This is the core fix: instead of letting the
-   850px desktop preview / 330px left-panel overflow
-   the viewport, we stack the layout and scale the
-   preview down via --scale custom property at each
-   breakpoint, so everything stays inside one view.
+   Preview naturally fills container width without
+   transform-scale. Sizes adjust at each breakpoint.
 =========================================== */
-
-@media (max-width: 1400px) {
-
-  .preview-scaler {
-    --scale: 0.9;
-  }
-}
 
 @media (max-width: 1200px) {
 
@@ -703,34 +703,98 @@ select {
     width: 100%;
   }
 
-  .preview-scaler {
-    --scale: 1;
-  }
-
   .preview-box {
     min-height: auto;
   }
-}
 
-@media (max-width: 900px) {
+  .desktop-preview {
+    max-width: 680px;
+    height: 460px;
+  }
 
-  .preview-scaler:not(.is-mobile) {
-    --scale: 0.78;
+  .mobile-preview {
+    width: 260px;
+    min-height: 480px;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
 
   .checkout-page {
     padding: 16px;
   }
 
-  .preview-scaler:not(.is-mobile) {
-    --scale: 0.6;
+  .preview-box {
+    padding: 12px;
   }
 
-  .preview-scaler.is-mobile {
-    --scale: 0.85;
+  .desktop-preview {
+    max-width: 100%;
+    height: 400px;
+    border-radius: 12px;
+    flex-direction: column;
+  }
+
+  .desktop-left {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ececec;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0;
+    min-height: auto;
+  }
+
+  .merchant-top {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    flex: 1;
+  }
+
+  .merchant-logo {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0;
+  }
+
+  .merchant-top h4 {
+    font-size: 16px;
+  }
+
+  .merchant-price {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .merchant-price small {
+    margin: 0;
+  }
+
+  .price-row {
+    margin-top: 0;
+    gap: 8px;
+  }
+
+  .amount {
+    font-size: 22px;
+  }
+
+  .desktop-bottom {
+    display: none;
+  }
+
+  .mobile-preview {
+    width: 240px;
+    min-height: 440px;
+    border-width: 6px;
+    border-radius: 24px;
   }
 
   .device-switch {
@@ -741,20 +805,6 @@ select {
       justify-content: center;
     }
   }
-}
-
-@media (max-width: 420px) {
-
-  .preview-scaler:not(.is-mobile) {
-    --scale: 0.46;
-  }
-
-  .preview-scaler.is-mobile {
-    --scale: 0.72;
-  }
-}
-
-@media (max-width: 768px) {
 
   .feature-card {
     padding: 16px;
@@ -770,5 +820,85 @@ select {
 
   .set-order-btn {
     width: calc(100% - 40px);
+  }
+}
+
+@media (max-width: 480px) {
+
+  .checkout-page {
+    padding: 12px;
+  }
+
+  .preview-box {
+    padding: 8px;
+    border-radius: 12px;
+    min-height: 360px;
+  }
+
+  .desktop-preview {
+    height: 340px;
+    border-radius: 10px;
+  }
+
+  .merchant-top {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .merchant-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .merchant-top h4 {
+    font-size: 14px;
+  }
+
+  .merchant-price {
+    padding: 6px 12px;
+  }
+
+  .amount {
+    font-size: 18px;
+  }
+
+  .mobile-preview {
+    width: 200px;
+    min-height: 380px;
+    border-width: 4px;
+    border-radius: 18px;
+  }
+
+  .mobile-header {
+    padding: 12px;
+  }
+
+  .mobile-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .mobile-price-card {
+    padding: 12px;
+
+    h2 {
+      font-size: 24px;
+    }
+  }
+
+  .mobile-method-item {
+    padding: 10px 0;
+  }
+
+  .mobile-action {
+    padding: 12px;
+  }
+
+  .pay-btn {
+    height: 44px;
+  }
+
+  .mobile-footer {
+    padding: 10px;
   }
 }

@@ -468,6 +468,7 @@ selectDate(item: string){
 
   }
 
+
   // Quick date selection
   this.setQuickDate(item);
   this.showDateDropdown = false;
@@ -648,6 +649,7 @@ isDayActive(day: Date | null){
     return false;
   }
 
+  
   if (this.selectedEnd) {
     return day.getTime() === this.selectedStart.getTime() || day.getTime() === this.selectedEnd.getTime();
   }

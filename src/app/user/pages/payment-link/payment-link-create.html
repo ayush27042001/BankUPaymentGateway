@@ -1,8 +1,911 @@
-<div class="action-panel create">
-  <div class="action-panel-header">
-    <h3>Create New Payment Link</h3>
+<div class="create-payment-page">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <div class="page-header">
+
+    <div class="left-header">
+
+      <button class="back-btn">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back to Payment Links
+
+      </button>
+
+      <h2>Create New Payment Link</h2>
+
+    </div>
+
+    <div class="header-actions">
+
+      <button class="cancel-btn">
+        Cancel
+      </button>
+
+      <button class="create-btn">
+        Create Payment Link
+      </button>
+
+    </div>
+
   </div>
-  <div class="action-panel-body">
-    <p>Form to create a new payment link goes here.</p>
+
+  <!-- =========================
+       CONTENT
+  ========================== -->
+
+  <div class="page-content">
+
+    <!-- LEFT PANEL -->
+
+    <div class="left-panel">
+
+      <!-- Payment Details -->
+
+    <div class="form-card">
+
+  <div class="card-header">
+
+    <h3>
+
+      Payment Link Details
+
+    </h3>
+
+  
+
   </div>
+
+  <!-- Item Description -->
+
+  <div class="form-group">
+
+    <label>
+
+      Item Description <span>*</span>
+
+    </label>
+
+   <input
+  type="text"
+  [(ngModel)]="itemDescription"
+  placeholder="Enter item description">
+
+  </div>
+
+  <!-- Amount -->
+
+  <div class="form-group">
+
+    <label>
+
+      Total Amount <span>*</span>
+
+    </label>
+
+    <div class="amount-box">
+
+      <span class="rupee">
+
+        ₹
+
+      </span>
+
+    <input
+  type="number"
+  [(ngModel)]="totalAmount"
+  (input)="previewAmount = totalAmount || 0"
+  placeholder="0.00">
+
+    </div>
+
+  </div>
+
+  <!-- Limit -->
+
+  <div class="form-group">
+
+    <label>
+
+      Limit Link Access To
+
+    </label>
+
+    <div class="limit-row">
+
+      <input
+        type="number"
+        [(ngModel)]="transactionLimit"
+        placeholder="0">
+
+      <button class="limit-btn">
+
+        Transactions
+
+        <i class="bi bi-chevron-down"></i>
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Due Date -->
+
+  <div class="toggle-row">
+
+    <div>
+
+      <h5>
+
+        Set Payment Due Date
+
+      </h5>
+
+      <p>
+
+        Payment link will expire automatically.
+
+      </p>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="enableExpiry">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  @if(enableExpiry){
+
+  <div class="form-group">
+
+    <label>
+
+      Select Expiry
+
+    </label>
+
+    <div
+      class="custom-select"
+      (click)="toggleExpiry()">
+
+      <span>
+
+        {{selectedExpiry}}
+
+      </span>
+
+      <i class="bi bi-chevron-down"></i>
+
+    </div>
+
+    @if(showExpiryDropdown){
+
+    <div class="dropdown-menu">
+
+      @for(item of expiryOptions; track item){
+
+      <div
+        class="dropdown-item"
+        (click)="selectExpiry(item)">
+
+        {{item}}
+
+      </div>
+
+      }
+
+    </div>
+
+    }
+
+  </div>
+
+  }
+
+  <!-- Partial Payment -->
+
+  <div class="toggle-row">
+
+    <div>
+
+      <h5>
+
+        Enable Partial Payment
+
+      </h5>
+
+      <p>
+
+        Customer can pay in multiple transactions.
+
+      </p>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="enablePartialPayment">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- More -->
+
+  <div
+    class="more-details"
+    (click)="toggleMoreDetails()">
+
+    <span>
+
+      Add More Details
+
+    </span>
+
+    <i
+      class="bi"
+      [class.bi-chevron-down]="!showMoreDetails"
+      [class.bi-chevron-up]="showMoreDetails">
+
+    </i>
+
+  </div>
+
+  @if(showMoreDetails){
+
+  <div class="extra-section">
+
+    <div class="form-group">
+
+      <label>
+
+        Reference Number
+
+      </label>
+
+      <input
+        type="text"
+        placeholder="Optional">
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+
+        Notes
+
+      </label>
+
+      <textarea
+        rows="4"
+        placeholder="Additional notes..."></textarea>
+
+    </div>
+
+  </div>
+
+  }
+
+</div>
+
+      <!-- Customer Targeting -->
+
+    <div class="form-card">
+
+  <div class="card-header">
+
+    <h3>
+
+      Customer Targeting
+
+    </h3>
+
+  </div>
+
+  <!-- Customer Name -->
+
+  <div class="form-group">
+
+    <label>
+
+      Customer Name
+
+    </label>
+
+    <input
+type="text"
+[(ngModel)]="customerName"
+placeholder="Customer Name">
+
+  </div>
+
+  <!-- Mobile -->
+
+  <div class="form-group">
+
+    <label>
+
+      Mobile Number
+
+    </label>
+
+  <input
+type="text"
+[(ngModel)]="customerMobile"
+placeholder="9876543210">
+
+  </div>
+
+  <!-- Email -->
+
+  <div class="form-group">
+
+    <label>
+
+      Email Address
+
+    </label>
+
+    <input
+type="email"
+[(ngModel)]="customerEmail"
+placeholder="customer@email.com">
+
+  </div>
+
+  <!-- SMS -->
+
+  <div class="toggle-row">
+
+    <div>
+
+      <h5>
+
+        Send SMS
+
+      </h5>
+
+      <p>
+
+        Notify customer via SMS.
+
+      </p>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="sendSms">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- EMAIL -->
+
+  <div class="toggle-row">
+
+    <div>
+
+      <h5>
+
+        Send Email
+
+      </h5>
+
+      <p>
+
+        Notify customer via Email.
+
+      </p>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="sendEmail">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- Prefill -->
+
+  <div class="toggle-row">
+
+    <div>
+
+      <h5>
+
+        Prefill Customer Details
+
+      </h5>
+
+      <p>
+
+        Automatically populate customer information.
+
+      </p>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="prefillCustomer">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- Allow Edit -->
+
+  <div class="toggle-row">
+
+    <div>
+
+      <h5>
+
+        Allow Customer To Edit
+
+      </h5>
+
+      <p>
+
+        Customer can update their own information.
+
+      </p>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="allowEditCustomer">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+</div>
+
+      <!-- Customer Data -->
+
+    <div class="form-card">
+
+  <div class="card-header">
+
+    <h3>
+
+      Customer Data Capture
+
+    </h3>
+
+    <button
+      class="add-field-btn"
+      (click)="addCustomField()">
+
+      <i class="bi bi-plus-circle"></i>
+
+      Add Field
+
+    </button>
+
+  </div>
+
+  <!-- Name -->
+
+  <div class="capture-row">
+
+    <div>
+
+      <h5>
+
+        Full Name
+
+      </h5>
+
+      <p>
+
+        Ask customer full name.
+
+      </p>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="collectName">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- Mobile -->
+
+  <div class="capture-row">
+
+    <div>
+
+      <h5>
+
+        Mobile Number
+
+      </h5>
+
+      <p>
+
+        Ask customer mobile number.
+
+      </p>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="collectMobile">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- Email -->
+
+  <div class="capture-row">
+
+    <div>
+
+      <h5>
+
+        Email Address
+
+      </h5>
+
+      <p>
+
+        Ask customer email.
+
+      </p>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="collectEmail">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- Address -->
+
+  <div class="capture-row">
+
+    <div>
+
+      <h5>
+
+        Address
+
+      </h5>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="collectAddress">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- City -->
+
+  <div class="capture-row">
+
+    <div>
+
+      <h5>
+
+        City
+
+      </h5>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="collectCity">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- State -->
+
+  <div class="capture-row">
+
+    <div>
+
+      <h5>
+
+        State
+
+      </h5>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="collectState">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- Pincode -->
+
+  <div class="capture-row">
+
+    <div>
+
+      <h5>
+
+        Pincode
+
+      </h5>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="collectPincode">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- GST -->
+
+  <div class="capture-row">
+
+    <div>
+
+      <h5>
+
+        GST Number
+
+      </h5>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="collectGST">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- PAN -->
+
+  <div class="capture-row">
+
+    <div>
+
+      <h5>
+
+        PAN Number
+
+      </h5>
+
+    </div>
+
+    <label class="switch">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="collectPAN">
+
+      <span class="slider"></span>
+
+    </label>
+
+  </div>
+
+  <!-- Custom Fields -->
+
+  @for(field of customFields; track field; let i = $index){
+
+  <div class="custom-field">
+
+    <input
+      type="text"
+      [(ngModel)]="field.label">
+
+    <button
+      class="delete-btn"
+      (click)="removeField(i)">
+
+      <i class="bi bi-trash"></i>
+
+    </button>
+
+  </div>
+
+  }
+
+</div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+
+    <div class="right-panel">
+
+      <h4>
+
+        Preview
+
+        <i class="bi bi-info-circle-fill"></i>
+
+      </h4>
+
+      <div class="preview-wrapper">
+
+        <div class="preview-card">
+
+         <div class="preview-top">
+
+  <span>PAYMENT REQUEST PREVIEW</span>
+
+  <div class="banku-brand">
+
+    <i class="bi bi-bank"></i>
+
+    <span class="banku-text">
+
+      BankU
+
+    </span>
+
+  </div>
+
+</div>
+
+          <h2>BankU India</h2>
+
+          <div class="amount">
+
+            Total Payable Amount
+
+           {{currency}}{{previewAmount}}
+
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="preview-section">
+
+            <small>PAYMENT DUE DATE</small>
+
+           {{paymentDueDate}}
+
+          </div>
+
+          <div class="preview-section">
+
+            <small>PAYMENT DETAILS</small>
+<p>
+
+{{itemDescription || 'Payment for Order'}}
+
+</p>
+          </div>
+
+          <div class="preview-input">
+
+    {{customerName || 'Customer Name'}}
+
+          </div>
+
+          <div class="preview-input">
+
+           {{customerMobile || 'Customer Mobile'}}
+
+          </div>
+
+          <div class="preview-input">
+
+          {{customerEmail || 'Customer Email'}}
+
+          </div>
+
+          <div class="preview-footer">
+
+            <button>
+
+              Set Payment Modes
+
+            </button>
+
+            <button>
+
+              Set your vernacular
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
