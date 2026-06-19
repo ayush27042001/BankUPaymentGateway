@@ -13,69 +13,265 @@
 
   <div class="header-right">
 
-    <button class="instruction-btn">
+  <button
+  class="instruction-btn"
+  (click)="openInstructionModal()">
 
-      View Instructions
+  View Instructions
 
-    </button>
+</button>
 
   </div>
 
 </div>
+@if(showInstructionModal){
+
+<div
+  class="instruction-overlay"
+  (click)="closeInstructionModal()">
+
+  <div
+    class="instruction-modal"
+    (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+
+    <div class="instruction-header">
+
+      <h2>
+
+        Bulk Upload Instructions
+
+      </h2>
+
+      <button
+        class="close-btn"
+        (click)="closeInstructionModal()">
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    </div>
+
+    <p class="instruction-subtitle">
+
+      Get familiar with the instructions as you upload the bulk payment links to avoid any kind of errors.
+
+    </p>
+
+    <!-- Table -->
+
+    <div class="instruction-table">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Parameters</th>
+
+            <th>Types of Parameters</th>
+
+            <th>Description</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr>
+
+            <td>Amount</td>
+
+            <td>Mandatory</td>
+
+            <td>Payment Amount (Values greater than equal to 1 are accepted as input)</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Invoice ID</td>
+
+            <td>Optional</td>
+
+            <td>Unique ID to find your payment link.</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Merchant Reference ID</td>
+
+            <td>Optional</td>
+
+            <td>Unique ID for each transaction.</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Product Description</td>
+
+            <td>Mandatory</td>
+
+            <td>Payment Description</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Customer Name</td>
+
+            <td>Optional</td>
+
+            <td>Customer's Name</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Customer Email</td>
+
+            <td>Optional</td>
+
+            <td>Customer's Email</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Customer Mobile</td>
+
+            <td>Optional</td>
+
+            <td>Customer Mobile Number (10 Digits)</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Validation Period</td>
+
+            <td>Optional</td>
+
+            <td>Invoice validity period.</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Time Unit</td>
+
+            <td>Optional</td>
+
+            <td>D = Days, H = Hours, M = Minutes</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Send SMS</td>
+
+            <td>Optional</td>
+
+            <td>1 = Send SMS, 0 = Don't Send</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Is Partial Payment Allowed</td>
+
+            <td>Optional</td>
+
+            <td>1 = Allow Partial Payment</td>
+
+          </tr>
+
+          <tr>
+
+            <td>Max Payments Allowed</td>
+
+            <td>Optional</td>
+
+            <td>Maximum payment count allowed.</td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
 <!-- =========================================
 UPLOAD FILE CARD
 ========================================= -->
 
-<div class="upload-card">
+<div class="upload-body">
 
-  <h3>Upload File</h3>
+  <!-- Left -->
 
-  <p class="upload-desc">
+  <div class="upload-left">
 
-    Download a Sample file or select your file to upload.
-    Re-arrange the uploaded file column according to your need.
+    <input
+      #fileInput
+      type="file"
+      accept=".csv"
+      hidden
+      (change)="onFileSelected($event)">
 
-  </p>
+    <button
+      type="button"
+      class="browse-btn"
+      (click)="fileInput.click()">
 
-  <div class="upload-body">
-
-    <!-- Upload -->
-
-    <div class="upload-left">
-
-      <button class="browse-btn">
-
+      <span class="upload-icon">
         <i class="bi bi-upload"></i>
+      </span>
 
-        <span>Select file from your library</span>
+      <span class="upload-text">
 
-      </button>
+        {{ selectedFileName || 'Select file from your library' }}
 
-      <small>
+      </span>
 
-        Maximum Upload should be 20 Mb
+    </button>
 
-      </small>
+    <small>
 
-    </div>
+      Maximum Upload should be 20 MB
 
-    <!-- Download -->
+    </small>
 
-    <div class="upload-right">
+  </div>
 
-      <div class="download-link">
+  <!-- Right -->
 
-        <i class="bi bi-download"></i>
+  <div class="upload-right">
 
-        <div>
+    <div class="download-link">
 
-          <h5>Download Sample File</h5>
+      <i class="bi bi-download"></i>
 
-          <span>
-            Download sample file and use if don't have a file type already
-          </span>
+      <div>
 
-        </div>
+        <h5>Download Sample File</h5>
+
+        <span>
+
+          Download sample file and use it if you don't have a file already
+
+        </span>
 
       </div>
 

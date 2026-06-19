@@ -58,9 +58,9 @@
 
     background:#fff;
 
-    border:1px solid #11A683;
+    border:1px solid #8B008B;
 
-    color:#11A683;
+    color:#8B008B;
 
     font-size:13px;
 
@@ -76,50 +76,50 @@
 
 .instruction-btn:hover{
 
-    background:#11A683;
+    background:#8B008B;
 
     color:#fff;
 
 }
-/*=========================================
+/* ===============================
 UPLOAD CARD
-=========================================*/
+=============================== */
 
 .upload-card{
 
     background:#fff;
 
-    border:1px solid #E5E7EB;
+    border:1px solid #E7EAF1;
 
-    border-radius:2px;
+    border-radius:10px;
 
-    margin-bottom:18px;
+    padding:26px;
+
+    margin-bottom:24px;
 
 }
 
 .upload-card h3{
 
-    margin:0;
+    font-size:22px;
 
-    padding:18px 18px 8px;
+    font-weight:600;
 
-    font-size:16px;
+    color:#242424;
 
-    font-weight:500;
-
-    color:#232323;
+    margin-bottom:10px;
 
 }
 
 .upload-desc{
 
-    padding:0 18px;
+    color:#6B7280;
 
-    font-size:13px;
+    font-size:14px;
 
-    color:#444;
+    margin-bottom:35px;
 
-    margin-bottom:30px;
+    max-width:760px;
 
 }
 
@@ -127,13 +127,13 @@ UPLOAD CARD
 
     display:flex;
 
-    justify-content:center;
+    justify-content:space-between;
 
-    align-items:flex-start;
+    align-items:center;
 
-    gap:90px;
+    gap:40px;
 
-    padding:10px 40px 42px;
+    flex-wrap:wrap;
 
 }
 
@@ -147,33 +147,41 @@ UPLOAD CARD
 
 .browse-btn{
 
-    width:250px;
+    width:340px;
 
-    height:32px;
-
-    border:1px solid #D8DDE5;
-
-    background:#fff;
-
-    cursor:pointer;
+    height:52px;
 
     display:flex;
 
     align-items:center;
 
-    border-radius:2px;
+    border:1px solid #D9DEE7;
+
+    background:#fff;
+
+    border-radius:8px;
+
+    cursor:pointer;
 
     overflow:hidden;
 
+    transition:.25s;
+
 }
 
-.browse-btn i{
+.browse-btn:hover{
 
-    width:36px;
+    border-color:#8B008B;
+
+    box-shadow:0 0 0 3px rgba(139,0,139,.08);
+
+}
+
+.upload-icon{
+
+    width:54px;
 
     height:100%;
-
-    border-right:1px solid #D8DDE5;
 
     display:flex;
 
@@ -181,33 +189,47 @@ UPLOAD CARD
 
     justify-content:center;
 
-    font-size:12px;
+    border-right:1px solid #E5E7EB;
 
-    color:#777;
+    background:#FAFAFB;
 
 }
 
-.browse-btn span{
+.upload-icon i{
+
+    color:#8B008B;
+
+    font-size:18px;
+
+}
+
+.upload-text{
 
     flex:1;
 
+    padding-left:18px;
+
     text-align:left;
 
-    padding-left:14px;
+    color:#6B7280;
 
-    font-size:13px;
+    font-size:14px;
 
-    color:#777;
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
 
 }
 
 .upload-left small{
 
-    margin-top:8px;
+    margin-top:10px;
 
-    font-size:11px;
+    color:#9CA3AF;
 
-    color:#8A8A8A;
+    font-size:12px;
 
 }
 
@@ -215,7 +237,9 @@ UPLOAD CARD
 
     display:flex;
 
-    gap:10px;
+    align-items:flex-start;
+
+    gap:14px;
 
     cursor:pointer;
 
@@ -223,11 +247,11 @@ UPLOAD CARD
 
 .download-link i{
 
-    color:#11A683;
+    color:#8B008B;
 
-    font-size:14px;
+    font-size:18px;
 
-    margin-top:3px;
+    margin-top:2px;
 
 }
 
@@ -235,9 +259,9 @@ UPLOAD CARD
 
     margin:0;
 
-    font-size:13px;
+    color:#8B008B;
 
-    color:#11A683;
+    font-size:15px;
 
     font-weight:600;
 
@@ -247,15 +271,21 @@ UPLOAD CARD
 
     display:block;
 
-    margin-top:3px;
+    margin-top:4px;
 
-    font-size:11px;
+    color:#8A8F99;
 
-    color:#999;
+    font-size:12px;
 
-    width:240px;
+    line-height:18px;
 
-    line-height:16px;
+    max-width:280px;
+
+}
+
+.download-link:hover h5{
+
+    text-decoration:underline;
 
 }
 /*=========================================
@@ -334,7 +364,7 @@ BATCH DETAILS
 
 .form-group input:focus{
 
-    border-color:#11A683;
+    border-color:#8B008B;
 
 }
 
@@ -424,7 +454,7 @@ BATCH DETAILS
 
 .reminder-box a{
 
-    color:#11A683;
+    color:#8B008B;
 
     text-decoration:none;
 
@@ -759,5 +789,139 @@ opacity:1;
 transform:scale(1);
 
 }
+
+}
+
+/*======================================
+Instruction Modal
+======================================*/
+
+.instruction-overlay{
+
+position:fixed;
+
+inset:0;
+
+background:rgba(0,0,0,.45);
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+z-index:9999;
+
+}
+
+.instruction-modal{
+
+width:900px;
+
+max-width:95%;
+
+background:#fff;
+
+border-radius:8px;
+
+overflow:hidden;
+
+animation:fadeIn .25s;
+
+}
+
+.instruction-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:22px 24px;
+
+border-bottom:1px solid #ECECEC;
+
+}
+
+.instruction-header h2{
+
+margin:0;
+
+font-size:28px;
+
+font-weight:600;
+
+}
+
+.close-btn{
+
+background:none;
+
+border:none;
+
+font-size:22px;
+
+cursor:pointer;
+
+}
+
+.instruction-subtitle{
+
+padding:0 24px;
+
+margin:18px 0;
+
+font-size:14px;
+
+color:#666;
+
+}
+
+.instruction-table{
+
+padding:0 24px 24px;
+
+max-height:520px;
+
+overflow:auto;
+
+}
+
+.instruction-table table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+.instruction-table th{
+
+background:#F8F8F8;
+
+font-weight:600;
+
+}
+
+.instruction-table th,
+
+.instruction-table td{
+
+border:1px solid #DADADA;
+
+padding:12px;
+
+font-size:13px;
+
+text-align:left;
+
+vertical-align:top;
+
+}
+
+.instruction-table tbody tr:hover{
+
+background:#FAFAFA;
 
 }

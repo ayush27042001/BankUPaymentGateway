@@ -45,5 +45,31 @@ export class PaymentLinkBulkComponent {
     this.showFieldModal = false;
 
   }
+selectedFileName = '';
 
+onFileSelected(event: Event): void {
+
+  const input = event.target as HTMLInputElement;
+
+  if (input.files && input.files.length > 0) {
+
+    this.selectedFileName = input.files[0].name;
+
+  }
+
+}
+
+showInstructionModal = false;
+
+openInstructionModal(): void {
+
+  this.showInstructionModal = true;
+
+}
+
+closeInstructionModal(): void {
+
+  this.showInstructionModal = false;
+
+}
 }

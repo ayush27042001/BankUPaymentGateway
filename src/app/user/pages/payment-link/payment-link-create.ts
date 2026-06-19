@@ -19,6 +19,15 @@ export class PaymentLinkCreateComponent {
 
   this.router.navigate(['/user/payment-link']);
 
+}goToPaymentLink(): void {
+
+  this.router.navigate(['/user/payment-link']);
+
+}
+goToPaymentMode(): void {
+
+  this.router.navigate(['/user/payment-mode']);
+
 }
   /* ==========================================
      PAYMENT LINK DETAILS

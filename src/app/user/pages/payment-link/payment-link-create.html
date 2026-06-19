@@ -22,7 +22,13 @@
 
     <div class="header-actions">
 
-      <button class="cancel-btn">Cancel</button>
+    <button
+  class="cancel-btn"
+  (click)="goToPaymentLink()">
+
+  Cancel
+
+</button>
 
       <button class="create-btn">Create Payment Link</button>
 
@@ -224,10 +230,17 @@
           <div class="preview-input">{{customerMobile || 'Customer Mobile'}}</div>
           <div class="preview-input">{{customerEmail || 'Customer Email'}}</div>
 
-          <div class="preview-footer">
-            <button>Set Payment Modes</button>
-            <button>Set your vernacular</button>
-          </div>
+        <div class="preview-footer">
+
+  <button (click)="goToPaymentMode()">
+    Set Payment Modes
+  </button>
+
+  <button (click)="goToPaymentMode()">
+    Set your vernacular
+  </button>
+
+</div>
 
         </div>
 
