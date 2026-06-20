@@ -158,18 +158,46 @@
 
       <!-- Signature -->
 
-      <div class="setting-card">
+     <div class="setting-card">
 
-        <h4>Owner Signature</h4>
+  <h4>Owner Signature</h4>
 
-        <button class="upload-btn">
+  <!-- Preview -->
 
-          Upload Signature
+  @if(signatureUrl){
 
-        </button>
+    <div class="signature-preview">
 
-      </div>
+      <img
+        [src]="signatureUrl"
+        alt="Signature">
 
+    </div>
+
+  }
+
+  <!-- Hidden Input -->
+
+  <input
+    #signatureInput
+    type="file"
+    accept="image/*"
+    hidden
+    (change)="uploadSignature($event)">
+
+  <!-- Upload Button -->
+
+  <button
+    class="upload-btn"
+    (click)="signatureInput.click()">
+
+    <i class="bi bi-upload"></i>
+
+    Upload Signature
+
+  </button>
+
+</div>
       }
 
       <!-- ===========================
