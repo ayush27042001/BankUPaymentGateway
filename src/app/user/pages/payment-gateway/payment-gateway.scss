@@ -12,6 +12,13 @@
     background:#f7f8fc;
 
     min-height:100vh;
+
+    animation: gatewayIn 0.4s ease;
+}
+
+@keyframes gatewayIn {
+  from { opacity: 0; transform: perspective(600px) translateZ(-15px); }
+  to { opacity: 1; transform: perspective(600px) translateZ(0); }
 }
 
 /* =====================================
@@ -94,7 +101,7 @@
 
     background:#660066;
 
-    transform:translateY(-2px);
+    transform:perspective(400px) translateZ(5px);
 }
 
 .outline-btn{
@@ -129,6 +136,8 @@
     background:#800180;
 
     color:#fff;
+
+    transform:perspective(400px) translateZ(4px);
 }
 
 /* =====================================
@@ -263,7 +272,7 @@
 
     border-color:#800180;
 
-    transform:translateY(-4px);
+    transform:perspective(800px) rotateY(3deg) translateZ(8px);
 
     box-shadow:0 18px 40px rgba(128,1,128,.12);
 }

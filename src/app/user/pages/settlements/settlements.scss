@@ -1,4 +1,10 @@
 .settlements-page {
+  animation: settleIn 0.4s ease;
+}
+
+@keyframes settleIn {
+  from { opacity: 0; transform: perspective(600px) translateZ(-15px); }
+  to { opacity: 1; transform: perspective(600px) translateZ(0); }
 }
 
 /* =========================================
@@ -44,6 +50,7 @@
 
   &:hover {
     background: #f0fdfa;
+    transform: perspective(400px) translateZ(4px);
   }
 }
 
@@ -95,6 +102,11 @@
   border-radius: 14px;
   padding: 16px;
   min-height: 100px;
+  transition: 0.3s ease;
+  &:hover {
+    transform: perspective(600px) translateZ(6px);
+    box-shadow: 0 8px 22px rgba(128,1,128,0.08);
+  }
 }
 
 .card-title {
@@ -191,6 +203,12 @@
   font-weight: 600;
 
   cursor: pointer;
+  transition: .25s;
+
+  &:hover {
+    border-color: #800180;
+    transform: perspective(400px) translateZ(3px);
+  }
 }
 
 /* =========================================

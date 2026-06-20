@@ -1,4 +1,10 @@
 .reports-page {
+  animation: reportIn 0.4s ease;
+}
+
+@keyframes reportIn {
+  from { opacity: 0; transform: perspective(600px) translateZ(-15px); }
+  to { opacity: 1; transform: perspective(600px) translateZ(0); }
 }
 
 /* =========================================
@@ -85,6 +91,12 @@
   cursor: pointer;
 
   position: relative;
+  transition: 0.3s ease;
+
+  &:hover {
+    transform: perspective(400px) translateZ(3px);
+    color: #800180;
+  }
 }
 
 .tab-btn.active {
@@ -102,7 +114,7 @@
 
   height: 3px;
 
-  background: #3b82f6;
+  background: #800180;
 }
 
 /* =========================================
@@ -149,8 +161,8 @@
   transition: .3s;
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    transform: perspective(600px) translateZ(8px);
+    box-shadow: 0 12px 30px rgba(128,1,128,0.08);
   }
 
   h3 {

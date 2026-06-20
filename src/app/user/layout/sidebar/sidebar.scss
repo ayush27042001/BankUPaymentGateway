@@ -17,15 +17,11 @@ $breakpoint-xl: 1200px;
 .sidebar-logo {
   position: sticky;
   top: -24px;
-
   z-index: 100;
-
   background: #ffffff;
-
   display: flex;
   align-items: center;
   gap: 14px;
-
   padding-bottom: 20px;
   margin-bottom: 20px;
 }
@@ -35,6 +31,12 @@ $breakpoint-xl: 1200px;
   background: linear-gradient(135deg, #690169, #c026d3);
   display: flex; align-items: center; justify-content: center;
   color: #fff; font-size: 24px; font-weight: 700;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.06) rotateY(-3deg);
+    box-shadow: 0 8px 25px rgba(105,1,105,0.3);
+  }
 
   @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) { width:48px; height:48px; font-size:20px; }
 }
@@ -65,11 +67,16 @@ $breakpoint-xl: 1200px;
   i { font-size: 18px; }
   span { color: inherit; }
 
-  &:hover { background: rgba(105,1,105,0.08); color: #690169; }
+  &:hover {
+    background: rgba(105,1,105,0.08);
+    color: #690169;
+    transform: perspective(600px) rotateY(-2deg) translateX(4px);
+  }
 
   @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
     min-height:48px; border-radius:12px; padding:0; justify-content:center;
     span { display: none; } i { font-size: 20px; }
+    &:hover { transform: perspective(600px) rotateY(0) translateX(0); }
   }
 }
 
@@ -78,6 +85,12 @@ $breakpoint-xl: 1200px;
   color: #ffffff !important;
   box-shadow: 0 10px 25px rgba(105,1,105,0.25);
   i { color: #fff; }
+  animation: menuGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes menuGlow {
+  0%, 100% { box-shadow: 0 10px 25px rgba(105,1,105,0.25); }
+  50% { box-shadow: 0 14px 35px rgba(105,1,105,0.35); }
 }
 
 .submenu {
@@ -108,7 +121,7 @@ $breakpoint-xl: 1200px;
   display: flex; align-items: center; gap: 14px;
   transition: all 0.3s ease;
 
-  &:hover { background: rgba(105,1,105,0.08); transform: translateY(-2px); }
+  &:hover { background: rgba(105,1,105,0.08); transform: translateY(-2px) perspective(400px) rotateX(2deg); }
 
   @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) {
     justify-content:center; padding:12px; border-radius:12px;

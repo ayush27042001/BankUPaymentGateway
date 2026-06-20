@@ -23,10 +23,16 @@ export class Sidebar {
 
   togglePaymentProducts(): void {
     this.paymentProductsExpanded = !this.paymentProductsExpanded;
+    if (this.paymentProductsExpanded) {
+      this.paymentToolsExpanded = false;
+    }
   }
 
   togglePaymentTools(): void {
     this.paymentToolsExpanded = !this.paymentToolsExpanded;
+    if (this.paymentToolsExpanded) {
+      this.paymentProductsExpanded = false;
+    }
   }
 
   logout(): void {

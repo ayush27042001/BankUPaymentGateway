@@ -8,6 +8,12 @@
   min-height: 100vh;
   box-sizing: border-box;
   overflow-x: hidden;
+  animation: checkoutIn 0.4s ease;
+}
+
+@keyframes checkoutIn {
+  from { opacity: 0; transform: perspective(600px) translateZ(-15px); }
+  to { opacity: 1; transform: perspective(600px) translateZ(0); }
 }
 
 .checkout-page * {
@@ -57,12 +63,13 @@
     transition: .3s;
 
     &:hover {
-      color: #009688;
+      color: #800180;
+      transform: perspective(400px) translateZ(3px);
     }
 
     &.active {
-      color: #009688;
-      border-bottom: 3px solid #009688;
+      color: #800180;
+      border-bottom: 3px solid #800180;
     }
   }
 }
@@ -100,6 +107,12 @@
   margin-bottom: 20px;
   box-shadow: 0 8px 22px rgba(0,0,0,.06);
   border: 1px solid #edf1f5;
+  transition: 0.3s ease;
+
+  &:hover {
+    transform: perspective(600px) translateZ(6px);
+    box-shadow: 0 12px 30px rgba(128,1,128,0.08);
+  }
 
   h4 {
     margin: 0 0 16px;
@@ -127,7 +140,7 @@
   background: #fafafa;
   border-radius: 10px;
   cursor: pointer;
-  color: #009688;
+  color: #800180;
   font-weight: 600;
   transition: .3s;
 
@@ -136,8 +149,9 @@
   }
 
   &:hover {
-    border-color: #009688;
+    border-color: #800180;
     background: #ecfffb;
+    transform: perspective(400px) translateZ(4px);
   }
 }
 

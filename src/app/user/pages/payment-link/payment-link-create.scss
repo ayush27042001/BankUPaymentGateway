@@ -5,6 +5,12 @@
 .create-payment-page {
   min-height: 100vh;
   background: #f5f7fb;
+  animation: createLinkIn 0.4s ease;
+}
+
+@keyframes createLinkIn {
+  from { opacity: 0; transform: perspective(600px) translateZ(-15px); }
+  to { opacity: 1; transform: perspective(600px) translateZ(0); }
 }
 
 /* ======================================================
@@ -46,10 +52,12 @@
 
   font-size: 14px;
   font-weight: 600;
+  transition: 0.3s ease;
 }
 
 .back-btn:hover {
-  color: #f39021;
+  color: #8001804d;
+  transform: perspective(400px) translateZ(3px);
 }
 
 .page-header h2 {
@@ -87,7 +95,13 @@
 }
 
 .cancel-btn:hover {
-  background: #f39021;
+  background: #8001804d;
+  transform: perspective(400px) translateZ(4px);
+  box-shadow: 0 6px 18px rgba(128,1,128,0.15);
+}
+
+.cancel-btn {
+  transition: .25s;
 }
 
 .create-btn {
@@ -111,7 +125,9 @@
 }
 
 .create-btn:hover {
-  background: #f39021;
+  background: #8001804d;
+  transform: perspective(400px) translateZ(4px);
+  box-shadow: 0 6px 18px #8001804d;
 }
 
 /* ======================================================
@@ -327,7 +343,7 @@
 
   padding: 18px 20px;
 
-  border-left: 5px solid #f39021;
+  border-left: 5px solid #8001804d;
 }
 
 .preview-top span {
@@ -906,7 +922,7 @@ font-size:15px;
 
 .dropdown-item:hover{
 
-background:#f39021;
+background:#8001804d;
 
 color:#800180;
 
@@ -946,7 +962,7 @@ color:#800180;
 
 .more-details:hover{
 
-background:#f39021;
+background:#8001804d;
 
 }
 
@@ -1063,7 +1079,7 @@ font-weight:600;
 
 .add-field-btn:hover{
 
-background:#f39021;
+background:#8001804d;
 
 }
 

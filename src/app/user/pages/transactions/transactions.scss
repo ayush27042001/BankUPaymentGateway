@@ -1,6 +1,11 @@
-/* =========================================
-   HEADER
-========================================= */
+.transactions-page {
+  animation: pageIn 0.4s ease;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: perspective(600px) translateZ(-15px); }
+  to { opacity: 1; transform: perspective(600px) translateZ(0); }
+}
 
 .page-header {
   display: flex;
@@ -156,6 +161,12 @@
   color: #ffffff;
 
   font-weight: 600;
+  transition: 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    transform: perspective(400px) translateZ(4px);
+    box-shadow: 0 6px 18px rgba(128,1,128,0.25);
+  }
 }
 
 .filter-btn,
@@ -193,6 +204,12 @@
   color: #ffffff;
 
   font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+  &:hover {
+    transform: perspective(400px) translateZ(4px);
+    box-shadow: 0 6px 18px rgba(128,1,128,0.25);
+  }
 }
 /* =========================================
    SUMMARY CARDS
@@ -219,6 +236,11 @@
   border: 1px solid #ede9fe;
   border-radius: 14px;
   padding: 14px;
+  transition: 0.3s ease;
+  &:hover {
+    transform: perspective(600px) translateZ(6px);
+    box-shadow: 0 8px 22px rgba(128,1,128,0.08);
+  }
 }
 
 .card-title {
@@ -535,6 +557,12 @@
   justify-content: flex-end;
 
   transition: opacity 0.3s ease;
+  animation: overlayIn 0.25s ease;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .backdrop {
@@ -563,6 +591,12 @@
   flex-direction: column;
 
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 .custom-range-popup {
   position: absolute;
@@ -1030,6 +1064,12 @@
   font-weight: 600;
 
   cursor: pointer;
+  transition: 0.3s ease;
+
+  &:hover {
+    transform: perspective(400px) translateZ(4px);
+    box-shadow: 0 6px 18px rgba(128,1,128,0.25);
+  }
 }
 
 /* =========================================
@@ -1045,6 +1085,7 @@
 .filter-btn:hover,
 .download-btn:hover {
   border-color: #800180;
+  transform: perspective(400px) translateZ(3px);
 }
 
 /* =========================================
