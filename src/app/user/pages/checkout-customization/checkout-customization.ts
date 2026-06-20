@@ -21,7 +21,7 @@ type PreviewMode =
   styleUrl: './checkout-customization.scss'
 })
 export class CheckoutCustomization {
-
+        
   /* =========================================
      ACTIVE TAB
   ========================================= */
@@ -58,7 +58,7 @@ export class CheckoutCustomization {
      LOGO
   ========================================= */
 
-  logoUrl = 'assets/images/logo.png';
+  logoUrl = 'assets/images/bankulogo.png';
 
   uploadLogo(event: Event): void {
 
