@@ -84,7 +84,33 @@ export class CheckoutCustomization {
   /* =========================================
      SIGNATURE
   ========================================= */
+/* =========================================
+   SIGNATURE
+========================================= */
+
 signatureUrl: string | null = null;
+
+uploadSignature(event: Event): void {
+
+  const input = event.target as HTMLInputElement;
+
+  if (!input.files?.length) {
+    return;
+  }
+
+  const file = input.files[0];
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+
+    this.signatureUrl = reader.result as string;
+
+  };
+
+  reader.readAsDataURL(file);
+
+}
   /* =========================================
      BRAND COLORS
   ========================================= */
