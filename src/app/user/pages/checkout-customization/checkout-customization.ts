@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import { ChangeDetectorRef } from '@angular/core';
 type ActiveTab =
   | 'branding'
   | 'features';
@@ -21,7 +21,7 @@ type PreviewMode =
   styleUrl: './checkout-customization.scss'
 })
 export class CheckoutCustomization {
-        
+        constructor(private cdr: ChangeDetectorRef) {}
   /* =========================================
      ACTIVE TAB
   ========================================= */
@@ -62,24 +62,25 @@ export class CheckoutCustomization {
 
   uploadLogo(event: Event): void {
 
-    const input = event.target as HTMLInputElement;
+  const input = event.target as HTMLInputElement;
 
-    if (!input.files?.length) return;
+  if (!input.files?.length) return;
 
-    const file = input.files[0];
+  const file = input.files[0];
 
-    const reader = new FileReader();
+  const reader = new FileReader();
 
-    reader.onload = () => {
+  reader.onload = () => {
 
-      this.logoUrl =
-        reader.result as string;
+    this.logoUrl = reader.result as string;
 
-    };
+    this.cdr.detectChanges();
 
-    reader.readAsDataURL(file);
+  };
 
-  }
+  reader.readAsDataURL(file);
+
+}
 
   /* =========================================
      SIGNATURE
@@ -94,9 +95,7 @@ uploadSignature(event: Event): void {
 
   const input = event.target as HTMLInputElement;
 
-  if (!input.files?.length) {
-    return;
-  }
+  if (!input.files?.length) return;
 
   const file = input.files[0];
 
@@ -106,11 +105,14 @@ uploadSignature(event: Event): void {
 
     this.signatureUrl = reader.result as string;
 
+    this.cdr.detectChanges();
+
   };
 
   reader.readAsDataURL(file);
 
 }
+ 
   /* =========================================
      BRAND COLORS
   ========================================= */
