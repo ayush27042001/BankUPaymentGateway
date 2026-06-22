@@ -1,0 +1,340 @@
+<div class="reports-page">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <div class="page-header">
+
+    <h1>
+      Reports & Documents
+    </h1>
+
+    <div class="header-actions">
+
+      <button
+        class="outline-btn"
+        (click)="download()"
+      >
+        Download
+      </button>
+
+      <button
+        class="outline-btn"
+        (click)="schedule()"
+      >
+        Schedule
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- =========================
+       TABS
+  ========================== -->
+
+  <div class="tabs-wrapper">
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'category'"
+      (click)="setTab('category')"
+    >
+      Category
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'downloads'"
+      (click)="setTab('downloads')"
+    >
+      Downloads
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'scheduled'"
+      (click)="setTab('scheduled')"
+    >
+      Scheduled
+    </button>
+
+  </div>
+
+  <!-- =========================
+       CATEGORY TAB
+  ========================== -->
+
+  @if (activeTab === 'category') {
+
+  <!-- PAYMENT REPORTS -->
+
+  <div class="section-title">
+    Payment Reports
+  </div>
+
+  <div class="report-grid">
+
+    @for (report of paymentReports; track report.title) {
+
+    <div class="report-card">
+
+      <div class="card-icon">
+
+        <i
+          class="bi"
+          [ngClass]="report.icon"
+        ></i>
+
+      </div>
+
+      <h3>
+        {{ report.title }}
+      </h3>
+
+      <p>
+        {{ report.description }}
+      </p>
+
+      <button
+        class="link-btn"
+        (click)="downloadReport(report.title)"
+      >
+        Download Report
+      </button>
+
+    </div>
+
+    }
+
+  </div>
+
+  <!-- PRODUCT REPORTS -->
+
+  <div class="section-title">
+    Product Reports
+  </div>
+
+  <div class="report-grid">
+
+    @for (report of productReports; track report.title) {
+
+    <div class="report-card">
+
+      <div class="card-icon">
+
+        <i
+          class="bi"
+          [ngClass]="report.icon"
+        ></i>
+
+      </div>
+
+      <h3>
+        {{ report.title }}
+      </h3>
+
+      <p>
+        {{ report.description }}
+      </p>
+
+      <button
+        class="link-btn"
+        (click)="downloadReport(report.title)"
+      >
+        Download Report
+      </button>
+
+    </div>
+
+    }
+
+  </div>
+
+  <!-- FINANCIAL DOCUMENTS -->
+
+  <div class="section-title">
+    Financial Documents
+  </div>
+
+  <div class="report-grid">
+
+    @for (report of financialReports; track report.title) {
+
+    <div class="report-card">
+
+      @if (report.isNew) {
+
+      <span class="new-badge">
+        New Report
+      </span>
+
+      }
+
+      <h3>
+        {{ report.title }}
+      </h3>
+
+      <p>
+        {{ report.description }}
+      </p>
+
+      <button
+        class="link-btn"
+        (click)="downloadReport(report.title)"
+      >
+        {{ report.action }}
+      </button>
+
+    </div>
+
+    }
+
+  </div>
+
+  }
+
+  <!-- =========================
+       DOWNLOADS TAB
+  ========================== -->
+
+  @if (activeTab === 'downloads') {
+
+  <div class="table-wrapper">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>CREATED ON</th>
+
+          <th>REPORT CATEGORY</th>
+
+          <th>DURATION COVERED</th>
+
+          <th>FORMAT</th>
+
+          <th>STATUS</th>
+
+          <th>ACTIONS</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr>
+
+          <td colspan="6">
+
+            <div class="empty-state">
+
+              <div class="empty-image">
+
+                <i class="bi bi-inbox"></i>
+
+              </div>
+
+              <div class="empty-content">
+
+                <h5>
+                  NO RESULT FOUND
+                </h5>
+
+                <h3>
+                  Oops! We didn't find anything
+                </h3>
+
+              </div>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  }
+
+  <!-- =========================
+       SCHEDULED TAB
+  ========================== -->
+
+  @if (activeTab === 'scheduled') {
+
+  <div class="table-wrapper">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>CREATED ON</th>
+
+          <th>REPORT CATEGORY</th>
+
+          <th>E-MAIL</th>
+
+          <th>FREQUENCY</th>
+
+          <th>TIME</th>
+
+          <th>FORMAT</th>
+
+          <th>ACTIONS</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr>
+
+          <td colspan="7">
+
+            <div class="empty-state">
+
+              <div class="empty-image">
+
+                <i class="bi bi-inbox"></i>
+
+              </div>
+
+              <div class="empty-content">
+
+                <h5>
+                  NO RESULT FOUND
+                </h5>
+
+                <h3>
+                  Oops! We didn't find anything
+                </h3>
+
+              </div>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  }
+
+</div>

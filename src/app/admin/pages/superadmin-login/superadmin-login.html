@@ -1,0 +1,201 @@
+<app-loader [isVisible]="isSubmitting || isVerifyingOtp || isResendingOtp"></app-loader>
+
+<div class="sa-login-page">
+  <div class="bg-glow bg-glow-left"></div>
+  <div class="bg-glow bg-glow-right"></div>
+
+  <div class="sa-login-wrapper">
+    <div class="sa-login-card">
+
+      <!-- Left Panel -->
+      <div class="sa-login-left">
+        <div class="brand-badge">BankU Payment Gateway</div>
+
+        <div class="admin-shield">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"
+              fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+            <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <h1>Super Admin<br>Access</h1>
+        <p class="subtitle">
+          Secure administrative portal for managing the BankU Payment Gateway platform.
+        </p>
+
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Multi-factor authentication</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Encrypted session management</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Full platform oversight</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            <span>Real-time audit logging</span>
+          </div>
+        </div>
+
+        <div class="restricted-notice">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <path d="M12 8v4m0 4h.01" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Restricted to authorised personnel only</span>
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="sa-login-right">
+
+        <!-- Step 1: Credentials -->
+        <ng-container *ngIf="loginStep === 'credentials'">
+          <div class="form-header">
+            <div class="step-indicator">
+              <span class="step active">1</span>
+              <span class="step-line"></span>
+              <span class="step">2</span>
+            </div>
+            <h2>Administrator Login</h2>
+            <p>Enter your admin credentials to continue</p>
+          </div>
+
+          <form [formGroup]="credentialsForm" (ngSubmit)="onSubmit()" novalidate>
+
+            <div class="form-group">
+              <label for="username">Username <span>*</span></label>
+              <div class="input-wrap">
+                <input
+                  id="username"
+                  type="text"
+                  placeholder="Enter admin username"
+                  formControlName="username"
+                  autocomplete="username" />
+                <span class="input-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="8" r="4" stroke="#98a2b3" stroke-width="1.8"/>
+                    <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke="#98a2b3" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </span>
+              </div>
+              <div class="error-text" *ngIf="username?.touched && username?.invalid">
+                <span *ngIf="username?.errors?.['required']">Username is required.</span>
+                <span *ngIf="username?.errors?.['minlength']">Username must be at least 3 characters.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password <span>*</span></label>
+              <div class="input-wrap password-wrap">
+                <input
+                  id="password"
+                  [type]="isPasswordVisible ? 'text' : 'password'"
+                  placeholder="Enter admin password"
+                  formControlName="password"
+                  autocomplete="current-password" />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="togglePasswordVisibility()">
+                  {{ isPasswordVisible ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+              <div class="error-text" *ngIf="password?.touched && password?.invalid">
+                <span *ngIf="password?.errors?.['required']">Password is required.</span>
+                <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters.</span>
+              </div>
+            </div>
+
+            <div class="api-error" *ngIf="loginError">{{ loginError }}</div>
+
+            <button
+              type="submit"
+              class="primary-btn"
+              [disabled]="credentialsForm.invalid || isSubmitting">
+              <span *ngIf="!isSubmitting">CONTINUE &rarr;</span>
+              <span *ngIf="isSubmitting">Verifying...</span>
+            </button>
+
+          </form>
+        </ng-container>
+
+        <!-- Step 2: OTP Verification -->
+        <ng-container *ngIf="loginStep === 'otp'">
+          <div class="form-header">
+            <div class="step-indicator">
+              <span class="step done">✓</span>
+              <span class="step-line active"></span>
+              <span class="step active">2</span>
+            </div>
+            <h2>OTP Verification</h2>
+            <p>Enter the 6-digit OTP sent to your registered contact</p>
+          </div>
+
+          <div class="otp-info-box">
+            An OTP has been sent to your registered email / mobile. Please enter it below to complete sign-in.
+          </div>
+
+          <div class="form-group otp-group">
+            <label>Enter OTP <span>*</span></label>
+            <div class="otp-inputs" (paste)="onOtpPaste($event)">
+              <input
+                *ngFor="let digit of otpDigits; let i = index"
+                [id]="'sa-otp-' + i"
+                type="text"
+                class="otp-box"
+                maxlength="1"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                [value]="otpDigits[i]"
+                (input)="onOtpInput($event, i)"
+                (keydown)="onOtpKeydown($event, i)"
+                (paste)="onOtpPaste($event)" />
+            </div>
+          </div>
+
+          <div class="api-error" *ngIf="otpError">{{ otpError }}</div>
+
+          <div class="otp-actions-row">
+            <button type="button" class="back-btn" (click)="goBackToCredentials()">
+              &larr; Back
+            </button>
+            <button
+              type="button"
+              class="resend-btn"
+              [class.active]="canResendOtp"
+              [disabled]="!canResendOtp || isResendingOtp"
+              (click)="resendOtp()">
+              <ng-container *ngIf="!canResendOtp && !isResendingOtp">
+                Resend in {{ formatTimer(otpTimer) }}
+              </ng-container>
+              <ng-container *ngIf="canResendOtp && !isResendingOtp">
+                Resend OTP
+              </ng-container>
+              <ng-container *ngIf="isResendingOtp">
+                Sending...
+              </ng-container>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            class="primary-btn"
+            [disabled]="!isOtpComplete || isVerifyingOtp"
+            (click)="verifyOtp()">
+            <span *ngIf="!isVerifyingOtp">VERIFY &amp; LOGIN</span>
+            <span *ngIf="isVerifyingOtp">Verifying...</span>
+          </button>
+
+        </ng-container>
+
+      </div>
+    </div>
+  </div>
+</div>

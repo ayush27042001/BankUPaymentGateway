@@ -1,0 +1,80 @@
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+.user-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: #f5f7fb;
+  overflow-x: hidden;
+  position: relative;
+}
+
+app-sidebar {
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @media (min-width: $breakpoint-md) {
+    position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000;
+  }
+
+  @media (max-width: $breakpoint-md - 1px) {
+    position: fixed; top: 0; left: 0; z-index: 1060;
+    height: 100vh; width: 280px;
+    transform: translateX(-100%);
+  }
+}
+
+.user-layout.sidebar-mobile-open app-sidebar {
+  @media (max-width: $breakpoint-md - 1px) {
+    transform: translateX(0);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+  }
+}
+
+.mobile-sidebar-overlay {
+  display: none;
+
+  @media (max-width: $breakpoint-md - 1px) {
+    display: block;
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1050;
+    animation: fadeIn 0.3s ease;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.user-main {
+  flex: 1; display: flex; flex-direction: column;
+  min-height: 100vh; min-width: 0;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+
+  @media (min-width: $breakpoint-lg) { margin-left: 280px; }
+  @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) { margin-left: 90px; }
+  @media (max-width: $breakpoint-md - 1px) { margin-left: 0; }
+}
+
+.user-content {
+  flex: 1; padding: 90px 30px 30px; width: 100%; max-width: 100%; box-sizing: border-box;
+  scrollbar-width: none; -ms-overflow-style: none;
+  perspective: 1200px;
+  animation: contentFadeIn 0.5s ease;
+
+  @media (max-width: $breakpoint-lg - 1px) { padding: 82px 20px 20px; }
+  @media (max-width: $breakpoint-sm - 1px) { padding: 72px 16px 16px; }
+}
+
+.user-content::-webkit-scrollbar { display: none; }
+
+@keyframes contentFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}

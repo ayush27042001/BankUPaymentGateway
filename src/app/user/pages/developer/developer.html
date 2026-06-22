@@ -1,0 +1,658 @@
+<div class="developer-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h2>Developers</h2>
+
+    @if(activeTab === 'webhooks') {
+      <button class="create-btn" (click)="openCreateModal()">
+        Create Webhook
+      </button>
+    }
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'apiKeys'"
+      (click)="changeTab('apiKeys')">
+      API Keys
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'webhooks'"
+      (click)="changeTab('webhooks')">
+      Webhooks
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'logs'"
+      (click)="changeTab('logs')">
+      Webhook Logs
+    </button>
+
+  </div>
+
+  <!-- ===================================================
+       API KEYS TAB
+  ==================================================== -->
+
+  @if(activeTab === 'apiKeys') {
+
+    <div class="section-header">
+
+      <div>
+        <h3>API Key Salt details</h3>
+
+        <p>
+          Use this authentication key for API requests.
+          <a href="#">Learn more about API key & salt</a>
+        </p>
+      </div>
+
+      <button
+        class="link-btn"
+        (click)="regenerateSalt()">
+        Regenerate Salt
+      </button>
+
+    </div>
+
+    <div class="table-card">
+
+      <table>
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>TOKEN</th>
+            <th>LAST UPDATED</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Key</td>
+            <td>{{ apiKey }}</td>
+            <td>--</td>
+            <td>
+              <button
+                class="action-btn"
+                (click)="copyText(apiKey)">
+                Copy Key
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Salt</td>
+            <td>{{ salt }}</td>
+            <td>--</td>
+            <td>
+              <button
+                class="action-btn"
+                (click)="copyText(salt)">
+                Copy Salt
+              </button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- Client Details -->
+
+    <div class="section-header mt-40">
+
+      <div>
+        <h3>Client ID & Client secret details</h3>
+
+        <p>
+          Use to request payment links APIs and refer split payment
+          <a href="#">Learn more about Client ID & Client details</a>
+        </p>
+      </div>
+
+    </div>
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>TOKEN</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Client ID</td>
+
+            <td>{{ clientId }}</td>
+
+            <td>
+              <button
+                class="action-btn"
+                (click)="copyText(clientId)">
+                Copy
+              </button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Client Secret</td>
+
+            <td>
+
+              @if(isVerified) {
+                {{ clientSecret }}
+              }
+
+              @else {
+
+                <button
+                  class="view-password-btn"
+                  (click)="openPasswordModal()">
+
+                  🔒 View using password
+
+                </button>
+
+              }
+
+            </td>
+
+           <td>
+
+  @if(isVerified) {
+
+    <button
+      class="action-btn"
+      (click)="copyText(clientSecret)">
+      Copy
+    </button>
+
+  }
+
+  @else {
+
+    <button
+      class="action-btn disabled-btn"
+      disabled>
+      Locked
+    </button>
+
+  }
+
+</td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+  <!-- ===================================================
+       WEBHOOK TAB
+  ==================================================== -->
+
+  @if(activeTab === 'webhooks') {
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>CREATED ON</th>
+            <th>TYPE</th>
+            <th>EVENT</th>
+            <th>URL</th>
+            <th>REMARKS</th>
+            <th>STATUS</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for(webhook of webhooks; track $index) {
+
+            <tr>
+
+              <td>
+                {{ webhook.createdOn }}
+                <br>
+                {{ webhook.createdAt }}
+              </td>
+
+              <td>{{ webhook.type }}</td>
+
+              <td>{{ webhook.event }}</td>
+
+              <td class="url-cell">{{ webhook.url }}</td>
+
+              <td>{{ webhook.remarks }}</td>
+
+              <td>
+                <span
+                  class="status-dot"
+                  [class.active]="webhook.isActive"
+                  [class.inactive]="!webhook.isActive"
+                >
+                  {{ webhook.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+
+              <td class="action-icons">
+
+                <span
+                  class="icon-btn"
+                  [class.active-icon]="webhook.isActive"
+                  [class.inactive-icon]="!webhook.isActive"
+                  (click)="toggleWebhookStatus($index)"
+                  title="{{ webhook.isActive ? 'Deactivate' : 'Activate' }}"
+                >
+                  🟢
+                </span>
+
+                <span
+                  class="icon-btn"
+                  (click)="openEditModal($index)"
+                  title="Edit"
+                >
+                  ✏️
+                </span>
+
+                <span
+                  class="icon-btn"
+                  (click)="confirmDelete($index)"
+                  title="Delete"
+                >
+                  🗑️
+                </span>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+  <!-- ===================================================
+       WEBHOOK LOGS TAB
+  ==================================================== -->
+
+  @if(activeTab === 'logs') {
+
+    <div class="filters">
+
+      <select>
+        <option>Transaction ID</option>
+      </select>
+
+      <input
+        type="text"
+        placeholder="Search Transaction ID (Payu ID)"
+      >
+
+      <button class="search-btn">
+        Search
+      </button>
+
+      <input type="date">
+
+      <button class="filter-btn">
+        Filter
+      </button>
+
+    </div>
+
+    <div class="logs-card">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>DATE</th>
+            <th>WEBHOOK URL</th>
+            <th>EVENT TYPE</th>
+            <th>ERROR MESSAGE</th>
+            <th>STATUS</th>
+            <th>HTTP CODE</th>
+          </tr>
+        </thead>
+
+      </table>
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          📦
+        </div>
+
+        <h3>No Result Found</h3>
+
+        <p>
+          Oops! We didn't find anything.
+        </p>
+
+        <span>
+          Remove the filters or reset the date & try again.
+        </span>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>
+
+<!-- ===================================================
+     VERIFY PASSWORD MODAL
+==================================================== -->
+
+@if(showPasswordModal) {
+
+  <div
+    class="modal-backdrop"
+    (click)="closePasswordModal()">
+
+    <div
+      class="password-modal"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+
+        <h3>Verify your password</h3>
+
+        <button
+          class="close-btn"
+          (click)="closePasswordModal()">
+          ✕
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <label>
+          Enter Password
+        </label>
+
+        <input
+          type="password"
+          [(ngModel)]="password"
+          placeholder="Password"
+        >
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="verify-btn"
+          (click)="verifyPassword()">
+
+          Verify
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+<!-- ===================================================
+     EDIT WEBHOOK MODAL
+==================================================== -->
+
+@if(showEditModal) {
+
+  <div
+    class="modal-backdrop"
+    (click)="closeEditModal()">
+
+    <div
+      class="webhook-modal"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+
+        <h3>Edit Webhook</h3>
+
+        <button
+          class="close-btn"
+          (click)="closeEditModal()">
+          ✕
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <div class="form-group">
+          <label>Type</label>
+          <select
+            class="form-select"
+            [(ngModel)]="editForm.type">
+            <option value="" disabled>Select Type</option>
+            @for(t of webhookTypes; track t) {
+              <option [value]="t">{{ t }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Events</label>
+          <select
+            class="form-select"
+            [(ngModel)]="editForm.event">
+            <option value="" disabled>Select Event</option>
+            @for(e of webhookEvents; track e) {
+              <option [value]="e">{{ e }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Webhook URL</label>
+          <input
+            class="form-input"
+            type="url"
+            [(ngModel)]="editForm.url"
+            placeholder="https://example.com/webhook"
+          >
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="cancel-btn"
+          (click)="closeEditModal()">
+          Cancel
+        </button>
+
+        <button
+          class="save-btn"
+          (click)="saveWebhook()">
+          Save
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+<!-- ===================================================
+     CREATE WEBHOOK MODAL
+==================================================== -->
+
+@if(showCreateModal) {
+
+  <div
+    class="modal-backdrop"
+    (click)="closeCreateModal()">
+
+    <div
+      class="webhook-modal"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+
+        <h3>Create Webhook</h3>
+
+        <button
+          class="close-btn"
+          (click)="closeCreateModal()">
+          ✕
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <div class="form-group">
+          <label>Type</label>
+          <select
+            class="form-select"
+            [(ngModel)]="createForm.type">
+            <option value="" disabled selected>Select Type</option>
+            @for(t of webhookTypes; track t) {
+              <option [value]="t">{{ t }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Events</label>
+          <select
+            class="form-select"
+            [(ngModel)]="createForm.event">
+            <option value="" disabled selected>Select Event</option>
+            @for(e of webhookEvents; track e) {
+              <option [value]="e">{{ e }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Webhook URL</label>
+          <input
+            class="form-input"
+            type="url"
+            [(ngModel)]="createForm.url"
+            placeholder="https://example.com/webhook"
+          >
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="cancel-btn"
+          (click)="closeCreateModal()">
+          Cancel
+        </button>
+
+        <button
+          class="save-btn"
+          (click)="createWebhook()">
+          Create
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+<!-- ===================================================
+     DELETE CONFIRMATION MODAL
+==================================================== -->
+
+@if(showDeleteConfirm) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cancelDelete()">
+
+    <div
+      class="delete-modal"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+
+        <h3>Delete Webhook</h3>
+
+        <button
+          class="close-btn"
+          (click)="cancelDelete()">
+          ✕
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <p class="delete-msg">
+          Are you sure you want to delete this webhook?
+        </p>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="cancel-btn"
+          (click)="cancelDelete()">
+          No
+        </button>
+
+        <button
+          class="delete-btn"
+          (click)="deleteWebhook()">
+          Yes, Delete
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

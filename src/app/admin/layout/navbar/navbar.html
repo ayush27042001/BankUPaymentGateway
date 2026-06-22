@@ -3,14 +3,12 @@
   <!-- Left Section -->
   <div class="navbar-left">
 
-    <!-- Mobile Menu Toggle -->
-    <button
-      class="mobile-menu-toggle"
-      (click)="onMenuToggle()"
-    >
+    <!-- Mobile/Tablet Menu Toggle -->
+    <button class="mobile-menu-toggle" (click)="onMenuToggle()" aria-label="Toggle sidebar menu">
       <i class="bi bi-list"></i>
     </button>
 
+    <!-- Page Info -->
     <div class="page-info">
       <h2>Dashboard</h2>
       <span>Welcome back, Admin 👋</span>
@@ -21,50 +19,35 @@
   <!-- Right Section -->
   <div class="navbar-right">
 
-    <!-- Search -->
+    <!-- Search Box (Desktop/Laptop only) -->
     <div class="search-box">
-
       <i class="bi bi-search"></i>
-
-      <input
-        type="text"
-        placeholder="Search here..."
-      />
-
+      <input type="text" placeholder="Search here..." />
     </div>
 
-    <!-- Notification -->
-    <div class="navbar-icon notification-icon">
-
+    <!-- Notification Icon -->
+    <div class="navbar-icon notification-icon" role="button" tabindex="0" aria-label="Notifications">
       <i class="bi bi-bell"></i>
-
       @if (notifications > 0) {
-        <span class="notification-badge">
-          {{ notifications }}
+        <span class="notification-badge" aria-label="{{ notifications }} notifications">
+          {{ notifications > 99 ? '99+' : notifications }}
         </span>
       }
-
     </div>
 
-    <!-- Settings -->
-    <div class="navbar-icon">
+    <!-- Settings Icon -->
+    <div class="navbar-icon" role="button" tabindex="0" aria-label="Settings">
       <i class="bi bi-gear"></i>
     </div>
 
     <!-- Profile -->
-    <div class="admin-profile-navbar">
-
-      <div class="profile-avatar">
-        A
-      </div>
-
+    <div class="admin-profile-navbar" role="button" tabindex="0" aria-label="Admin profile">
+      <div class="profile-avatar">A</div>
       <div class="profile-details">
-        <h4>Admin</h4>
+        <h4>Admin User</h4>
         <span>Super Admin</span>
       </div>
-
-      <i class="bi bi-chevron-down"></i>
-
+      <i class="bi bi-chevron-down chevron-icon"></i>
     </div>
 
   </div>

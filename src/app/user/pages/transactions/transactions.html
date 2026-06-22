@@ -1,0 +1,1335 @@
+<div class="transactions-page">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <h1>
+        Transactions Overview
+      </h1>
+
+      <div class="settlement-badge">
+
+        Total Settlement Amount: ₹0.00
+
+        <i class="bi bi-chevron-right"></i>
+
+      </div>
+
+    </div>
+
+    <button class="analytics-btn" (click)="viewAnalytics()">
+
+      <i class="bi bi-bar-chart-fill"></i>
+
+      View Analytics
+
+    </button>
+
+  </div>
+
+  <!-- =========================
+       TABS
+  ========================== -->
+
+  <div class="transaction-tabs">
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'payments'"
+      (click)="setTab('payments')"
+    >
+      Payments
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'refunds'"
+      (click)="setTab('refunds')"
+    >
+      Refunds
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'batchRefunds'"
+      (click)="setTab('batchRefunds')"
+    >
+      Batch Refunds
+    </button>
+
+  </div>
+
+  <!-- ===================================================
+       PAYMENTS TAB
+  ==================================================== -->
+
+  @if (activeTab === 'payments') {
+
+    <!-- BACKDROP OVERLAY -->
+    @if(showFilterPanel || showSearchDropdown || showDateDropdown || showDownloadDropdown){
+      <div class="backdrop" (click)="closeAllDropdowns()"></div>
+    }
+
+    <!-- Filters -->
+
+    <div class="filters-row">
+
+      <div class="filters-left">
+
+       <div class="custom-dropdown">
+
+  <div
+    class="dropdown-btn"
+    (click)="toggleSearchDropdown($event)">
+
+    <span>{{ selectedSearchField }}</span>
+
+    <i
+  class="bi"
+  [ngClass]="
+    showSearchDropdown
+      ? 'bi-chevron-up'
+      : 'bi-chevron-down'
+  ">
+</i>
+
+  </div>
+
+  @if(showSearchDropdown){
+
+    <div
+      class="dropdown-menu"
+      (click)="$event.stopPropagation()">
+
+      @for(option of searchOptions; track option){
+
+        <div
+          class="dropdown-item"
+          (click)="selectSearchField(option)">
+
+          {{ option }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
+
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search PayU ID (Transaction ID)"
+          [(ngModel)]="searchQuery"
+        />
+
+        <button class="search-btn" (click)="searchTransactions()">
+          Search
+        </button>
+
+      <div class="custom-dropdown">
+
+  <div
+    class="dropdown-btn"
+    (click)="toggleDateDropdown($event)">
+
+    <span>
+      <i class="bi bi-calendar3"></i>
+      {{ selectedDate }}
+    </span>
+
+   <i
+  class="bi"
+  [ngClass]="
+    showDateDropdown
+      ? 'bi-chevron-up'
+      : 'bi-chevron-down'
+  ">
+</i>
+
+  </div>
+
+  @if(showDateDropdown){
+
+    <div
+      class="dropdown-menu date-dropdown"
+      (click)="$event.stopPropagation()">
+
+      @for(date of dateOptions; track date){
+
+        <div
+          class="dropdown-item"
+          (click)="selectDate(date)">
+
+          {{ date }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
+
+@if (showCustomDatePicker) {
+
+  <div class="inline-date-range">
+
+    <div class="date-field">
+
+      <label>From</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customFromDate"
+      />
+
+    </div>
+
+    <div class="date-field">
+
+      <label>To</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customToDate"
+      />
+
+    </div>
+
+    <button
+      class="apply-range-btn"
+      (click)="applyCustomDateRange()"
+    >
+      Apply
+    </button>
+
+    <button
+      class="cancel-range-btn"
+      (click)="closeCustomDateRange()"
+    >
+      Cancel
+    </button>
+
+  </div>
+
+}
+
+        <button class="filter-btn" (click)="toggleFilterPanel()">
+          <i class="bi bi-funnel"></i>
+          Filter
+          <i class="bi bi-chevron-down"></i>
+        </button>
+
+      </div>
+
+    <div class="custom-dropdown">
+
+  <div
+    class="download-btn"
+    (click)="toggleDownloadDropdown($event)">
+
+    <i class="bi bi-download"></i>
+
+    Download
+
+   <i
+  class="bi"
+  [ngClass]="
+    showDownloadDropdown
+      ? 'bi-chevron-up'
+      : 'bi-chevron-down'
+  ">
+</i>
+
+  </div>
+
+  @if(showDownloadDropdown){
+
+    <div
+      class="dropdown-menu download-dropdown"
+      (click)="$event.stopPropagation()">
+
+      @for(option of downloadOptions; track option){
+
+        <div
+          class="dropdown-item"
+          (click)="selectDownload(option)">
+
+          {{ option }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
+    </div>
+
+    @if (showFilterPanel) {
+
+    <div class="filter-panel">
+
+      <div class="filter-header">
+
+        <h3>Filters</h3>
+
+        <div class="filter-search">
+
+          <input
+            type="text"
+            placeholder="Search inside filters..."
+          />
+
+          <button>Search</button>
+
+        </div>
+
+      </div>
+
+      <div class="filter-body">
+
+        <div class="filter-column">
+
+          <h4>SOURCE FILTERS</h4>
+
+          @for(source of sourceFilters; track source){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isSourceSelected(source)"
+                (change)="toggleSourceFilter(source)"
+              />
+
+              <span>{{ source }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+        <div class="filter-column">
+
+          <h4>TRANSACTION STATUS</h4>
+
+          @for(status of transactionStatus; track status){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isStatusSelected(status)"
+                (change)="toggleStatusFilter(status)"
+              />
+
+              <span>{{ status }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="filter-footer">
+
+        <button
+          class="reset-btn"
+          (click)="clearFilters()"
+        >
+          Reset
+        </button>
+
+        <button
+          class="apply-btn"
+          (click)="applyFilters()"
+        >
+          Apply
+        </button>
+
+      </div>
+
+    </div>
+
+    }
+
+    <!-- Summary Cards -->
+
+    <div class="summary-cards payments-cards">
+
+      <div class="summary-card">
+
+        <div class="card-title">
+          Total Payments
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="card-value">
+          ₹0.00
+        </div>
+
+      </div>
+
+      <div class="summary-card">
+
+        <div class="card-title">
+          Number of Transactions
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="card-value">
+          0
+        </div>
+
+      </div>
+
+      <div class="summary-card">
+
+        <div class="card-title">
+          Success Rate
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="card-value">
+          0%
+        </div>
+
+        <div class="card-subtext">
+          0 total
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Table -->
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+       <tr>
+
+  @for(column of selectedColumns; track column){
+
+    <th>
+      {{ column | uppercase }}
+    </th>
+
+  }
+
+  <th class="settings-column">
+
+    <i
+      class="bi bi-gear-fill"
+      (click)="openColumnConfig()">
+    </i>
+
+  </th>
+
+</tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr>
+
+            <td colspan="7">
+
+              <div class="empty-state">
+
+                <div class="empty-image">
+
+                  <img
+                    src="assets/images/no-data.png"
+                    alt="No Data"
+                  />
+
+                </div>
+
+                <div class="empty-content">
+
+                  <h5>
+                    NO RESULT FOUND
+                  </h5>
+
+                  <h3>
+                    Oops! We didn't find anything
+                  </h3>
+
+                  <p>
+                    Remove the filters or reset the date & try again.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+@if(showColumnConfigModal){
+
+<div
+  class="column-config-backdrop"
+  (click)="closeColumnConfig()">
+
+  <div
+    class="column-config-modal"
+    (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+
+    <div class="config-header">
+
+      <h2>Column Configuration</h2>
+
+      <button
+        class="close-btn"
+        (click)="closeColumnConfig()">
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    </div>
+
+    <!-- Body -->
+
+    <div class="config-body">
+
+      <!-- Available Columns -->
+
+      <div class="config-section">
+
+        <div class="section-title">
+
+          <span>AVAILABLE COLUMNS</span>
+
+          <span class="count-badge">
+            {{ availableColumns.length }}
+          </span>
+
+        </div>
+
+        <div class="search-box">
+
+          <i class="bi bi-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search columns">
+
+        </div>
+
+        <div class="column-list">
+
+        @for(column of availableColumns; track column){
+
+  <label class="column-item">
+
+    <input
+      type="checkbox"
+      [checked]="isColumnSelected(column)"
+      (change)="toggleColumn(column)">
+
+    <span>
+      {{ column }}
+    </span>
+
+  </label>
+
+}
+
+        </div>
+
+      </div>
+
+      <!-- Selected Columns -->
+
+      <div class="config-section">
+
+        <div class="section-title">
+
+          <span>SELECTED COLUMNS</span>
+
+          <span class="count-badge">
+          {{ tempSelectedColumns.length }}
+          </span>
+
+        </div>
+
+        <div class="search-box">
+
+          <i class="bi bi-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search selected">
+
+        </div>
+
+        <div class="column-list">
+
+        @for(column of tempSelectedColumns; track column){
+
+  <div class="selected-column">
+
+    <div class="column-left">
+
+      <i class="bi bi-grip-vertical"></i>
+
+      <span>
+        {{ column }}
+      </span>
+
+    </div>
+
+    <i
+      class="bi bi-x remove-icon"
+      (click)="removeColumn(column)">
+    </i>
+
+  </div>
+
+}
+
+        </div>
+
+        <div class="config-info">
+
+          <i class="bi bi-info-circle"></i>
+
+          Please select the columns from available section for more customisation
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+
+    <div class="config-footer">
+
+     <button
+  class="reset-config-btn"
+  (click)="resetColumnConfiguration()">
+
+  Reset To Default
+
+</button>
+
+    <button
+  class="apply-config-btn"
+  (click)="applyColumnConfiguration()">
+
+  Apply Configuration
+
+</button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
+    </div>
+
+  }
+    <!-- ===================================================
+       REFUNDS TAB
+  ==================================================== -->
+
+  @if (activeTab === 'refunds') {
+
+    <!-- Filters -->
+
+    <div class="filters-row">
+
+      <div class="filters-left">
+
+       <div class="custom-dropdown">
+
+  <div
+    class="dropdown-btn"
+    (click)="toggleSearchDropdown($event)">
+
+    <span>{{ selectedSearchField }}</span>
+
+    <i
+  class="bi"
+  [ngClass]="
+    showSearchDropdown
+      ? 'bi-chevron-up'
+      : 'bi-chevron-down'
+  ">
+</i>
+
+  </div>
+
+  @if(showSearchDropdown){
+
+    <div
+      class="dropdown-menu"
+      (click)="$event.stopPropagation()">
+
+      @for(option of searchOptions; track option){
+
+        <div
+          class="dropdown-item"
+          (click)="selectSearchField(option)">
+
+          {{ option }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
+
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search PayU ID (Transaction ID)"
+          [(ngModel)]="searchQuery"
+        />
+
+        <button class="search-btn" (click)="searchTransactions()">
+          Search
+        </button>
+<div class="custom-dropdown">
+
+  <div
+    class="filter-btn"
+    (click)="toggleDateDropdown($event)">
+
+    <i class="bi bi-calendar3"></i>
+
+    {{ selectedDate }}
+
+    <i
+      class="bi"
+      [ngClass]="showDateDropdown ? 'bi-chevron-up' : 'bi-chevron-down'">
+    </i>
+
+  </div>
+
+  @if(showDateDropdown){
+
+    <div
+      class="dropdown-menu date-dropdown"
+      (click)="$event.stopPropagation()">
+
+      @for(date of dateOptions; track date){
+
+        <div
+          class="dropdown-item"
+          (click)="selectDate(date)">
+
+          {{ date }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
+
+@if (showCustomDatePicker) {
+
+  <div class="inline-date-range">
+
+    <div class="date-field">
+
+      <label>From</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customFromDate"
+      />
+
+    </div>
+
+    <div class="date-field">
+
+      <label>To</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customToDate"
+      />
+
+    </div>
+
+    <button
+      class="apply-range-btn"
+      (click)="applyCustomDateRange()"
+    >
+      Apply
+    </button>
+
+    <button
+      class="cancel-range-btn"
+      (click)="closeCustomDateRange()"
+    >
+      Cancel
+    </button>
+
+  </div>
+
+}
+
+       <button
+  class="filter-btn"
+  (click)="toggleFilterPanel()">
+
+  <i class="bi bi-funnel"></i>
+
+  Filter
+
+  <i
+  class="bi"
+  [ngClass]="
+    showFilterPanel
+      ? 'bi-chevron-up'
+      : 'bi-chevron-down'
+  ">
+</i>
+
+</button>
+
+      </div>
+
+      <button class="download-btn" (click)="downloadReport()">
+        <i class="bi bi-download"></i>
+        Download
+        <i class="bi bi-chevron-down"></i>
+      </button>
+
+    </div>
+
+    @if (showFilterPanel) {
+
+    <div class="filter-panel">
+
+      <div class="filter-header">
+
+        <h3>Filters</h3>
+
+        <div class="filter-search">
+
+          <input
+            type="text"
+            placeholder="Search inside filters..."
+          />
+
+          <button>Search</button>
+
+        </div>
+
+      </div>
+
+      <div class="filter-body">
+
+        <div class="filter-column">
+
+          <h4>SOURCE FILTERS</h4>
+
+          @for(source of sourceFilters; track source){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isSourceSelected(source)"
+                (change)="toggleSourceFilter(source)"
+              />
+
+              <span>{{ source }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+        <div class="filter-column">
+
+          <h4>TRANSACTION STATUS</h4>
+
+          @for(status of transactionStatus; track status){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isStatusSelected(status)"
+                (change)="toggleStatusFilter(status)"
+              />
+
+              <span>{{ status }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="filter-footer">
+
+        <button
+          class="reset-btn"
+          (click)="clearFilters()"
+        >
+          Reset
+        </button>
+
+        <button
+          class="apply-btn"
+          (click)="applyFilters()"
+        >
+          Apply
+        </button>
+
+      </div>
+
+    </div>
+
+    }
+
+    <!-- Refund Cards -->
+
+    <div class="summary-cards refunds-cards">
+
+      <div class="summary-card">
+
+        <div class="card-title">
+          Total Refund Amount
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="card-value">
+          ₹0.00
+        </div>
+
+      </div>
+
+      <div class="summary-card">
+
+        <div class="card-title">
+          Number of Refunds
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="card-value">
+          0
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Refund Table -->
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>DATE</th>
+
+            <th>PAYU ID (TRANSACTION ID)</th>
+
+            <th>MERCHANT REFERENCE ID</th>
+
+            <th>REFUND TYPE</th>
+
+            <th>SOURCE</th>
+
+            <th>BANK ARN</th>
+
+            <th>AMOUNT</th>
+
+            <th>STATUS</th>
+
+            <th>PAYMENT AGGREGATOR</th>
+
+            <th>ACTIONS</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr>
+
+            <td colspan="10">
+
+              <div class="empty-state">
+
+                <div class="empty-image">
+
+                  <img
+                    src="assets/images/no-data.png"
+                    alt="No Data"
+                  />
+
+                </div>
+
+                <div class="empty-content">
+
+                  <h5>
+                    NO RESULT FOUND
+                  </h5>
+
+                  <h3>
+                    Oops! We didn't find anything
+                  </h3>
+
+                  <p>
+                    Remove the filters or reset the date & try again.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+    <!-- ===================================================
+       BATCH REFUNDS TAB
+  ==================================================== -->
+
+  @if (activeTab === 'batchRefunds') {
+
+    <div class="filters-row batch-filters">
+
+      <div class="filters-left">
+
+        <div class="custom-dropdown">
+
+  <div
+    class="filter-btn"
+    (click)="toggleDateDropdown($event)">
+
+    <i class="bi bi-calendar3"></i>
+
+    {{ selectedDate }}
+
+    <i
+      class="bi"
+      [ngClass]="showDateDropdown ? 'bi-chevron-up' : 'bi-chevron-down'">
+    </i>
+
+  </div>
+
+  @if(showDateDropdown){
+
+    <div
+      class="dropdown-menu date-dropdown"
+      (click)="$event.stopPropagation()">
+
+      @for(date of dateOptions; track date){
+
+        <div
+          class="dropdown-item"
+          (click)="selectDate(date)">
+
+          {{ date }}
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
+
+@if (showCustomDatePicker) {
+
+  <div class="inline-date-range">
+
+    <div class="date-field">
+
+      <label>From</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customFromDate"
+      />
+
+    </div>
+
+    <div class="date-field">
+
+      <label>To</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customToDate"
+      />
+
+    </div>
+
+    <button
+      class="apply-range-btn"
+      (click)="applyCustomDateRange()"
+    >
+      Apply
+    </button>
+
+    <button
+      class="cancel-range-btn"
+      (click)="closeCustomDateRange()"
+    >
+      Cancel
+    </button>
+
+  </div>
+
+}
+
+        <button class="filter-btn" (click)="toggleFilterPanel()">
+          <i class="bi bi-funnel"></i>
+          Filter
+          <i class="bi bi-chevron-down"></i>
+        </button>
+
+      </div>
+
+      <button
+  class="upload-btn"
+  (click)="uploadBatchRefund()"
+>
+  Upload Batch Refund
+</button>
+
+    </div>
+
+    @if (showFilterPanel) {
+
+    <div class="filter-panel">
+
+      <div class="filter-header">
+
+        <h3>Filters</h3>
+
+        <div class="filter-search">
+
+          <input
+            type="text"
+            placeholder="Search inside filters..."
+          />
+
+          <button>Search</button>
+
+        </div>
+
+      </div>
+
+      <div class="filter-body">
+
+        <div class="filter-column">
+
+          <h4>SOURCE FILTERS</h4>
+
+          @for(source of sourceFilters; track source){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isSourceSelected(source)"
+                (change)="toggleSourceFilter(source)"
+              />
+
+              <span>{{ source }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+        <div class="filter-column">
+
+          <h4>TRANSACTION STATUS</h4>
+
+          @for(status of transactionStatus; track status){
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+                [checked]="isStatusSelected(status)"
+                (change)="toggleStatusFilter(status)"
+              />
+
+              <span>{{ status }}</span>
+
+            </label>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="filter-footer">
+
+        <button
+          class="reset-btn"
+          (click)="clearFilters()"
+        >
+          Reset
+        </button>
+
+        <button
+          class="apply-btn"
+          (click)="applyFilters()"
+        >
+          Apply
+        </button>
+
+      </div>
+
+    </div>
+
+    }
+
+    <!-- Batch Refund Table -->
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>CREATED DATE</th>
+
+            <th>BATCH ID</th>
+
+            <th>FILENAME</th>
+
+            <th>TOTAL RECORDS</th>
+
+            <th>QUEUED</th>
+
+            <th>REJECTED</th>
+
+            <th>PROCESSED</th>
+
+            <th>STATUS</th>
+
+            <th>ACTIONS</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr>
+
+            <td colspan="9">
+
+              <div class="empty-state batch-empty-state">
+
+                <div class="empty-image">
+
+                  <img
+                    src="assets/images/no-data.png"
+                    alt="No Data"
+                  />
+
+                </div>
+
+                <div class="empty-content">
+
+                  <h3>
+                    No batch refunds found!
+                  </h3>
+
+                  <p>
+                    Change the date duration or upload a new batch refund
+                  </p>
+
+                  <a href="javascript:void(0)">
+                    Upload Batch Refund
+                  </a>
+
+                </div>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</div>

@@ -1,373 +1,264 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import {
+  BaseChartDirective
+} from 'ng2-charts';
+
+import {
+  Chart,
+  registerables,
+  ChartConfiguration,
+  ChartOptions
+} from 'chart.js';
+
+Chart.register(...registerables);
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    BaseChartDirective
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
+
 export class Dashboard {
 
   /* =========================================
-     FILTERS
+     REVENUE LINE CHART
   ========================================= */
 
-  selectedService: string = 'All Service';
+  public revenueChartType: 'line' = 'line';
 
-  selectedStatus: string = 'All';
+  public revenueChartData:
+    ChartConfiguration<'line'>['data'] = {
 
-  fromDate: string = '';
+    labels: [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ],
 
-  toDate: string = '';
+    datasets: [
 
-  /* =========================================
-     STATS DATA
-  ========================================= */
+      {
 
-  statsCards = [
+        data: [
+          120000,
+          190000,
+          170000,
+          240000,
+          320000,
+          280000,
+          360000,
+          420000,
+          390000,
+          470000,
+          520000,
+          610000
+        ],
 
-    {
-      title: 'Total Users',
-      value: '1,248',
-      growth: '12.5%',
-      isPositive: true,
-      icon: 'bi-people',
-      gradient: 'purple-gradient'
+        label: 'Revenue',
+
+        fill: true,
+
+        tension: 0.4,
+
+        borderColor: '#9333ea',
+
+        backgroundColor:
+          'rgba(147, 51, 234, 0.12)',
+
+        pointBackgroundColor:
+          '#9333ea',
+
+        pointBorderColor:
+          '#ffffff',
+
+        pointHoverBackgroundColor:
+          '#ffffff',
+
+        pointHoverBorderColor:
+          '#9333ea',
+
+        pointRadius: 5,
+
+        borderWidth: 3
+
+      }
+
+    ]
+
+  };
+
+  public revenueChartOptions:
+    ChartOptions<'line'> = {
+
+    responsive: true,
+
+    maintainAspectRatio: false,
+
+    plugins: {
+
+      legend: {
+        display: false
+      }
+
     },
 
-    {
-      title: 'Total Merchants',
-      value: '2,453',
-      growth: '8.4%',
-      isPositive: true,
-      icon: 'bi-shop',
-      gradient: 'blue-gradient'
-    },
+    scales: {
 
-    {
-      title: 'Active Merchants',
-      value: '1,689',
-      growth: '9.7%',
-      isPositive: true,
-      icon: 'bi-shop-window',
-      gradient: 'green-gradient'
-    },
+      x: {
 
-    {
-      title: 'Pending Verifications',
-      value: '342',
-      growth: '3.2%',
-      isPositive: false,
-      icon: 'bi-hourglass-split',
-      gradient: 'orange-gradient'
-    },
+        grid: {
+          display: false
+        },
 
-    {
-      title: 'Total Revenue',
-      value: '₹ 24.68 L',
-      growth: '15.8%',
-      isPositive: true,
-      icon: 'bi-wallet2',
-      gradient: 'violet-gradient'
-    },
+        ticks: {
+          color: '#64748b'
+        }
 
-    {
-      title: 'Total Transactions',
-      value: '18,742',
-      growth: '11.3%',
-      isPositive: true,
-      icon: 'bi-credit-card',
-      gradient: 'pink-gradient'
+      },
+
+      y: {
+
+        grid: {
+          color: '#eef2ff'
+        },
+
+        ticks: {
+
+          color: '#64748b',
+
+          callback: function (
+            value: any
+          ) {
+
+            return (
+              '₹'
+              +
+              value / 1000
+              +
+              'k'
+            );
+
+          }
+
+        }
+
+      }
+
     }
 
-  ];
+  };
 
   /* =========================================
-     RECENT ACTIVITIES
+     MERCHANT BAR CHART
   ========================================= */
 
-  recentActivities = [
+  public merchantChartType: 'bar' = 'bar';
 
-    {
-      title: 'New user registered',
-      description: 'john.doe@example.com',
-      icon: 'bi-person-plus-fill',
-      bgClass: 'green-bg',
-      time: '2 mins ago'
-    },
+  public merchantChartData:
+    ChartConfiguration<'bar'>['data'] = {
 
-    {
-      title: 'New merchant onboarded',
-      description: 'ABC Retail Store',
-      icon: 'bi-shop',
-      bgClass: 'blue-bg',
-      time: '15 mins ago'
-    },
+    labels: [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun'
+    ],
 
-    {
-      title: 'KYC verification pending',
-      description: 'Merchant ID: MRC1234',
-      icon: 'bi-hourglass-split',
-      bgClass: 'orange-bg',
-      time: '1 hour ago'
-    },
+    datasets: [
 
-    {
-      title: 'Merchant approved',
-      description: 'Merchant ID: MRC5678',
-      icon: 'bi-check-lg',
-      bgClass: 'pink-bg',
-      time: '2 hours ago'
-    }
+      {
 
-  ];
+        label: 'Merchants',
 
-  /* =========================================
-     RECENT TRANSACTIONS
-  ========================================= */
+        data: [
+          120,
+          180,
+          240,
+          310,
+          390,
+          470
+        ],
 
-  recentTransactions = [
+        borderRadius: 10,
 
-    {
-      txnId: 'TXN1256',
-      merchant: 'ABC Retail',
-      amount: '₹ 12,450',
-      status: 'Success',
-      statusClass: 'success-badge',
-      date: '22 May 2025'
-    },
+        backgroundColor: [
 
-    {
-      txnId: 'TXN1255',
-      merchant: 'XYZ Electronics',
-      amount: '₹ 8,750',
-      status: 'Success',
-      statusClass: 'success-badge',
-      date: '22 May 2025'
-    },
-
-    {
-      txnId: 'TXN1254',
-      merchant: 'Fashion Hub',
-      amount: '₹ 5,320',
-      status: 'Pending',
-      statusClass: 'pending-badge',
-      date: '22 May 2025'
-    },
-
-    {
-      txnId: 'TXN1253',
-      merchant: 'Daily Needs',
-      amount: '₹ 2,890',
-      status: 'Failed',
-      statusClass: 'failed-badge',
-      date: '21 May 2025'
-    }
-
-  ];
-
-  /* =========================================
-     QUICK ACTIONS
-  ========================================= */
-
-  quickActions = [
-
-    {
-      title: 'Add Merchant',
-      icon: 'bi-shop'
-    },
-
-    {
-      title: 'Add User',
-      icon: 'bi-person-plus'
-    },
-
-    {
-      title: 'Generate Report',
-      icon: 'bi-file-earmark-bar-graph'
-    },
-
-    {
-      title: 'Pending KYC',
-      icon: 'bi-hourglass-split'
-    },
-
-    {
-      title: 'Download Transactions',
-      icon: 'bi-download'
-    }
-
-  ];
-
-  /* =========================================
-     FILTER ACTIONS
-  ========================================= */
-
-  searchDashboard(): void {
-
-    console.log('Search Triggered');
-
-    console.log({
-      service: this.selectedService,
-      status: this.selectedStatus,
-      fromDate: this.fromDate,
-      toDate: this.toDate
-    });
-
-  }
-
-  resetFilters(): void {
-
-    this.selectedService = 'All Service';
-
-    this.selectedStatus = 'All';
-
-    this.fromDate = '';
-
-    this.toDate = '';
-
-    console.log('Filters Reset');
-
-  }
-
-  exportDashboardData(): void {
-
-    const csvData = [
-
-      [
-        'Transaction ID',
-        'Merchant',
-        'Amount',
-        'Status',
-        'Date'
-      ],
-
-      ...this.recentTransactions.map(
-        transaction => [
-
-          transaction.txnId,
-          transaction.merchant,
-          transaction.amount,
-          transaction.status,
-          transaction.date
+          '#9333ea',
+          '#a855f7',
+          '#b66cff',
+          '#c084fc',
+          '#d8b4fe',
+          '#e9d5ff'
 
         ]
-      )
 
-    ];
-
-    const csvContent = csvData
-      .map(row => row.join(','))
-      .join('\n');
-
-    const blob = new Blob(
-      [csvContent],
-      {
-        type: 'text/csv;charset=utf-8;'
       }
-    );
 
-    const url = window.URL.createObjectURL(blob);
+    ]
 
-    const link = document.createElement('a');
+  };
 
-    link.href = url;
+  public merchantChartOptions:
+    ChartOptions<'bar'> = {
 
-    link.setAttribute(
-      'download',
-      'dashboard-transactions.csv'
-    );
+    responsive: true,
 
-    document.body.appendChild(link);
+    maintainAspectRatio: false,
 
-    link.click();
+    plugins: {
 
-    document.body.removeChild(link);
+      legend: {
+        display: false
+      }
 
-  }
+    },
 
-  /* =========================================
-     VIEW ALL
-  ========================================= */
+    scales: {
 
-  viewAllActivities(): void {
+      x: {
 
-    console.log(
-      'View All Activities'
-    );
+        grid: {
+          display: false
+        },
 
-  }
+        ticks: {
+          color: '#64748b'
+        }
 
-  viewAllTransactions(): void {
+      },
 
-    console.log(
-      'View All Transactions'
-    );
+      y: {
 
-  }
+        grid: {
+          color: '#eef2ff'
+        },
 
-  /* =========================================
-     QUICK ACTION BUTTONS
-  ========================================= */
+        ticks: {
+          color: '#64748b'
+        }
 
-  handleQuickAction(
-    action: string
-  ): void {
-
-    switch (action) {
-
-      case 'Add Merchant':
-
-        console.log(
-          'Navigate to Add Merchant'
-        );
-
-        break;
-
-      case 'Add User':
-
-        console.log(
-          'Navigate to Add User'
-        );
-
-        break;
-
-      case 'Generate Report':
-
-        console.log(
-          'Generate Report'
-        );
-
-        break;
-
-      case 'Pending KYC':
-
-        console.log(
-          'Open Pending KYC'
-        );
-
-        break;
-
-      case 'Download Transactions':
-
-        this.exportDashboardData();
-
-        break;
-
-      default:
-
-        console.log(
-          'Unknown Action'
-        );
-
-        break;
+      }
 
     }
 
-  }
+  };
 
 }

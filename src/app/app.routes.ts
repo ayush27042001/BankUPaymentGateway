@@ -32,6 +32,30 @@ import { BusinessSubCategories } from './admin/pages/business-sub-categories/bus
 import { BusinessProofTypes } from './admin/pages/business-proof-types/business-proof-types';
 import { PepStatus } from './admin/pages/pep-status/pep-status';
 import { DocumentTypes } from './admin/pages/document-types/document-types';
+import { UserLayout } from './user/layout/user-layout/user-layout';
+
+// user routes 
+
+import { UserDashboard }
+from './user/pages/dashboard/dashboard';
+import { Transactions } from './user/pages/transactions/transactions';
+import { Settlements } from './user/pages/settlements/settlements';
+import { Chargeback } from './user/pages/chargeback/chargeback';
+import { Reports } from './user/pages/reports/reports';
+import { Settings } from './user/pages/settings/settings';
+import { ExploreProducts } from './user/pages/explore-products/explore-products';
+import { Developer } from './user/pages/developer/developer';
+import { PaymentLinkComponent } from './user/pages/payment-link/payment-link';
+import { PaymentLinkCreateComponent } from './user/pages/payment-link/payment-link-create';
+import { PaymentLinkBulkComponent } from './user/pages/payment-link/payment-link-bulk';
+import { Payout } from './user/pages/payout/payout';
+import { PaymentGateway  } from './user/pages/payment-gateway/payment-gateway';
+
+import { CheckoutCustomization  } from './user/pages/checkout-customization/checkout-customization';
+
+import { PaymentMode  } from './user/pages/payment-mode/payment-mode';
+
+
 import { SuperAdminLoginComponent } from './admin/pages/superadmin-login/superadmin-login';
 export const routes: Routes = [
 
@@ -56,11 +80,7 @@ export const routes: Routes = [
   { path: 'status-tracker', component: StatusTrackerComponent, canActivate: [authGuard] },
   { path: 'onboarding-rejected', component: OnboardingRejectedComponent, canActivate: [authGuard] },
 
-  {
-    path: 'connect-platform',
-    component: ConnectPlatformComponent,
-    canActivate: [authGuard]
-  },
+  // (duplicate "connect-platform" route removed)
 
   // ==========================================
   // ADMIN ROUTES
@@ -74,6 +94,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayout,
+    // canActivate: [authGuard],
 
     children: [
 
@@ -105,10 +126,6 @@ export const routes: Routes = [
   component: BusinessCategories
 },
 {
-  path: 'masters/business-categories',
-  component: BusinessCategories
-},
-{
   path: 'masters/business-sub-categories',
   component: BusinessSubCategories
 },
@@ -131,8 +148,101 @@ export const routes: Routes = [
         pathMatch: 'full'
       }
 
+
+
+  
     ]
   },
+
+
+// ==========================================
+  // user ROUTES
+  // ==========================================
+{
+  path: 'user',
+  component: UserLayout,
+  // canActivate: [authGuard],
+  children: [
+
+    {
+      path: 'dashboard',
+      component: UserDashboard
+    },
+
+    {
+      path: 'transactions',
+      component: Transactions
+    },
+
+    {
+      path: 'settlements',
+      component: Settlements
+    },
+
+    {
+      path: 'chargeback',
+      component: Chargeback
+    },
+
+    {
+      path: 'reports',
+      component: Reports
+    },
+
+    {
+      path: 'payout',
+      component: Payout
+    },
+
+{
+  path: 'payment-link',
+  component: PaymentLinkComponent
+},
+{
+  path: 'payment-link/create',
+  component: PaymentLinkCreateComponent
+},
+{
+  path: 'payment-link/bulk',
+  component: PaymentLinkBulkComponent
+},
+
+    {
+      path: 'explore-products',
+      component: ExploreProducts
+    },
+
+    {
+      path: 'settings',
+      component: Settings
+    },
+
+    {
+      path: 'developer',
+      component: Developer
+    },
+
+    {
+      path: '',
+      redirectTo: 'dashboard',
+      pathMatch: 'full'
+    },
+{
+  path: 'payment-gateway',
+  component: PaymentGateway 
+},
+
+{
+  path: 'checkout-customization',
+  component: CheckoutCustomization 
+},
+
+{
+  path: 'payment-mode',
+  component: PaymentMode 
+},
+  ]
+},
 
   {
     path: '**',

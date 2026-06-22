@@ -1,210 +1,212 @@
-/* =========================================
-   RESPONSIVE BREAKPOINTS (Standardized)
-========================================= */
-$breakpoint-sm: 576px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 992px;
+// =========================================
+//   BREAKPOINTS
+// =========================================
+$bp-xs:  480px;   // Mobile small
+$bp-sm:  576px;   // Mobile large
+$bp-md:  768px;   // Tablet portrait
+$bp-lg:  992px;   // Tablet landscape / small laptop
+$bp-xl: 1200px;   // Desktop
 
+// Brand color
+$brand: #690169;
+
+// =========================================
+//   ADMIN NAVBAR — BASE
+// =========================================
+.main-content {
+  padding-top: 90px;
+}
 .admin-navbar {
-  width: 100%;
-  min-height: 80px;
+  width: calc(100% - 280px);
+
+  height: 72px;
   background: #ffffff;
-  border-bottom: 1px solid #ececec;
-  padding: 0 30px;
+  border-bottom: 1px solid #ebebeb;
+  padding: 0 32px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
 
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 900;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+  right: 0;
 
-  // Tablet
-  @media (max-width: $breakpoint-lg - 1px) {
+  z-index: 900;
+  box-shadow: 0 2px 16px rgba(15, 23, 42, 0.05);
+
+  @media (max-width: $bp-lg - 1) {
+    width: 100%;
     padding: 0 20px;
-    min-height: 70px;
+    height: 68px;
   }
 
-  // Mobile
-  @media (max-width: $breakpoint-md - 1px) {
+  @media (max-width: $bp-md - 1) {
+    width: 100%;
     padding: 0 16px;
-    min-height: 64px;
+    height: 60px;
+    gap: 10px;
+  }
+
+  @media (max-width: $bp-xs - 1) {
+    width: 100%;
+    padding: 0 12px;
+    height: 56px;
+    gap: 8px;
+  }
+}
+
+// =========================================
+//   LEFT SECTION
+// =========================================
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0; // prevent flex blowout
+
+  @media (max-width: $bp-xs - 1) {
     gap: 10px;
   }
 }
 
-/* =========================================
-   LEFT SECTION
-========================================= */
-.navbar-left {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex: 1;
-  min-width: 0;
+// =========================================
+//   MOBILE MENU TOGGLE
+// =========================================
+.mobile-menu-toggle {
+  display: none; // Hidden on desktop by default
+  flex-shrink: 0;
 
-  // Mobile: Adjust gap
-  @media (max-width: 576px) {
-    gap: 12px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  outline: none;
+  background: #f5f5f5;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #5a5a5a;
+  font-size: 22px;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  &:hover {
+    background: rgba($brand, 0.1);
+    color: $brand;
+  }
+
+  // Show on tablet and below
+  @media (max-width: $bp-lg - 1) {
+    display: flex;
+  }
+
+  @media (max-width: $bp-xs - 1) {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    font-size: 20px;
   }
 }
 
-/* =========================================
-   PAGE INFO
-========================================= */
+// =========================================
+//   PAGE INFO
+// =========================================
 .page-info {
-  // Desktop/Tablet
-  @media (min-width: 768px) {
-    h2 {
-      margin: 0;
-      font-size: 28px;
-      font-weight: 700;
-      color: #1b1b1b;
-      line-height: 1.2;
-    }
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
 
-    span {
-      font-size: 14px;
-      color: #7a7a7a;
-    }
+  h2 {
+    margin: 0;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    // Responsive font sizes
+    font-size: 26px;
+
+    @media (max-width: $bp-lg - 1) { font-size: 22px; }
+    @media (max-width: $bp-md - 1) { font-size: 19px; }
+    @media (max-width: $bp-sm - 1) { font-size: 17px; }
   }
 
-  // Mobile Large
-  @media (max-width: 767px) and (min-width: 576px) {
-    h2 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 700;
-      color: #1b1b1b;
-      line-height: 1.2;
-    }
+  span {
+    font-size: 13px;
+    color: #888;
+    white-space: nowrap;
 
-    span {
-      font-size: 12px;
-      color: #7a7a7a;
-    }
-  }
-
-  // Mobile Small
-  @media (max-width: 575px) {
-    h2 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-      color: #1b1b1b;
-      line-height: 1.1;
-    }
-
-    span {
+    // Hide on very small screens
+    @media (max-width: $bp-xs - 1) {
       display: none;
     }
   }
 }
 
-/* =========================================
-   MOBILE MENU TOGGLE BUTTON
-========================================= */
-.mobile-menu-toggle {
-  display: none;
-  width: 48px;
-  height: 48px;
-  border: none;
-  background: #f7f7f7;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 20px;
-  color: #5f5f5f;
-  transition: all 0.3s ease;
-
-  i {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  &:hover {
-    background: rgba(105, 1, 105, 0.1);
-    color: #690169;
-  }
-
-  // Show on tablet and mobile
-  @media (max-width: $breakpoint-lg - 1px) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  // Mobile sizes
-  @media (max-width: $breakpoint-sm - 1px) {
-    width: 42px;
-    height: 42px;
-    font-size: 18px;
-  }
-}
-
-/* =========================================
-   RIGHT SECTION
-========================================= */
+// =========================================
+//   RIGHT SECTION
+// =========================================
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
 
-  // Tablet/Mobile
-  @media (max-width: 992px) {
-    gap: 12px;
+  @media (max-width: $bp-md - 1) {
+    gap: 8px;
   }
 
-  // Mobile
-  @media (max-width: 576px) {
-    gap: 8px;
-    flex: 1;
-    justify-content: flex-end;
+  @media (max-width: $bp-xs - 1) {
+    gap: 6px;
   }
 }
 
-/* =========================================
-   SEARCH BOX - RESPONSIVE
-========================================= */
+// =========================================
+//   SEARCH BOX
+// =========================================
 .search-box {
-  // Desktop (320px)
-  @media (min-width: 1200px) {
-    width: 320px;
-    height: 52px;
-    border-radius: 16px;
-    padding: 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: #f5f5f5;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 0 16px;
+  height: 46px;
+  transition: all 0.25s ease;
+
+  // Desktop large
+  @media (min-width: $bp-xl) {
+    width: 300px;
   }
 
-  // Laptop (250px)
-  @media (max-width: 1199px) and (min-width: 992px) {
-    width: 250px;
-    height: 48px;
-    border-radius: 14px;
-    padding: 0 16px;
+  // Desktop / small laptop
+  @media (max-width: $bp-xl - 1) and (min-width: $bp-lg) {
+    width: 220px;
   }
 
-  // Tablet (hide, show on larger)
-  @media (max-width: 991px) {
+  // Hide on tablet and below — search moves to a modal/dropdown
+  @media (max-width: $bp-lg - 1) {
     display: none;
   }
 
-  background: #f7f7f7;
-
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  border: 1px solid transparent;
-  transition: all 0.3s ease;
-
   i {
-    color: #8a8a8a;
-    font-size: 16px;
+    color: #999;
+    font-size: 15px;
+    flex-shrink: 0;
   }
 
   input {
@@ -213,208 +215,227 @@ $breakpoint-lg: 992px;
     outline: none;
     background: transparent;
     font-size: 14px;
-    color: #1b1b1b;
+    color: #1a1a1a;
 
     &::placeholder {
-      color: #9a9a9a;
+      color: #aaa;
     }
   }
 
   &:focus-within {
-    background: #ffffff;
-    border-color: rgba(105, 1, 105, 0.2);
-    box-shadow: 0 10px 25px rgba(105, 1, 105, 0.08);
+    background: #fff;
+    border-color: rgba($brand, 0.25);
+    box-shadow: 0 4px 20px rgba($brand, 0.08);
   }
 }
 
-/* =========================================
-   NAVBAR ICONS - RESPONSIVE
-========================================= */
+// =========================================
+//   NAVBAR ICON (Bell, Gear, etc.)
+// =========================================
 .navbar-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
-  background: #f7f7f7;
+  position: relative;
+  flex-shrink: 0;
+
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #f5f5f5;
+  cursor: pointer;
 
   display: flex;
   align-items: center;
   justify-content: center;
-
-  cursor: pointer;
-  position: relative;
-
-  transition: all 0.3s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 
   i {
     font-size: 18px;
-    color: #5f5f5f;
-    transition: all 0.3s ease;
+    color: #5a5a5a;
+    transition: color 0.2s ease;
   }
 
   &:hover {
-    background: rgba(105, 1, 105, 0.08);
+    background: rgba($brand, 0.08);
     transform: translateY(-2px);
 
     i {
-      color: #690169;
+      color: $brand;
     }
   }
 
   // Tablet
-  @media (max-width: $breakpoint-lg - 1px) {
-    width: 44px;
-    height: 44px;
+  @media (max-width: $bp-lg - 1) {
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
 
-    i {
-      font-size: 16px;
-    }
+    i { font-size: 17px; }
   }
 
   // Mobile
-  @media (max-width: $breakpoint-sm - 1px) {
-    width: 40px;
-    height: 40px;
+  @media (max-width: $bp-md - 1) {
+    width: 38px;
+    height: 38px;
     border-radius: 10px;
 
-    i {
-      font-size: 16px;
+    i { font-size: 16px; }
+  }
+
+  // Mobile small — hide settings icon to save space
+  @media (max-width: $bp-xs - 1) {
+    &:not(.notification-icon) {
+      display: none;
     }
+
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+
+    i { font-size: 15px; }
   }
 }
 
-/* =========================================
-   NOTIFICATION BADGE
-========================================= */
+// =========================================
+//   NOTIFICATION BADGE
+// =========================================
 .notification-badge {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 7px;
+  right: 7px;
 
-  min-width: 18px;
-  height: 18px;
-  border-radius: 50%;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9px;
 
   background: #f39021;
-  color: #ffffff;
+  color: #fff;
+  border: 1.5px solid #fff;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
 
-  box-shadow: 0 4px 10px rgba(243, 144, 33, 0.35);
+  box-shadow: 0 2px 8px rgba(243, 144, 33, 0.4);
 
-  // Mobile
-  @media (max-width: 576px) {
-    min-width: 16px;
-    height: 16px;
-    font-size: 9px;
-    top: 6px;
-    right: 6px;
+  @media (max-width: $bp-md - 1) {
+    top: 5px;
+    right: 5px;
+    min-width: 15px;
+    height: 15px;
+    font-size: 8px;
   }
 }
 
-/* =========================================
-   PROFILE SECTION - RESPONSIVE
-========================================= */
+// =========================================
+//   PROFILE SECTION
+// =========================================
 .admin-profile-navbar {
-  // Desktop/Laptop
-  @media (min-width: 768px) {
-    min-height: 58px;
-    padding: 10px 16px;
-    border-radius: 18px;
-    background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
 
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  padding: 6px 14px 6px 8px;
+  border-radius: 16px;
+  background: #f5f5f5;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
 
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &:hover {
-      background: rgba(105, 1, 105, 0.08);
-      transform: translateY(-2px);
-    }
+  &:hover {
+    background: rgba($brand, 0.08);
+    transform: translateY(-2px);
   }
 
-  // Tablet/Mobile: Hide profile details
-  @media (max-width: $breakpoint-md - 1px) {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: #f7f7f7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  // Tablet — hide text, show only avatar
+  @media (max-width: $bp-md - 1) {
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    gap: 0;
 
     &:hover {
-      background: rgba(105, 1, 105, 0.08);
+      background: transparent;
+      transform: none;
     }
 
     .profile-details,
-    i {
+    .chevron-icon {
       display: none;
     }
-  }
-
-  // Mobile Small
-  @media (max-width: $breakpoint-sm - 1px) {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
   }
 }
 
 .profile-avatar {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #690169, #c026d3);
-  color: #ffffff;
+  background: linear-gradient(135deg, $brand 0%, #c026d3 100%);
+  color: #fff;
+  flex-shrink: 0;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  flex-shrink: 0;
+  letter-spacing: 0.5px;
 
-  // Mobile
-  @media (max-width: 767px) {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    font-size: 14px;
+  // Tablet — add hover ring since it's the only visible element
+  @media (max-width: $bp-md - 1) {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 0 0 3px rgba($brand, 0.25);
+    }
+  }
+
+  @media (max-width: $bp-xs - 1) {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    font-size: 13px;
   }
 }
 
 .profile-details {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   min-width: 0;
 
   h4 {
     margin: 0;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    color: #1b1b1b;
+    color: #1a1a1a;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100px;
   }
 
   span {
-    font-size: 12px;
-    color: #7a7a7a;
+    font-size: 11px;
+    color: #999;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 }
 
+.chevron-icon {
+  font-size: 12px;
+  color: #999;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+
+  .admin-profile-navbar:hover & {
+    transform: rotate(180deg);
+    color: $brand;
+  }
+}

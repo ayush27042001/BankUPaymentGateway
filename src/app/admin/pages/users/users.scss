@@ -14,6 +14,7 @@ $bp-xl: 1200px;
   min-height: 100vh;
   background: #f4f7fb;
   box-sizing: border-box;
+  margin-top: 50px;
 }
 
 /* =============================================
@@ -145,6 +146,14 @@ $bp-xl: 1200px;
 }
 
 .table-responsive {
+   overflow-x: auto;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
   width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
   &::-webkit-scrollbar { height: 4px; }
   &::-webkit-scrollbar-track { background: #f8fafc; }
@@ -171,7 +180,7 @@ $bp-xl: 1200px;
 }
 
 .custom-table tbody tr:last-child td { border-bottom: none; }
-.custom-table tbody tr { transition: background 0.15s ease; }
+.custom-table tbody tr { transition: background 0.15s ease;white-space: nowrap; }
 .custom-table tbody tr:hover { background: #fdf4ff; }
 
 /* =============================================
@@ -279,31 +288,56 @@ $bp-xl: 1200px;
    KYC MODAL — MAIN CONTAINER
 ============================================= */
 .kyc-modal {
-  width: 100%; max-width: 860px;
+  width: 100%;
+  max-width: 860px;
   max-height: calc(100vh - 48px);
-  background: #fff; border-radius: 26px;
-  // overflow: hidden;
-  //  padding: 24px;
+
+  background: #fff;
+  border-radius: 26px;
+
   overflow-y: auto;
-  overflow-x: hidden;
+
   flex: 1;
-  // display: flex; flex-direction: column;
+
   animation: popIn 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+
   box-shadow: 0 28px 70px rgba(8, 12, 28, 0.22);
 
-  @media (max-width: $bp-sm - 1px) { border-radius: 18px; max-height: 96vh; }
+  /* Hide Scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: $bp-sm - 1px) {
+    border-radius: 18px;
+    max-height: 96vh;
+  }
 }
 
 /* =============================================
    ZONE 1 — KYC HEADER
 ============================================= */
 .kyc-header {
-  background: linear-gradient(135deg, #6d00ff 0%, #c700ff 100%);
+  background: linear-gradient(135deg, #901299, #c700ff);
   padding: 22px 26px;
-  display: flex; align-items: flex-start; gap: 16px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
   flex-shrink: 0;
 
-  @media (max-width: $bp-sm - 1px) { padding: 16px 16px; gap: 12px; }
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  @media (max-width: $bp-sm - 1px) {
+    padding: 16px 16px;
+    gap: 12px;
+  }
 }
 
 .kyc-avatar {

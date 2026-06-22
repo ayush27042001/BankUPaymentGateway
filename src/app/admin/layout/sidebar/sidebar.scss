@@ -19,8 +19,8 @@ $breakpoint-xl: 1200px;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
+  // overflow-y: auto;
+  // overflow-x: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
 
@@ -129,7 +129,15 @@ $breakpoint-xl: 1200px;
   flex-direction: column;
   gap: 10px;
   flex: 1;
-  overflow-y: auto;
+  // overflow-y: auto;
+  overflow-x: auto;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   // Tablet
   @media (max-width: $breakpoint-lg - 1px) and (min-width: $breakpoint-md) {
@@ -287,11 +295,11 @@ $breakpoint-xl: 1200px;
   }
 }
 
-.active-submenu {
-  background: rgba(105, 1, 105, 0.1);
-  color: #690169 !important;
-  font-weight: 600;
-}
+// .active-submenu {
+//   background: rgba(105, 1, 105, 0.1);
+//   color: #690169 !important;
+//   font-weight: 600;
+// }
 
 /* =========================================
    FOOTER / PROFILE SECTION
