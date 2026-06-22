@@ -251,7 +251,7 @@ copySecretSalt(): void {
 
 }
 
-  viewDocumentation(url: string): void {
+    viewDocumentation(url: string): void {``
 
     console.log('Documentation:', url);
 
