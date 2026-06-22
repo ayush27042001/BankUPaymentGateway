@@ -32,6 +32,7 @@ import { BusinessSubCategories } from './admin/pages/business-sub-categories/bus
 import { BusinessProofTypes } from './admin/pages/business-proof-types/business-proof-types';
 import { PepStatus } from './admin/pages/pep-status/pep-status';
 import { DocumentTypes } from './admin/pages/document-types/document-types';
+import { SuperAdminLoginComponent } from './admin/pages/superadmin-login/superadmin-login';
 export const routes: Routes = [
 
   {
@@ -64,6 +65,11 @@ export const routes: Routes = [
   // ==========================================
   // ADMIN ROUTES
   // ==========================================
+
+  {
+    path: 'superadmin-login',
+    component: SuperAdminLoginComponent
+  },
 
   {
     path: 'admin',

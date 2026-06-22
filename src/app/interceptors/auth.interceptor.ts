@@ -75,7 +75,7 @@ function handleApiSuccess(body: any, toastService: ToastService, request: HttpRe
   // Only show toast if response has success field and message
   if (body?.success && body?.message) {
     // Skip certain endpoints that don't need toast notifications
-    const skipEndpoints = ['/Auth/refresh-token', '/Registration/get-pan-details', '/BusinessDetails/validate-gst', '/ConnectPlatform/save', '/BankAccountDetail/save', '/SigningAuthorityDetail/save', '/BusinessAddress/save'];
+    const skipEndpoints = ['/Auth/refresh-token', '/Registration/get-pan-details', '/BusinessDetails/validate-gst', '/ConnectPlatform/save', '/BankAccountDetail/save', '/SigningAuthorityDetail/save', '/BusinessAddress/save', 'ServiceAgreement/save', ''];
     if (skipEndpoints.some((endpoint) => request.url.includes(endpoint))) {
       return;
     }

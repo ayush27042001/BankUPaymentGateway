@@ -26,7 +26,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/assets",
-              "src/assets/favicon.png"
+              "src/assets/favicon.png",
+              "src/web.config"
             ],
             "styles": [
               "src/styles.scss"
@@ -53,8 +54,8 @@
   },
   {
     "type": "anyComponentStyle",
-    "maximumWarning": "20kb",
-    "maximumError": "30kb"
+    "maximumWarning": "80kb",
+    "maximumError": "100kb"
   }
 ],
               "outputHashing": "all"
