@@ -1,0 +1,192 @@
+<div class="explore-products-page">
+
+  <!-- =====================================
+       HEADER
+  ====================================== -->
+
+  <div class="page-header">
+
+    <div class="title-section">
+
+      <div class="title-icon">
+        <i class="bi bi-box-seam-fill"></i>
+      </div>
+
+      <h1>
+        Explore Products
+      </h1>
+
+    </div>
+
+    <div class="search-box">
+
+      <i class="bi bi-search"></i>
+
+      <input
+        type="text"
+        placeholder="Search Products, Features..."
+        [(ngModel)]="searchText"
+      />
+
+      <button>
+        Search
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- =====================================
+       TABS
+  ====================================== -->
+
+  <div class="tabs-wrapper">
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'all'"
+      (click)="setTab('all')"
+    >
+      All Products
+
+      <span>
+        {{ products.length }}
+      </span>
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'active'"
+      (click)="setTab('active')"
+    >
+      Active
+
+      <span>
+        {{ activeCount }}
+      </span>
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'inactive'"
+      (click)="setTab('inactive')"
+    >
+      Inactive
+
+      <span>
+        {{ inactiveCount }}
+      </span>
+    </button>
+
+  </div>
+
+  <!-- =====================================
+       CONTENT
+  ====================================== -->
+
+  <div class="content-layout">
+
+    <!-- LEFT -->
+
+    <div class="products-content">
+
+      @for (category of categories; track category) {
+
+        <section
+          class="category-section"
+          [id]="category.toLowerCase().replace('&','').replaceAll(' ','-')"
+        >
+
+          <h3 class="category-title">
+            {{ category }}
+          </h3>
+
+          <div class="cards-grid">
+
+            @for (
+              product of getProductsByCategory(category);
+              track product.id
+            ) {
+
+              <div class="product-card">
+
+                <div class="card-top">
+
+                  <div class="card-icon">
+
+                    <i [class]="'bi ' + product.icon"></i>
+
+                  </div>
+
+                  @if (product.status === 'active') {
+
+                    <div class="status-badge">
+                      <i class="bi bi-check-circle"></i>
+                      Active
+                    </div>
+
+                  }
+
+                </div>
+
+                <h4>
+                  {{ product.title }}
+                </h4>
+
+                <p>
+                  {{ product.description }}
+                </p>
+
+                <div class="card-actions">
+
+                  <a href="javascript:void(0)">
+                    {{ product.primaryAction }}
+                    <i class="bi bi-arrow-right"></i>
+                  </a>
+
+                  @if (product.secondaryAction) {
+
+                    <a href="javascript:void(0)">
+                      {{ product.secondaryAction }}
+                    </a>
+
+                  }
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        </section>
+
+      }
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+
+    <div class="category-sidebar">
+
+      <div class="sidebar-inner">
+
+        @for (category of categories; track category) {
+
+          <div
+            class="sidebar-item"
+            (click)="scrollToCategory(category)"
+          >
+            {{ category }}
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

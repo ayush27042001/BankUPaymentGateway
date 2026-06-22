@@ -1,0 +1,631 @@
+<div class="checkout-page">
+
+  <!-- =========================================
+       PAGE HEADER
+  ========================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h2>
+
+        Checkout Customization
+
+      </h2>
+
+      <p>
+
+        Customize your hosted checkout page using BankU Branding.
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       TOP TABS
+  ========================================== -->
+
+  <div class="top-tabs">
+
+    <button
+      class="tab"
+      [class.active]="activeTab==='branding'"
+      (click)="setTab('branding')">
+
+      Branding
+
+    </button>
+
+    <button
+      class="tab"
+      [class.active]="activeTab==='features'"
+      (click)="setTab('features')">
+
+      Features For Website Platform
+
+    </button>
+
+  </div>
+
+  <!-- =========================================
+       BRANDING / FEATURES + PREVIEW
+  ========================================== -->
+
+  <div class="customization-wrapper">
+
+    <!-- =====================================
+         LEFT SETTINGS
+    ====================================== -->
+
+    <div class="left-panel">
+
+      <!-- ===========================
+           BRANDING TAB
+      ============================ -->
+
+      @if(activeTab==='branding'){
+
+      <!-- Logo -->
+
+      <div class="setting-card">
+
+        <h4>Brand Logo</h4>
+
+        <input
+          type="file"
+          hidden
+          #logoInput
+          (change)="uploadLogo($event)">
+
+        <button
+          class="upload-btn"
+          (click)="logoInput.click()">
+
+          Upload Logo
+
+        </button>
+
+        <small>
+          PNG/JPG up to 120 KB
+        </small>
+
+      </div>
+
+      <!-- Primary -->
+
+      <div class="setting-card">
+
+        <h4>Primary Color</h4>
+
+        <div class="color-list">
+
+          @for(color of colors;track color){
+
+          <div
+            class="color"
+            [style.background]="color"
+            [class.active]="primaryColor===color"
+            (click)="setPrimaryColor(color)">
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- Secondary -->
+
+      <div class="setting-card">
+
+        <h4>Secondary Color</h4>
+
+        <div class="color-list">
+
+          @for(color of colors;track color){
+
+          <div
+            class="color"
+            [style.background]="color"
+            [class.active]="secondaryColor===color"
+            (click)="setSecondaryColor(color)">
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- Language -->
+
+      <div class="setting-card">
+
+        <h4>Language</h4>
+
+        <select>
+
+          <option>English</option>
+
+          <option>Hindi</option>
+
+        </select>
+
+      </div>
+
+      <!-- Signature -->
+
+     <div class="setting-card">
+
+  <h4>Owner Signature</h4>
+
+  <!-- Preview -->
+
+  @if(signatureUrl){
+
+    <div class="signature-preview">
+
+      <img
+        [src]="signatureUrl"
+        alt="Signature">
+
+    </div>
+
+  }
+
+  <!-- Hidden Input -->
+
+  <input
+    #signatureInput
+    type="file"
+    accept="image/*"
+    hidden
+    (change)="uploadSignature($event)">
+
+  <!-- Upload Button -->
+
+  <button
+    class="upload-btn"
+    (click)="signatureInput.click()">
+
+    <i class="bi bi-upload"></i>
+
+    Upload Signature
+
+  </button>
+
+</div>
+      }
+
+      <!-- ===========================
+           FEATURES TAB
+      ============================ -->
+
+      @else{
+
+      <div class="feature-card">
+
+        <h3>
+
+          Payment Methods Order
+
+        </h3>
+
+        <p>
+
+          Set your own custom order for payment modes on BankU checkout page.
+
+        </p>
+
+        <!-- Recommended -->
+
+        <div class="feature-box recommended">
+
+          <div class="feature-top">
+
+            <div>
+
+              <i class="bi bi-stars"></i>
+
+              <span>
+
+                BankU Recommended Order
+
+              </span>
+
+            </div>
+
+            <label class="switch">
+
+              <input
+                type="checkbox"
+                [(ngModel)]="recommendedOrder">
+
+              <span class="slider"></span>
+
+            </label>
+
+          </div>
+
+          <p>
+
+            Let BankU automatically determine the best payment order to maximize conversion.
+
+          </p>
+
+        </div>
+
+        <!-- Custom -->
+
+        <div class="feature-box custom">
+
+          <div class="feature-top">
+
+            <div>
+
+              <i class="bi bi-gear-fill"></i>
+
+              <span>
+
+                Custom Payment Order
+
+              </span>
+
+            </div>
+
+            <label class="switch">
+
+              <input
+                type="checkbox"
+                [(ngModel)]="customOrder">
+
+              <span class="slider"></span>
+
+            </label>
+
+          </div>
+
+          <p>
+
+            Choose the payment order that best suits your business.
+
+          </p>
+
+          <button
+            class="set-order-btn">
+
+            Set Order
+
+          </button>
+
+        </div>
+
+      </div>
+
+      }
+
+    </div>
+
+    <!-- =====================================
+         RIGHT PREVIEW
+    ====================================== -->
+
+    <div class="preview-section">
+
+      <div class="preview-box">
+
+        <div class="preview-scaler" [class.is-mobile]="previewMode==='mobile'">
+
+          @if(previewMode==='desktop'){
+
+          <div class="desktop-preview">
+
+            <!-- LEFT SIDE -->
+
+            <div class="desktop-left">
+
+              <div class="merchant-top">
+
+                <img
+                  [src]="logoUrl"
+                  class="merchant-logo">
+
+                <h4>{{merchantName}}</h4>
+
+              </div>
+
+              <div class="merchant-price">
+
+                <small>Total Payable</small>
+
+                <div class="price-row">
+
+                  <span
+                    class="amount"
+                    [style.color]="secondaryColor">
+
+                    {{amount}}
+
+                  </span>
+
+                  <i class="bi bi-chevron-down"></i>
+
+                </div>
+
+              </div>
+
+              <div class="desktop-bottom">
+
+                <div class="secure-row">
+
+                  <i class="bi bi-shield-check"></i>
+
+                  Secure Checkout
+
+                </div>
+
+                <small>
+
+                  Transaction Id : 123456789
+
+                </small>
+
+              </div>
+
+            </div>
+
+            <!-- RIGHT SIDE -->
+
+            <div class="desktop-right">
+
+              <div
+                class="desktop-header"
+                [style.background]="primaryColor">
+
+                <div>
+
+                  <i class="bi bi-arrow-left"></i>
+
+                  Back
+
+                </div>
+
+                <div>
+
+                  <i class="bi bi-person-circle"></i>
+
+                </div>
+
+              </div>
+
+              <div class="payment-title">
+
+                PAYMENT OPTIONS
+
+              </div>
+
+              <div class="payment-list">
+
+                @for(method of paymentMethods;track method){
+
+                <div class="payment-row">
+
+                  <div class="payment-left">
+
+                    <span>{{method}}</span>
+
+                  </div>
+
+                  <div class="payment-right">
+
+                    <i class="bi bi-chevron-right"></i>
+
+                  </div>
+
+                </div>
+
+                }
+
+              </div>
+
+              <div class="desktop-footer">
+
+                <div class="footer-logo">
+
+                  Powered by
+
+                  <strong>BankU</strong>
+
+                </div>
+
+                <div class="footer-icons">
+
+                  VISA • Mastercard • RuPay
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          }
+
+          @else {
+
+          <div class="mobile-preview">
+
+            <!-- Status Bar -->
+
+            <div class="mobile-status">
+
+              <span>9:41</span>
+
+              <div class="status-icons">
+
+                <i class="bi bi-reception-4"></i>
+                <i class="bi bi-wifi"></i>
+                <i class="bi bi-battery-full"></i>
+
+              </div>
+
+            </div>
+
+            <!-- Header -->
+
+            <div
+              class="mobile-header"
+              [style.background]="primaryColor">
+
+              <div class="mobile-merchant">
+
+                <img
+                  [src]="logoUrl"
+                  class="mobile-logo">
+
+                <span>
+
+                  {{merchantName}}
+
+                </span>
+
+              </div>
+
+            </div>
+
+            <!-- Amount -->
+
+            <div class="mobile-price-card">
+
+              <small>
+
+                Amount To Pay
+
+              </small>
+
+              <h2
+                [style.color]="secondaryColor">
+
+                {{amount}}
+
+              </h2>
+
+              <p>
+
+                Secure Payment Gateway
+
+              </p>
+
+            </div>
+
+            <!-- Payment Methods -->
+
+            <div class="mobile-method-list">
+
+              @for(method of paymentMethods; track method){
+
+              <div class="mobile-method-item">
+
+                <div class="left">
+
+                  <div class="method-icon">
+
+                    <i class="bi bi-credit-card"></i>
+
+                  </div>
+
+                  <span>
+
+                    {{method}}
+
+                  </span>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+              </div>
+
+              }
+
+            </div>
+
+            <!-- Pay Button -->
+
+            <div class="mobile-action">
+
+              <button
+                class="pay-btn"
+                [style.background]="secondaryColor">
+
+                Proceed To Pay
+
+              </button>
+
+            </div>
+
+            <!-- Footer -->
+
+            <div class="mobile-footer">
+
+              <div>
+
+                <i class="bi bi-shield-check"></i>
+
+                100% Secure Payment
+
+              </div>
+
+              <small>
+
+                Powered by <b>BankU</b>
+
+              </small>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- =============================
+           DEVICE SWITCH
+      ============================== -->
+
+      <div class="device-switch">
+
+        <button
+          [class.active]="previewMode==='desktop'"
+          (click)="changePreview('desktop')">
+
+          <i class="bi bi-display"></i>
+
+          Desktop
+
+        </button>
+
+        <button
+          [class.active]="previewMode==='mobile'"
+          (click)="changePreview('mobile')">
+
+          <i class="bi bi-phone"></i>
+
+          Mobile
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

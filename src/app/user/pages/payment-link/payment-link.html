@@ -1,0 +1,1330 @@
+<div class="payment-link-page">
+
+  <!-- =========================================
+       PAGE HEADER
+  ========================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h2>
+
+        Payment Links
+
+      </h2>
+
+    </div>
+
+    <div class="header-actions">
+
+      <button class="primary-btn" (click)="goToCreate()">
+
+        <i class="bi bi-plus-circle"></i>
+
+        Create New Payment Link
+
+      </button>
+
+      <button class="secondary-btn" (click)="goToBulk()">
+
+        <i class="bi bi-upload"></i>
+
+        Bulk Create
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       SUMMARY CARDS
+  ========================================== -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+
+      <h4>
+
+        Active Payment Links
+
+      </h4>
+
+      <h2>
+
+        0
+
+      </h2>
+
+      <span>
+
+        --
+
+      </span>
+
+    </div>
+
+    <div class="summary-card">
+
+      <h4>
+
+        Revenue Via Payment Links
+
+      </h4>
+
+      <h2>
+
+        ₹0.00
+
+      </h2>
+
+      <span>
+
+        --
+
+      </span>
+
+    </div>
+
+    <div class="summary-card">
+
+      <h4>
+
+        Total Views
+
+      </h4>
+
+      <h2>
+
+        0
+
+      </h2>
+
+      <span>
+
+        --
+
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       TOP TABS
+  ========================================== -->
+
+  <div class="top-tabs">
+
+    <button
+      class="tab"
+      [class.active]="activeTab==='links'"
+      (click)="setTab('links')">
+
+      Payment Links
+
+    </button>
+
+    <button
+      class="tab"
+      [class.active]="activeTab==='bulk'"
+      (click)="setTab('bulk')">
+
+      Bulk Uploads
+
+    </button>
+
+    <button
+      class="tab"
+      [class.active]="activeTab==='old'"
+      (click)="setTab('old')">
+
+      Old Payment Link Data
+
+    </button>
+
+  </div>
+
+  @if(actionMode==='create'){
+
+  <div class="action-panel">
+
+    <div class="action-panel-header">
+
+      <h3>Create New Payment Link</h3>
+
+      <button class="secondary-btn" (click)="setActionMode('list')">
+
+        <i class="bi bi-chevron-left"></i>
+
+        Back to Payment Links
+
+      </button>
+
+    </div>
+
+    <div class="action-panel-body">
+
+      <p>
+
+        Use this section to create a new payment link. Fill in the required details and proceed.
+
+      </p>
+
+      <div class="action-card">
+
+        <h4>Payment link details</h4>
+
+        <p>Form fields go here.</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  }
+
+  @if(actionMode==='bulk'){
+
+  <div class="action-panel">
+
+    <div class="action-panel-header">
+
+      <h3>Bulk Create Payment Links</h3>
+
+      <button class="secondary-btn" (click)="setActionMode('list')">
+
+        <i class="bi bi-chevron-left"></i>
+
+        Back to Payment Links
+
+      </button>
+
+    </div>
+
+    <div class="action-panel-body">
+
+      <p>
+
+        Upload a CSV to create payment links in bulk.
+
+      </p>
+
+      <div class="action-card">
+
+        <h4>Bulk upload</h4>
+
+        <p>Upload component or instructions go here.</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  }
+
+  <!-- =========================================
+       PAYMENT LINKS TAB
+  ========================================== -->
+
+  @if(activeTab==='links' && actionMode==='list'){
+
+  <div class="payment-links-wrapper">
+
+    <!-- BACKDROP OVERLAY -->
+    @if(showFilter || showPurpose || showDownload || showDateDropdown || showDateCalendar || showBulkFilterDropdown){
+      <div class="backdrop" (click)="closeAllPopups()"></div>
+    }
+
+    <!-- =========================
+         FILTER BAR
+    ========================== -->
+
+    <div class="filter-bar">
+
+      <!-- Date -->
+
+     <div class="date-filter">
+
+  <button
+    class="filter-btn"
+    (click)="toggleDateDropdown()">
+
+    <i class="bi bi-calendar3"></i>
+
+   {{ fromDate }} - {{ toDate }}
+
+    <i class="bi bi-chevron-down"></i>
+
+  </button>
+
+ @if(showDateDropdown){
+
+<div class="date-dropdown-menu">
+
+    @for(item of dateOptions; track item){
+
+    <div
+        class="dropdown-item"
+        [class.active]="selectedDateOption===item"
+        (click)="selectDate(item)">
+
+        {{item}}
+
+    </div>
+
+    }
+
+</div>
+
+}
+
+ @if(showDateCalendar){
+
+<div class="date-range-popup">
+
+    <!-- LEFT MENU -->
+
+    <div class="range-sidebar">
+
+        @for(item of dateOptions; track item){
+
+        <div
+            class="range-item"
+            [class.active]="selectedDateOption===item"
+            (click)="selectDate(item)">
+
+            {{item}}
+
+        </div>
+
+        }
+
+        <div class="range-note">
+
+            Maximum range selection is 90 days.
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="range-content">
+
+        <!-- HEADER -->
+
+        <div class="calendar-header">
+
+            <div class="month">
+
+                <button (click)="previousMonth()">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                </button>
+
+                <span>{{months[leftMonth]}} {{leftYear}}</span>
+
+                <button>
+
+                    <i class="bi bi-chevron-down"></i>
+
+                </button>
+
+            </div>
+
+            <div class="month">
+
+                <button>
+
+                    <i class="bi bi-chevron-down"></i>
+
+                </button>
+
+                <span>{{months[rightMonth]}} {{rightYear}}</span>
+
+                <button (click)="nextMonth()">
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- CALENDAR -->
+
+        <div class="calendar-wrapper">
+
+            <!-- Month 1 -->
+
+            <div class="calendar">
+
+                <div class="week">
+
+                    @for(day of weekDays; track day){
+
+                    <span>{{day}}</span>
+
+                    }
+
+                </div>
+
+                <div class="days">
+
+                  @for(day of leftCalendar; track day){
+
+                    <div
+                        class="day"
+                        [class.active]="isDayActive(day)"
+                        [class.in-range]="isDayInRange(day)"
+                        (click)="selectCalendarDay(day)">
+
+                        {{day?.getDate() || ''}}
+
+                    </div>
+
+                    }
+
+                </div>
+
+            </div>
+
+            <!-- Month 2 -->
+
+            <div class="calendar">
+
+                <div class="week">
+
+                    @for(day of weekDays; track day){
+
+                    <span>{{day}}</span>
+
+                    }
+
+                </div>
+
+                <div class="days">
+
+                   @for(day of rightCalendar; track day){
+
+                    <div
+                        class="day"
+                        [class.active]="isDayActive(day)"
+                        [class.in-range]="isDayInRange(day)"
+                        (click)="selectCalendarDay(day)">
+
+                        {{day?.getDate() || ''}}
+
+                    </div>
+
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="range-footer">
+
+            <input
+                type="text"
+                [value]="fromDate"
+                readonly>
+
+            <span>:</span>
+
+            <input
+                type="text"
+                [value]="toDate"
+                readonly>
+
+           <button
+class="reset-btn"
+(click)="resetDateRange()">
+
+                Reset
+
+            </button>
+
+            <button
+                class="apply-btn"
+                (click)="applyDateRange()">
+
+                Apply
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+</div>
+      <!-- Filter -->
+
+      <button
+        class="filter-btn"
+        (click)="toggleFilter()">
+
+        <i class="bi bi-funnel"></i>
+
+        Filter
+
+        <i class="bi bi-chevron-down"></i>
+
+      </button>
+@if(showFilter){
+
+<div class="popup filter-popup">
+
+  <h3>Filter</h3>
+
+  <div class="popup-section">
+
+    <h5>STATUS</h5>
+
+    <label>
+
+      <input
+        type="checkbox"
+        [(ngModel)]="status.active">
+
+      Active
+
+    </label>
+
+    <label>
+
+      <input
+        type="checkbox"
+        [(ngModel)]="status.deactivated">
+
+      Deactivated
+
+    </label>
+
+    <label>
+
+      <input
+        type="checkbox"
+        [(ngModel)]="status.expired">
+
+      Expired
+
+    </label>
+
+  </div>
+
+  <div class="popup-section">
+
+    <h5>PAYMENT TYPE</h5>
+
+    <label>
+
+      <input
+        type="checkbox"
+        [(ngModel)]="paymentType.standard">
+
+      Standard
+
+    </label>
+
+    <label>
+
+      <input
+        type="checkbox"
+        [(ngModel)]="paymentType.partial">
+
+      Partial Payment
+
+    </label>
+
+  </div>
+
+  <div class="popup-footer">
+
+    <button
+      class="cancel-btn"
+      (click)="resetFilter()">
+
+      Cancel
+
+    </button>
+
+    <button
+      class="apply-btn"
+      (click)="applyFilter()">
+
+      Apply
+
+    </button>
+
+  </div>
+
+</div>
+
+}
+      <!-- Purpose -->
+
+      <button
+        class="filter-btn purpose-btn"
+        (click)="togglePurpose()">
+
+        {{selectedPurpose}}
+
+        <i class="bi bi-chevron-down"></i>
+
+      </button>
+@if(showPurpose){
+
+<div class="popup purpose-popup">
+
+  @for(item of purposeList;track item){
+
+  <div
+    class="popup-item"
+    (click)="selectPurpose(item)">
+
+    {{item}}
+
+  </div>
+
+  }
+
+</div>
+
+}
+      <!-- Search -->
+
+      <div class="search-box">
+
+        <input
+          type="text"
+          placeholder="Search">
+
+        <button>
+
+          Search
+
+        </button>
+
+      </div>
+
+      <!-- Download -->
+
+      <button
+        class="download-btn"
+        (click)="toggleDownload()">
+
+        <i class="bi bi-download"></i>
+
+        Download
+
+        <i class="bi bi-chevron-down"></i>
+
+      </button>
+@if(showDownload){
+
+<div class="popup download-popup">
+
+  @for(item of downloadList;track item){
+
+  <div class="popup-item">
+
+    {{item}}
+
+  </div>
+
+  }
+
+</div>
+
+}
+    </div>
+
+    <!-- =========================
+         TABLE
+    ========================== -->
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            @for(col of selectedColumns; track col){
+              <th>{{ col }}</th>
+            }
+
+            <th>
+
+              <button
+                class="setting-btn"
+                (click)="openColumnConfig()">
+
+                <i class="bi bi-gear-fill"></i>
+
+              </button>
+
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @if(tableData.length > 0){
+            @for(row of tableData; track row){
+              <tr>
+                @for(col of selectedColumns; track col){
+                  <td>{{ row[col] || '' }}</td>
+                }
+                <td>
+                  <button class="setting-btn">
+                    <i class="bi bi-three-dots"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          } @else {
+            <tr>
+              <td [attr.colspan]="selectedColumns.length + 1">
+                <div class="empty-state">
+                  <i class="bi bi-inbox"></i>
+                  <h3>
+                    No Result Found
+                  </h3>
+                  <p>
+                    Oops! We didn't find anything.
+                  </p>
+                </div>
+              </td>
+            </tr>
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  }
+
+  <!-- =========================================
+       BULK UPLOAD TAB
+  ========================================== -->
+
+  @if(activeTab==='bulk'){
+
+<div class="bulk-wrapper">
+
+  <!-- BACKDROP OVERLAY -->
+  @if(showDateDropdown || showDateCalendar || showBulkFilterDropdown){
+    <div class="backdrop" (click)="closeAllPopups()"></div>
+  }
+
+  <!-- FILTER BAR -->
+
+  <div class="filter-bar">
+
+    <div class="date-filter">
+
+      <button
+        class="filter-btn"
+        (click)="toggleDateDropdown()">
+
+        <i class="bi bi-calendar3"></i>
+
+        {{fromDate}} - {{toDate}}
+
+        <i class="bi bi-chevron-down"></i>
+
+      </button>
+
+      @if(showDateDropdown){
+
+      <div class="date-dropdown-menu">
+
+        @for(item of dateOptions; track item){
+
+        <div
+            class="dropdown-item"
+            [class.active]="selectedDateOption===item"
+            (click)="selectDate(item)">
+
+            {{item}}
+
+        </div>
+
+        }
+
+      </div>
+
+      }
+
+      @if(showDateCalendar){
+
+      <div class="date-range-popup">
+
+          <!-- LEFT MENU -->
+
+          <div class="range-sidebar">
+
+              @for(item of dateOptions; track item){
+
+              <div
+                  class="range-item"
+                  [class.active]="selectedDateOption===item"
+                  (click)="selectDate(item)">
+
+                  {{item}}
+
+              </div>
+
+              }
+
+              <div class="range-note">
+
+                  Maximum range selection is 90 days.
+
+              </div>
+
+          </div>
+
+          <!-- RIGHT -->
+
+          <div class="range-content">
+
+              <!-- HEADER -->
+
+              <div class="calendar-header">
+
+                  <div class="month">
+
+                      <button (click)="previousMonth()">
+
+                          <i class="bi bi-arrow-left"></i>
+
+                      </button>
+
+                      <span>{{months[leftMonth]}} {{leftYear}}</span>
+
+                      <button>
+
+                          <i class="bi bi-chevron-down"></i>
+
+                      </button>
+
+                  </div>
+
+                  <div class="month">
+
+                      <button>
+
+                          <i class="bi bi-chevron-down"></i>
+
+                      </button>
+
+                      <span>{{months[rightMonth]}} {{rightYear}}</span>
+
+                      <button (click)="nextMonth()">
+
+                          <i class="bi bi-arrow-right"></i>
+
+                      </button>
+
+                  </div>
+
+              </div>
+
+              <!-- CALENDAR -->
+
+              <div class="calendar-wrapper">
+
+                  <!-- Month 1 -->
+
+                  <div class="calendar">
+
+                      <div class="week">
+
+                          @for(day of weekDays; track day){
+
+                          <span>{{day}}</span>
+
+                          }
+
+                      </div>
+
+                      <div class="days">
+
+                        @for(day of leftCalendar; track day){
+
+                          <div
+                              class="day"
+                              [class.active]="day==12 || day==18"
+                              [class.in-range]="day>=12 && day<=18">
+
+                              {{day?.getDate() || ''}}
+
+                          </div>
+
+                          }
+
+                      </div>
+
+                  </div>
+
+                  <!-- Month 2 -->
+
+                  <div class="calendar">
+
+                      <div class="week">
+
+                          @for(day of weekDays; track day){
+
+                          <span>{{day}}</span>
+
+                          }
+
+                      </div>
+
+                      <div class="days">
+
+                         @for(day of rightCalendar; track day){
+
+                          <div class="day">
+
+                              {{day?.getDate() || ''}}
+
+                          </div>
+
+                          }
+
+                      </div>
+
+                  </div>
+
+              </div>
+
+              <!-- FOOTER -->
+
+              <div class="range-footer">
+
+                  <input
+                      type="text"
+                      [value]="fromDate"
+                      readonly>
+
+                  <span>:</span>
+
+                  <input
+                      type="text"
+                      [value]="toDate"
+                      readonly>
+
+                 <button
+      class="reset-btn"
+      (click)="resetDateRange()">
+
+                      Reset
+
+                  </button>
+
+                  <button
+                      class="apply-btn"
+                      (click)="applyDateRange()">
+
+                      Apply
+
+                  </button>
+
+              </div>
+
+          </div>
+
+      </div>
+
+      }
+
+    </div>
+
+    <button
+      class="filter-btn"
+      (click)="toggleBulkFilterDropdown()">
+
+      <i class="bi bi-funnel"></i>
+
+      {{selectedBulkFilter}}
+
+      <i class="bi bi-chevron-down"></i>
+
+    </button>
+
+    @if(showBulkFilterDropdown){
+
+    <div class="bulk-filter-dropdown">
+
+      @for(option of bulkFilterOptions; track option){
+
+      <div
+        class="dropdown-item"
+        [class.active]="selectedBulkFilter===option"
+        (click)="selectBulkFilter(option)">
+
+        {{option}}
+
+      </div>
+
+      }
+
+    </div>
+
+    }
+
+    <div class="search-box">
+
+      <input
+        type="text"
+        placeholder="Search by Batch ID">
+
+      <button>
+
+        Search
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+
+  <div class="table-wrapper">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Created On</th>
+
+          <th>Batch ID</th>
+
+          <th>Creator Email</th>
+
+          <th>Batch Description</th>
+
+          <th>Link Created</th>
+
+          <th>Active Count</th>
+
+          <th>Status</th>
+
+          <th>Actions</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr>
+
+          <td colspan="8">
+
+            <div class="empty-state">
+
+              <img
+                src="assets/images/no-result.png"
+                width="130">
+
+              <h5>
+
+                NO RESULT FOUND
+
+              </h5>
+
+              <h3>
+
+                Oops! We didn't find anything
+
+              </h3>
+
+              <p>
+
+                Remove the filters or reset the date & try again.
+
+              </p>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+}
+
+  <!-- =========================================
+       OLD PAYMENT LINKS
+  ========================================== -->
+
+ @if(activeTab==='old'){
+
+<div class="old-wrapper">
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>FILE NAME</th>
+
+                    <th>STATUS</th>
+
+                    <th>ACTIONS</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td colspan="4">
+
+                        <div class="server-error">
+
+                            <img
+                                src="assets/images/server-error.png"
+                                class="server-img">
+
+                            <div class="error-content">
+
+                                <span class="error-label">
+
+                                    SERVER ERROR
+
+                                </span>
+
+                                <h2>
+
+                                    Oops! Something went wrong
+
+                                </h2>
+
+                                <p>
+
+                                    An error occurred while loading the data, please retry
+
+                                </p>
+
+                                <button class="retry-btn">
+
+                                    <i class="bi bi-arrow-clockwise"></i>
+
+                                    Try Again
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+}
+
+
+
+@if(showColumnConfig){
+
+<div class="sidebar-overlay" (click)="closeOnBackdropClick($event)">
+
+  <div class="column-sidebar">
+
+    <div class="sidebar-header">
+
+      <h2>
+
+        Column Configuration
+
+      </h2>
+
+      <button
+        class="close-btn"
+        (click)="closeColumnConfig()">
+
+        <i class="bi bi-x-lg"></i>
+
+      </button>
+
+    </div>
+
+    <div class="sidebar-body">
+
+      <!-- LEFT SECTION - AVAILABLE COLUMNS -->
+
+      <div class="column-section">
+
+        <div class="section-header">
+
+          <h4>
+
+            Available Columns
+
+          </h4>
+
+          <span class="count-badge">{{ availableColumns.length }}</span>
+
+        </div>
+
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search columns"
+          [(ngModel)]="availableSearch">
+
+        <div class="column-list">
+
+          @for(col of filteredAvailableColumns; track col){
+
+          <label class="column-item">
+
+            <input 
+              type="checkbox"
+              [checked]="isColumnSelected(col)"
+              (change)="toggleColumnSelection(col)">
+
+            <span>{{col}}</span>
+
+          </label>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- RIGHT SECTION - SELECTED COLUMNS -->
+
+      <div class="column-section">
+
+        <div class="section-header">
+
+          <h4>
+
+            Selected Columns
+
+          </h4>
+
+          <span class="count-badge">{{ selectedColumns.length }}</span>
+
+        </div>
+
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search selected"
+          [(ngModel)]="selectedSearch">
+
+        <div class="column-list selected-list">
+
+          @for(col of filteredSelectedColumns; track col){
+
+          <div class="selected-item">
+
+            <span class="item-content">
+
+              <i class="bi bi-grip-vertical"></i>
+
+              {{col}}
+
+            </span>
+
+            <button 
+              class="remove-btn"
+              (click)="removeColumn(col)">
+
+              <i class="bi bi-x-lg"></i>
+
+            </button>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="sidebar-footer">
+
+      <button
+        class="reset-btn"
+        (click)="resetConfiguration()">
+
+        Reset To Default
+
+      </button>
+
+      <button
+        class="apply-btn"
+        (click)="applyConfiguration()">
+
+        Apply Configuration
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
+</div>

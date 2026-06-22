@@ -1,0 +1,445 @@
+<div class="settlements-page">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <div class="page-header">
+
+    <h1>
+      Settlements
+    </h1>
+
+   <button
+  class="invoice-btn"
+  (click)="downloadMonthlyInvoice()"
+>
+
+      <i class="bi bi-download"></i>
+
+      Download Monthly Invoice
+
+    </button>
+
+  </div>
+
+  <!-- =========================
+       SETTLEMENT CYCLE
+  ========================== -->
+
+  <div class="settlement-cycle">
+
+    <span>
+      Active settlement cycle :
+      After 2 Days
+    </span>
+
+   <a
+  href="javascript:void(0)"
+  (click)="manageCycle()"
+>
+      Manage Cycle
+    </a>
+
+  </div>
+
+  <!-- =========================
+       SUMMARY CARDS
+  ========================== -->
+
+  <div class="summary-cards">
+
+    <div class="summary-card">
+
+      <div class="card-title">
+
+        Last Settled Amount
+
+        <i class="bi bi-info-circle"></i>
+
+      </div>
+
+      <div class="card-value">
+
+        ₹83,747.18
+
+      </div>
+
+      <div class="card-subtitle">
+
+        Settled on 5th Dec'25
+
+      </div>
+
+    </div>
+
+    <div class="summary-card">
+
+      <div class="card-title">
+
+        Total Settlement Pending
+
+        <i class="bi bi-info-circle"></i>
+
+      </div>
+
+      <div class="card-value">
+
+        ₹0.00
+
+      </div>
+
+    </div>
+
+    <div class="summary-card">
+
+      <div class="card-title">
+
+        Upcoming Settlement Amount
+
+        <i class="bi bi-info-circle"></i>
+
+      </div>
+
+      <div class="card-value">
+
+        ₹0.00
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- =========================
+       FILTERS
+  ========================== -->
+
+  <div class="filters-row">
+
+    <div class="filters-left">
+
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search by UTR ID..."
+      />
+
+      <button
+        class="search-btn"
+        (click)="searchSettlement()"
+      >
+        Search
+      </button>
+
+     <div class="dropdown-wrapper">
+
+  <button
+    class="filter-btn"
+    (click)="toggleDateDropdown()"
+  >
+
+    <i class="bi bi-calendar3"></i>
+
+    {{ dateRange }}
+
+    <i
+      class="bi"
+      [ngClass]="
+        isDateDropdownOpen
+          ? 'bi-chevron-up'
+          : 'bi-chevron-down'
+      "
+    ></i>
+
+  </button>
+
+@if (isDateDropdownOpen) {
+
+  <div class="dropdown-menu">
+
+    @for (item of dateOptions; track item) {
+
+      <div
+        class="dropdown-item"
+        (click)="selectDateRange(item)"
+      >
+        {{ item }}
+      </div>
+
+    }
+
+  </div>
+
+}
+
+</div>
+
+@if (showCustomDatePicker) {
+
+  <div class="inline-date-range">
+
+    <div class="date-field">
+
+      <label>From</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customFromDate"
+      />
+
+    </div>
+
+    <div class="date-field">
+
+      <label>To</label>
+
+      <input
+        type="date"
+        class="date-input"
+        [(ngModel)]="customToDate"
+      />
+
+    </div>
+
+    <button
+      class="apply-range-btn"
+      (click)="applyCustomDateRange()"
+    >
+      Apply
+    </button>
+
+    <button
+      class="cancel-range-btn"
+      (click)="closeCustomDateRange()"
+    >
+      Cancel
+    </button>
+
+  </div>
+
+}
+
+  <div class="dropdown-wrapper">
+
+  <button
+    class="filter-btn"
+    (click)="toggleFilterDropdown()"
+  >
+
+    <i class="bi bi-funnel"></i>
+
+    Filter
+
+    <i
+      class="bi"
+      [ngClass]="
+        isFilterDropdownOpen
+          ? 'bi-chevron-up'
+          : 'bi-chevron-down'
+      "
+    ></i>
+
+  </button>
+
+  @if (isFilterDropdownOpen) {
+
+    <div class="filter-popup">
+
+      <div class="filter-header">
+        Filter
+      </div>
+
+      <div class="filter-section">
+
+        <h6>STATUS</h6>
+
+        @for (status of statusOptions; track status) {
+
+          <label>
+
+            <input
+              type="checkbox"
+              (change)="toggleStatus(status)"
+            />
+
+            {{ status }}
+
+          </label>
+
+        }
+
+      </div>
+
+      <div class="filter-section">
+
+        <h6>SETTLEMENT CYCLE</h6>
+
+        @for (cycle of cycleOptions; track cycle) {
+
+          <label>
+
+            <input
+              type="checkbox"
+              (change)="toggleCycle(cycle)"
+            />
+
+            {{ cycle }}
+
+          </label>
+
+        }
+
+      </div>
+
+      <div class="filter-actions">
+
+        <button
+          class="cancel-btn"
+          (click)="clearFilters()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="apply-btn"
+          (click)="applyFilters()"
+        >
+          Apply
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>
+
+       
+
+    </div>
+
+ <div class="dropdown-wrapper">
+
+  <button
+    class="download-btn"
+    (click)="toggleDownloadDropdown()"
+  >
+
+    <i class="bi bi-download"></i>
+
+    Download
+
+    <i
+      class="bi"
+      [ngClass]="
+        isDownloadDropdownOpen
+          ? 'bi-chevron-up'
+          : 'bi-chevron-down'
+      "
+    ></i>
+
+  </button>
+
+  @if (isDownloadDropdownOpen) {
+
+  <div class="dropdown-menu download-menu">
+
+    @for (option of downloadOptions; track option) {
+
+      <div
+        class="dropdown-item"
+        (click)="downloadSettlement(option)"
+      >
+        {{ option }}
+      </div>
+
+    }
+
+  </div>
+
+}
+
+</div>
+
+      
+
+  </div>
+
+  <!-- =========================
+       TABLE
+  ========================== -->
+
+  <div class="table-wrapper">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>DATE</th>
+
+          <th>UTR NUMBER</th>
+
+          <th>SALES AMOUNT</th>
+
+          <th>FEES</th>
+
+          <th>SETTLED AMOUNT</th>
+
+          <th>STATUS</th>
+
+          <th>
+            <i class="bi bi-gear-fill"></i>
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr>
+
+          <td colspan="7">
+
+            <div class="empty-state">
+
+              <div class="empty-image">
+
+                <i class="bi bi-inbox"></i>
+
+              </div>
+
+              <div class="empty-content">
+
+                <h5>
+                  NO RESULT FOUND
+                </h5>
+
+                <h3>
+                  Oops! We didn't find anything
+                </h3>
+
+                <p>
+                  Remove the filters or reset the date & try again.
+                </p>
+
+              </div>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

@@ -1,0 +1,1189 @@
+<div class="dashboard-page">
+ <!-- =========================================
+       WELCOME
+  ========================================= -->
+
+  <div class="welcome-section">
+
+    <h1>
+      Hi test_user
+    </h1>
+
+  </div>
+@if(selectedIntegration === 'hosted') {
+
+<div class="hosted-checkout-wrapper">
+
+  <!-- Header -->
+
+  <div class="checkout-header">
+
+    <div
+      class="left"
+      (click)="closeIntegration()"
+    >
+      <i class="bi bi-arrow-left"></i>
+
+      <span>
+        PayU Hosted Checkout
+      </span>
+    </div>
+
+    <a class="docs-link">
+      View Docs
+    </a>
+
+    <button
+      class="close-btn"
+      (click)="closeIntegration()"
+    >
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+  </div>
+
+  <div class="checkout-body">
+
+    <!-- LEFT -->
+
+    <div class="checkout-left">
+
+      <!-- STEP 1 -->
+
+      <div class="step-item">
+
+        <div class="step-circle completed">
+          1
+        </div>
+
+        <div class="step-content">
+
+          <div
+            class="step-header"
+            (click)="toggleStep(1)"
+          >
+
+            Get Test Key and Salt
+
+            <i
+              class="bi"
+              [ngClass]="
+                activeStep === 1
+                  ? 'bi-chevron-up'
+                  : 'bi-chevron-down'
+              "
+            ></i>
+
+          </div>
+
+          @if(activeStep === 1) {
+
+          <div class="step-body">
+
+            <div class="key-box">
+
+              <span>Test Key</span>
+
+              <strong>LHps9s</strong>
+
+              <button
+                (click)="copyText('LHps9s')"
+              >
+                <i class="bi bi-copy"></i>
+              </button>
+
+            </div>
+
+            <div class="key-box">
+
+              <span>Test Salt</span>
+
+              <strong>Not Available</strong>
+
+              <button
+                (click)="copyText('Not Available')"
+              >
+                <i class="bi bi-copy"></i>
+              </button>
+
+            </div>
+
+            <div class="info-box">
+
+              You'll use these to create
+              the secure hash for API calls.
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- STEP 2 -->
+
+      <div class="step-item">
+
+        <div class="step-circle">
+          2
+        </div>
+
+        <div class="step-content">
+
+          <div
+            class="step-header"
+            (click)="toggleStep(2)"
+          >
+
+            Run your first test transaction
+
+            <i
+              class="bi"
+              [ngClass]="
+                activeStep === 2
+                  ? 'bi-chevron-up'
+                  : 'bi-chevron-down'
+              "
+            ></i>
+
+          </div>
+
+          @if(activeStep === 2) {
+
+          <div class="step-body">
+
+            <div class="action-row">
+
+              <span>
+                Set up API parameters
+              </span>
+
+              <a>Get details</a>
+
+            </div>
+
+            <div class="action-row">
+
+              <span>
+                Try a transaction with
+                test UPI/Card
+              </span>
+
+              <a>Get details</a>
+
+            </div>
+
+            <div class="action-row">
+
+              <span>
+                Verify transaction status
+              </span>
+
+              <a>View</a>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- STEP 3 -->
+
+      <div class="step-item">
+
+        <div class="step-circle">
+          3
+        </div>
+
+        <div class="step-content">
+
+          <div
+            class="step-header"
+            (click)="toggleStep(3)"
+          >
+
+            Go live in minutes
+
+            <i
+              class="bi"
+              [ngClass]="
+                activeStep === 3
+                  ? 'bi-chevron-up'
+                  : 'bi-chevron-down'
+              "
+            ></i>
+
+          </div>
+
+          @if(activeStep === 3) {
+
+          <div class="step-body">
+
+            <div class="action-row">
+
+              <span>
+                Switch to Live Key & Salt
+              </span>
+
+              <a>View details</a>
+
+            </div>
+
+            <div class="action-row">
+
+              <span>
+                Complete a real transaction
+              </span>
+
+            </div>
+
+            <div class="action-row">
+
+              <span>
+                Track live payments
+              </span>
+
+              <a>View</a>
+
+            </div>
+
+            <div class="info-box warning">
+
+              You can only try a live
+              transaction after finishing
+              onboarding.
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+   <div class="checkout-preview">
+
+  <div class="preview-placeholder">
+
+    <div class="preview-icon">
+
+      <i class="bi bi-credit-card-2-front-fill"></i>
+
+    </div>
+
+    <h3>
+      Hosted Checkout
+    </h3>
+
+    <p>
+      Complete the integration steps to
+      start accepting payments securely.
+    </p>
+
+  </div>
+
+</div>
+
+  </div>
+
+</div>
+
+}
+@if(selectedIntegration === 'merchant') {
+
+<div class="hosted-checkout-wrapper">
+
+  <div class="checkout-header">
+
+    <div
+      class="left"
+      (click)="closeIntegration()"
+    >
+      <i class="bi bi-arrow-left"></i>
+
+      <span>
+        Merchant Hosted Checkout
+      </span>
+    </div>
+
+    <a class="docs-link">
+      View Docs
+    </a>
+
+    <button
+      class="close-btn"
+      (click)="closeIntegration()"
+    >
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+  </div>
+
+  <div class="checkout-body">
+
+    <div class="checkout-left">
+
+      <!-- Step 1 -->
+
+      <div class="step-item">
+
+        <div class="step-circle completed">
+          1
+        </div>
+
+        <div class="step-content">
+
+          <div
+            class="step-header"
+            (click)="toggleStep(1)"
+          >
+            Configure API Credentials
+
+            <i
+              class="bi"
+              [ngClass]="activeStep === 1 ? 'bi-chevron-up' : 'bi-chevron-down'"
+            ></i>
+
+          </div>
+
+          @if(activeStep === 1) {
+
+          <div class="step-body">
+
+            <div class="info-box">
+              Add Merchant Key & Salt into your backend configuration.
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- Step 2 -->
+
+      <div class="step-item">
+
+        <div class="step-circle">
+          2
+        </div>
+
+        <div class="step-content">
+
+          <div
+            class="step-header"
+            (click)="toggleStep(2)"
+          >
+            Create Payment API
+
+            <i
+              class="bi"
+              [ngClass]="activeStep === 2 ? 'bi-chevron-up' : 'bi-chevron-down'"
+            ></i>
+
+          </div>
+
+          @if(activeStep === 2) {
+
+          <div class="step-body">
+
+            <div class="action-row">
+              <span>Create payment request API</span>
+            </div>
+
+            <div class="action-row">
+              <span>Generate transaction hash</span>
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- Step 3 -->
+
+      <div class="step-item">
+
+        <div class="step-circle">
+          3
+        </div>
+
+        <div class="step-content">
+
+          <div
+            class="step-header"
+            (click)="toggleStep(3)"
+          >
+            Verify Payment Response
+
+            <i
+              class="bi"
+              [ngClass]="activeStep === 3 ? 'bi-chevron-up' : 'bi-chevron-down'"
+            ></i>
+
+          </div>
+
+          @if(activeStep === 3) {
+
+          <div class="step-body">
+
+            <div class="action-row">
+              <span>Handle success response</span>
+            </div>
+
+            <div class="action-row">
+              <span>Handle failure response</span>
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Right Side -->
+
+    <div class="checkout-preview">
+
+      <div class="preview-placeholder">
+
+        <div class="preview-icon">
+
+          <i class="bi bi-credit-card-fill"></i>
+
+        </div>
+
+        <h3>
+          Merchant Hosted
+        </h3>
+
+        <p>
+          Integrate payment APIs directly into your application.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
+@if(selectedIntegration === 'plugin') {
+
+<div class="hosted-checkout-wrapper">
+
+  <!-- Header -->
+
+  <div class="checkout-header">
+
+    <div
+      class="left"
+      (click)="closeIntegration()"
+    >
+      <i class="bi bi-arrow-left"></i>
+
+      <span>
+        Plugin Integration
+      </span>
+    </div>
+
+    <a class="docs-link">
+      View Docs
+    </a>
+
+    <button
+      class="close-btn"
+      (click)="closeIntegration()"
+    >
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+  </div>
+
+  <div class="checkout-body">
+
+    <!-- LEFT SIDE -->
+
+    <div class="checkout-left">
+
+      <!-- STEP 1 -->
+
+      <div class="step-item">
+
+        <div
+          class="step-circle"
+          [class.completed]="activeStep > 1"
+        >
+          1
+        </div>
+
+        <div class="step-content">
+
+          <div
+            class="step-header"
+            (click)="toggleStep(1)"
+          >
+
+            Select Platform
+
+            <i
+              class="bi"
+              [ngClass]="
+                activeStep === 1
+                  ? 'bi-chevron-up'
+                  : 'bi-chevron-down'
+              "
+            ></i>
+
+          </div>
+
+          @if(activeStep === 1){
+
+          <div class="step-body">
+
+            <div class="action-row">
+
+              <span>Shopify</span>
+
+              <a>Select</a>
+
+            </div>
+
+            <div class="action-row">
+
+              <span>WooCommerce</span>
+
+              <a>Select</a>
+
+            </div>
+
+            <div class="action-row">
+
+              <span>Magento</span>
+
+              <a>Select</a>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- STEP 2 -->
+
+      <div class="step-item">
+
+        <div
+          class="step-circle"
+          [class.completed]="activeStep > 2"
+        >
+          2
+        </div>
+
+        <div class="step-content">
+
+          <div
+            class="step-header"
+            (click)="toggleStep(2)"
+          >
+
+            Install Plugin
+
+            <i
+              class="bi"
+              [ngClass]="
+                activeStep === 2
+                  ? 'bi-chevron-up'
+                  : 'bi-chevron-down'
+              "
+            ></i>
+
+          </div>
+
+          @if(activeStep === 2){
+
+          <div class="step-body">
+
+            <div class="action-row">
+
+              <span>Download Plugin</span>
+
+              <a>Download</a>
+
+            </div>
+
+            <div class="action-row">
+
+              <span>Install On Store</span>
+
+              <a>Guide</a>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <!-- STEP 3 -->
+
+      <div class="step-item">
+
+        <div class="step-circle">
+          3
+        </div>
+
+        <div class="step-content">
+
+          <div
+            class="step-header"
+            (click)="toggleStep(3)"
+          >
+
+            Go Live
+
+            <i
+              class="bi"
+              [ngClass]="
+                activeStep === 3
+                  ? 'bi-chevron-up'
+                  : 'bi-chevron-down'
+              "
+            ></i>
+
+          </div>
+
+          @if(activeStep === 3){
+
+          <div class="step-body">
+
+            <div class="action-row">
+
+              <span>Enable Live Mode</span>
+
+              <a>Activate</a>
+
+            </div>
+
+            <div class="action-row">
+
+              <span>Start Accepting Payments</span>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+
+    <div class="checkout-preview">
+
+      <div class="preview-placeholder">
+
+        <div class="preview-icon">
+
+          <i class="bi bi-plugin"></i>
+
+        </div>
+
+        <h3>
+          Plugin Integration
+        </h3>
+
+        <p>
+          Connect BankU with Shopify,
+          WooCommerce and other platforms.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
+
+
+  <!-- =========================================
+       INTEGRATION SECTION
+  ========================================= -->
+
+  <div class="integration-section">
+
+    <h3>
+      Start accepting payments by completing integration
+    </h3>
+
+    <div class="integration-grid">
+
+      <!-- Card 1 -->
+
+     <div
+  class="integration-card featured-card"
+  [class.active-card]="selectedIntegration === 'hosted'"
+  (click)="selectIntegration('hosted')"
+>
+
+        <div class="card-image">
+
+          <i class="bi bi-cart-check-fill"></i>
+
+        </div>
+
+        <div class="card-content">
+
+          <div class="card-header">
+
+            <h4>
+              BankU Hosted
+            </h4>
+
+            <span class="days-badge">
+              1-2 Days
+            </span>
+
+          </div>
+
+          <p>
+            Accept payments on your website using
+            prebuilt checkout page.
+          </p>
+
+          <button class="card-action">
+
+            <i class="bi bi-arrow-right"></i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Card 2 -->
+
+    <div
+  class="integration-card"
+  [class.active-card]="selectedIntegration === 'merchant'"
+  (click)="selectIntegration('merchant')"
+>
+
+        <div class="card-image">
+
+          <i class="bi bi-credit-card-2-front-fill"></i>
+
+        </div>
+
+        <div class="card-content">
+
+          <div class="card-header">
+
+            <h4>
+              Merchant Hosted
+            </h4>
+
+            <span class="days-badge warning">
+              2-3 Days
+            </span>
+
+          </div>
+
+          <p>
+            Create your own custom payment page
+            using secure payment APIs.
+          </p>
+
+          <button class="card-action">
+
+            <i class="bi bi-arrow-right"></i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Card 3 -->
+
+      <div
+  class="integration-card"
+  [class.active-card]="selectedIntegration === 'plugin'"
+  (click)="selectIntegration('plugin')"
+>
+
+        <div class="card-image">
+
+          <i class="bi bi-plugin"></i>
+
+        </div>
+
+        <div class="card-content">
+
+          <div class="card-header">
+
+            <h4>
+              Integrate with Plugins
+            </h4>
+
+            <span class="days-badge">
+              In Mins
+            </span>
+
+          </div>
+
+          <p>
+            Accept payments on Shopify,
+            WooCommerce and more.
+          </p>
+
+          <button class="card-action">
+
+            <i class="bi bi-arrow-right"></i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+ 
+  <!-- =========================================
+       BOTTOM SECTION
+  ========================================= -->
+
+  <div class="dashboard-bottom">
+
+    <!-- PAYMENT STATUS -->
+
+    <div class="payment-status-card">
+
+      <div class="card-title-row">
+
+        <h2>
+          Payment Mode Status
+        </h2>
+
+        <a>
+          Know More
+        </a>
+
+      </div>
+
+      <p class="status-description">
+
+        We have activated the following payment
+        modes for you.
+
+      </p>
+
+      <div class="payment-modes">
+
+        <div class="mode-item">
+
+          <div class="mode-icon">
+
+            <i class="bi bi-credit-card"></i>
+
+          </div>
+
+          <span>EMI</span>
+
+        </div>
+
+        <div class="mode-item">
+
+          <div class="mode-icon">
+
+            <i class="bi bi-bank"></i>
+
+          </div>
+
+          <span>Net Banking</span>
+
+        </div>
+
+        <div class="mode-item">
+
+          <div class="mode-icon">
+
+            <i class="bi bi-credit-card-2-front"></i>
+
+          </div>
+
+          <span>Credit Card</span>
+
+        </div>
+
+        <div class="mode-item">
+
+          <div class="mode-icon">
+
+            <i class="bi bi-wallet2"></i>
+
+          </div>
+
+          <span>Debit Card</span>
+
+        </div>
+
+        <div class="mode-item">
+
+          <div class="mode-icon">
+
+            <i class="bi bi-cash-stack"></i>
+
+          </div>
+
+          <span>Cash Card</span>
+
+        </div>
+
+      </div>
+
+      <div class="activate-row">
+
+        <div>
+
+          <h4>
+            You can activate more payment modes
+          </h4>
+
+        </div>
+
+        <button
+  class="activate-btn"
+  (click)="activateMore()"
+>
+  Activate More
+</button>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+
+    <div class="right-sidebar">
+
+      <!-- PAYMENT HANDLE -->
+
+      <div class="payment-handle-card">
+
+        <h3>
+          Payment Handle
+        </h3>
+
+        <p>
+          Share this link to start accepting
+          payments.
+        </p>
+
+        <div class="handle-link">
+
+          {{ paymentLink }}
+
+        </div>
+
+        <div class="handle-actions">
+
+          <button
+            class="share-btn"
+            (click)="openShareModal()"
+          >
+
+            <i class="bi bi-share-fill"></i>
+
+            Share
+
+          </button>
+
+          <button
+            class="copy-btn"
+            (click)="copyLink()"
+          >
+
+            <i class="bi bi-copy"></i>
+
+            Copy
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- EXPLORE PRODUCTS -->
+
+      <div class="explore-products-card">
+
+        <h3>
+          Explore Products
+        </h3>
+
+        <p>
+          Check different products
+          which can cater to your
+          various business needs.
+        </p>
+
+     <button
+  class="explore-btn"
+  (click)="exploreProducts()"
+>
+
+          Check Products
+
+          <i class="bi bi-arrow-right"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- =========================================
+     SHARE MODAL
+========================================= -->
+
+@if (isShareModalOpen) {
+
+<div
+  class="share-modal-overlay"
+  (click)="closeShareModal()"
+>
+
+  <div
+    class="share-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="share-header">
+
+      <h3>
+        Share Payment Handle
+      </h3>
+
+      <button
+        class="close-btn"
+        (click)="closeShareModal()"
+      >
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+    </div>
+
+    <p>
+      Share the payment link with your customer
+      to request money over WhatsApp,
+      SMS or Email.
+    </p>
+
+    <div class="share-link-box">
+
+      {{ paymentLink }}
+
+    </div>
+
+    <div class="share-platforms">
+
+      <button
+        class="platform-btn"
+        (click)="shareWhatsapp()"
+      >
+
+        <i class="bi bi-whatsapp"></i>
+
+        WhatsApp
+
+      </button>
+
+      <button
+        class="platform-btn"
+        (click)="shareFacebook()"
+      >
+
+        <i class="bi bi-facebook"></i>
+
+        Facebook
+
+      </button>
+
+    </div>
+
+    <div class="send-link-section">
+
+      <label>
+
+        Share via SMS or Email
+
+      </label>
+
+      <input
+        type="text"
+        [(ngModel)]="customerContact"
+        placeholder="Enter mobile number or email"
+      />
+
+      <button
+        class="send-link-btn"
+        (click)="sendLink()"
+      >
+
+        Send Link
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}

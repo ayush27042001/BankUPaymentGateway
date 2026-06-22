@@ -1,0 +1,307 @@
+<div class="chargeback-page">
+
+  <!-- =========================================
+       HEADER
+  ========================================= -->
+
+  <div class="page-header">
+
+    <h1>
+      Chargebacks
+    </h1>
+
+    <div class="header-actions">
+
+      <button
+        class="bulk-btn"
+        (click)="bulkUpload()"
+      >
+        <i class="bi bi-upload"></i>
+        Bulk Upload
+      </button>
+
+      <button
+        class="webhook-btn"
+        (click)="configureWebhooks()"
+      >
+        <i class="bi bi-gear-fill"></i>
+        Configure Webhooks
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================
+       ALERT BANNER
+  ========================================= -->
+
+  <div class="alert-banner">
+
+    <span>
+      We wish to inform you that the Schemes have revised the
+      Dispute Timeframe for Document submission.
+      Please find the revised timeframe below.
+    </span>
+
+    <button
+      class="banner-btn"
+      (click)="toggleAnnouncement()"
+    >
+      Show / Hide
+    </button>
+
+  </div>
+
+  <!-- =========================================
+       STATUS ANALYSIS
+  ========================================= -->
+
+  <div class="analysis-card">
+
+    <div
+      class="analysis-header"
+      (click)="toggleAnalysis()"
+    >
+
+      <div class="analysis-title">
+
+        <i class="bi bi-pie-chart-fill"></i>
+
+        Status Analysis
+
+      </div>
+
+      <i
+        class="bi"
+        [ngClass]="
+          isAnalysisOpen
+            ? 'bi-dash-lg'
+            : 'bi-plus-lg'
+        "
+      ></i>
+
+    </div>
+
+    @if (isAnalysisOpen) {
+
+    <div class="analysis-body">
+
+      <!-- =========================================
+           FILTER GRID
+      ========================================= -->
+
+      <div class="filter-grid">
+
+        <input
+          type="text"
+          placeholder="PayU ID"
+          [(ngModel)]="payuId"
+        />
+
+        <input
+          type="text"
+          placeholder="Transaction ID"
+          [(ngModel)]="transactionId"
+        />
+
+        <input
+          type="text"
+          placeholder="Bank Case"
+          [(ngModel)]="bankCase"
+        />
+
+        <select [(ngModel)]="chargebackStatus">
+
+          <option value="">
+            Chargeback Status
+          </option>
+
+          @for (
+            item of statusOptions;
+            track item
+          ) {
+
+          <option [value]="item">
+            {{ item }}
+          </option>
+
+          }
+
+        </select>
+
+        <input
+          type="date"
+          [(ngModel)]="fromDate"
+        />
+
+        <input
+          type="date"
+          [(ngModel)]="toDate"
+        />
+
+        <select [(ngModel)]="chargebackType">
+
+          <option value="">
+            Chargeback Type
+          </option>
+
+          @for (
+            item of chargebackTypes;
+            track item
+          ) {
+
+          <option [value]="item">
+            {{ item }}
+          </option>
+
+          }
+
+        </select>
+
+        <select [(ngModel)]="closeReason">
+
+          <option value="">
+            Close Reason
+          </option>
+
+          @for (
+            item of closeReasons;
+            track item
+          ) {
+
+          <option [value]="item">
+            {{ item }}
+          </option>
+
+          }
+
+        </select>
+
+      </div>
+
+      <!-- =========================================
+           ACTION BUTTONS
+      ========================================= -->
+
+      <div class="action-row">
+
+        <div class="left-actions">
+
+          <button
+            class="search-btn"
+            (click)="searchChargebacks()"
+          >
+            <i class="bi bi-search"></i>
+            Search
+          </button>
+
+          <button
+            class="reset-btn"
+            (click)="resetFilters()"
+          >
+            <i class="bi bi-arrow-clockwise"></i>
+            Reset
+          </button>
+
+          <button
+            class="export-btn"
+            (click)="exportChargebacks()"
+          >
+            <i class="bi bi-download"></i>
+            Export
+          </button>
+
+        </div>
+
+        <div class="result-count">
+
+          No chargebacks found
+
+        </div>
+
+      </div>
+
+    </div>
+
+    }
+
+  </div>
+
+  <!-- =========================================
+       TABLE
+  ========================================= -->
+
+  <div class="table-wrapper">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>VIEW</th>
+
+          <th>PAYU ID</th>
+
+          <th>TRANSACTION ID</th>
+
+          <th>CHARGEBACK DATE</th>
+
+          <th>REPLY BEFORE</th>
+
+          <th>STATUS</th>
+
+          <th>CASE NUMBER</th>
+
+          <th>CHARGEBACK REASON</th>
+
+          <th>DOCUMENTS</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr>
+
+          <td colspan="9">
+
+            <div class="empty-state">
+
+              <div class="empty-icon">
+
+                <i class="bi bi-inbox"></i>
+
+              </div>
+
+              <div class="empty-content">
+
+                <h5>
+                  NO RESULT FOUND
+                </h5>
+
+                <h3>
+                  Oops! We didn't find anything
+                </h3>
+
+                <p>
+                  Try changing filters and search again.
+                </p>
+
+              </div>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
