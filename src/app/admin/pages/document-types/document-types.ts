@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
 
 @Component({
   selector: 'app-document-types',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    HorizontalTableScrollDirective
   ],
   templateUrl: './document-types.html',
   styleUrl: './document-types.scss',
