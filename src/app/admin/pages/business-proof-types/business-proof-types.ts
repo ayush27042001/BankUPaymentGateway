@@ -3,6 +3,12 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
 
+import { ToastrService } from 'ngx-toastr';
+import { ChangeDetectorRef, inject } from '@angular/core';
+import {
+  BusinessProofTypeService,
+  AddBusinessProofTypeResponse
+} from '../../services/business-proof-type.service';
 @Component({
   selector: 'app-business-proof-types',
   standalone: true,
@@ -15,7 +21,9 @@ import { HorizontalTableScrollDirective } from '../../../shared/directives/horiz
   styleUrl: './business-proof-types.scss',
 })
 export class BusinessProofTypes {
-
+private businessProofTypeService = inject(BusinessProofTypeService);
+private toastr = inject(ToastrService);
+private cdr = inject(ChangeDetectorRef);
   /* =========================================
      PAGINATION
   ========================================= */
@@ -299,15 +307,17 @@ export class BusinessProofTypes {
      CLOSE ADD MODAL
   ========================================= */
 
-  closeAddModal(): void {
+ closeAddModal(): void {
 
-    this.showAddModal = false;
+  this.showAddModal = false;
 
-    document.body.style.overflow = 'auto';
+  this.resetForm();
 
-    this.resetForm();
+  document.body.style.overflow = 'auto';
 
-  }
+  this.cdr.detectChanges();
+
+}
 
   /* =========================================
      RESET FORM
@@ -333,72 +343,95 @@ export class BusinessProofTypes {
      ADD PROOF TYPE
   ========================================= */
 
-  addProofType(): void {
+addProofType(): void {
 
-    if (
-      !this.newProofType.proofName.trim()
-      ||
-      !this.newProofType.proofCode.trim()
-      ||
-      !this.newProofType.description.trim()
-    ) {
+  if (
+    !this.newProofType.proofName.trim() ||
+    !this.newProofType.proofCode.trim() ||
+    !this.newProofType.description.trim()
+  ) {
 
-      alert(
-        'Please fill all required fields.'
-      );
-
-      return;
-
-    }
-
-    const currentDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
-
-    const newEntry = {
-
-      businessProofTypeID:
-        this.businessProofTypes.length + 1,
-
-      proofName:
-        this.newProofType.proofName,
-
-      proofCode:
-        this.newProofType.proofCode
-          .toUpperCase(),
-
-      description:
-        this.newProofType.description,
-
-      isActive:
-        this.newProofType.isActive,
-
-      createdDate:
-        currentDate,
-
-      updatedDate:
-        currentDate,
-
-    };
-
-    this.businessProofTypes.unshift(
-      newEntry
+    this.toastr.warning(
+      'Please fill all required fields.',
+      'Validation'
     );
 
-    this.filteredProofTypes = [
-      ...this.businessProofTypes
-    ];
-
-    this.closeAddModal();
+    return;
 
   }
 
+  const payload = {
+
+    proofName: this.newProofType.proofName,
+
+    proofCode: this.newProofType.proofCode.toUpperCase(),
+
+    description: this.newProofType.description
+
+  };
+
+  this.businessProofTypeService
+    .addBusinessProofType(payload)
+    .subscribe({
+
+      next: (response: any) => {
+
+        if (response.success) {
+
+          this.businessProofTypes.unshift({
+
+            businessProofTypeID: response.data.businessProofTypeId,
+
+            proofName: response.data.proofName,
+
+            proofCode: response.data.proofCode,
+
+            description: response.data.description,
+
+            isActive: response.data.isActive,
+
+            createdDate: response.data.createdDate,
+
+            updatedDate: response.data.updatedDate
+
+          });
+
+          this.filteredProofTypes = [
+            ...this.businessProofTypes
+          ];
+
+          this.closeAddModal();
+
+          this.toastr.success(
+            response.message,
+            'Success'
+          );
+
+        } else {
+
+          this.toastr.error(
+            response.message,
+            'Error'
+          );
+
+        }
+
+      },
+
+      error: (err: any) => {
+
+        console.error(err);
+
+        this.toastr.error(
+          'Something went wrong.',
+          'Error'
+        );
+
+      }
+
+    });
+
+}
   /* =========================================
      APPROVE
   ========================================= */
