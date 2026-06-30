@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
 
 @Component({
   selector: 'app-merchants',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    HorizontalTableScrollDirective
   ],
   templateUrl: './merchants.html',
   styleUrl: './merchants.scss',

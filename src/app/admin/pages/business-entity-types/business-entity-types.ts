@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
 
 @Component({
   selector: 'app-business-entity-types',
@@ -8,7 +9,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     NgClass,
-    FormsModule
+    FormsModule,
+    HorizontalTableScrollDirective
   ],
   templateUrl: './business-entity-types.html',
   styleUrl: './business-entity-types.scss'
