@@ -36,6 +36,7 @@ export const authInterceptor = (
   }
 
   const token = authService.getToken();
+  
 
   if (token && !authService.isTokenExpired()) {
     request = addTokenHeader(request, token);

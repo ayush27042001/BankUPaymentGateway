@@ -64,5 +64,29 @@ export class BusinessProofTypeService {
     );
 
   }
+getBusinessProofTypes(): Observable<any> {
 
+  return this.http.get(
+    `${this.apiUrl}/BusinessProofTypeMaster`,
+    { headers: this.headers }
+  );
+
+}
+getBusinessProofTypeById(id: number): Observable<any> {
+
+  return this.http.get(
+    `${this.apiUrl}/BusinessProofTypeMaster/${id}`,
+    { headers: this.headers }
+  );
+
+}
+updateBusinessProofType(data: any): Observable<any> {
+
+  return this.http.put(
+    `${this.apiUrl}/BusinessProofTypeMaster`,
+    data,
+    { headers: this.headers }
+  );
+
+}
 }

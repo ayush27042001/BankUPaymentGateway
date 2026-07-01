@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component,OnInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
 
@@ -20,7 +20,12 @@ import {
   templateUrl: './business-proof-types.html',
   styleUrl: './business-proof-types.scss',
 })
-export class BusinessProofTypes {
+export class BusinessProofTypes implements OnInit {
+  ngOnInit(): void {
+
+  this.loadBusinessProofTypes();
+
+}
 private businessProofTypeService = inject(BusinessProofTypeService);
 private toastr = inject(ToastrService);
 private cdr = inject(ChangeDetectorRef);
@@ -71,99 +76,13 @@ private cdr = inject(ChangeDetectorRef);
      PROOF TYPE DATA
   ========================================= */
 
-  businessProofTypes = [
-
-    {
-      businessProofTypeID: 1,
-      proofName: 'Shop & Establishment Certificate',
-      proofCode: 'SHOP_EST',
-      description: 'Shop & Establishment Registration Certificate',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessProofTypeID: 2,
-      proofName: 'GST Registration Certificate',
-      proofCode: 'GST_REG',
-      description: 'Goods and Services Tax Registration',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessProofTypeID: 3,
-      proofName: 'Company Incorporation Certificate',
-      proofCode: 'INC_CERT',
-      description: 'Certificate of Incorporation',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessProofTypeID: 4,
-      proofName: 'Partnership Deed',
-      proofCode: 'PARTNERSHIP_DEED',
-      description: 'Partnership Deed Document',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessProofTypeID: 5,
-      proofName: 'LLP Agreement',
-      proofCode: 'LLP_AGREEMENT',
-      description: 'LLP Agreement Document',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessProofTypeID: 6,
-      proofName: 'MOA/AOA',
-      proofCode: 'MOA_AOA',
-      description:
-        'Memorandum of Association/Articles of Association',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessProofTypeID: 7,
-      proofName: 'Trade License',
-      proofCode: 'TRADE_LICENSE',
-      description: 'Trade License Certificate',
-      isActive: false,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessProofTypeID: 8,
-      proofName: 'FSSAI License',
-      proofCode: 'FSSAI',
-      description:
-        'Food Safety and Standards Authority License',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    }
-
-  ];
+ businessProofTypes: any[] = [];
 
   /* =========================================
      FILTERED DATA
   ========================================= */
 
-  filteredProofTypes = [
-    ...this.businessProofTypes
-  ];
+  filteredProofTypes: any[] = [];
 
   /* =========================================
      PAGINATED DATA
@@ -267,15 +186,67 @@ private cdr = inject(ChangeDetectorRef);
      OPEN VIEW MODAL
   ========================================= */
 
-  openViewModal(proof: any): void {
+ openViewModal(proof: any): void {
 
-    this.selectedProofType = proof;
+  this.businessProofTypeService
+    .getBusinessProofTypeById(proof.businessProofTypeID)
+    .subscribe({
 
-    this.showViewModal = true;
+      next: (response: any) => {
 
-    document.body.style.overflow = 'hidden';
+        if (response.success) {
 
-  }
+          this.selectedProofType = {
+
+            businessProofTypeID: response.data.businessProofTypeId,
+
+            proofName: response.data.proofName,
+
+            proofCode: response.data.proofCode,
+
+            description: response.data.description,
+
+            isActive: response.data.isActive,
+
+            createdDate: response.data.createdDate,
+
+            updatedDate: response.data.updatedDate
+
+          };
+
+          this.showViewModal = true;
+
+          document.body.style.overflow = 'hidden';
+
+        } else {
+
+          this.toastr.error(
+            response.message,
+            'Error'
+          );
+
+        }
+
+      },
+
+      error: (err: any) => {
+
+        console.error(err);
+
+        const message =
+          err?.error?.message ||
+          'Something went wrong.';
+
+        this.toastr.error(
+          message,
+          'Error'
+        );
+
+      }
+
+    });
+
+}
 
   /* =========================================
      CLOSE VIEW MODAL
@@ -378,23 +349,7 @@ addProofType(): void {
 
         if (response.success) {
 
-          this.businessProofTypes.unshift({
-
-            businessProofTypeID: response.data.businessProofTypeId,
-
-            proofName: response.data.proofName,
-
-            proofCode: response.data.proofCode,
-
-            description: response.data.description,
-
-            isActive: response.data.isActive,
-
-            createdDate: response.data.createdDate,
-
-            updatedDate: response.data.updatedDate
-
-          });
+         
 
           this.filteredProofTypes = [
             ...this.businessProofTypes
@@ -402,11 +357,14 @@ addProofType(): void {
 
           this.closeAddModal();
 
-          this.toastr.success(
-            response.message,
-            'Success'
-          );
+         this.closeAddModal();
 
+this.toastr.success(
+  response.message,
+  'Success'
+);
+
+this.loadBusinessProofTypes();
         } else {
 
           this.toastr.error(
@@ -618,7 +576,57 @@ closeEditModal(): void {
   document.body.style.overflow = 'auto';
 
 }
+loadBusinessProofTypes(): void {
 
+  this.businessProofTypeService
+    .getBusinessProofTypes()
+    .subscribe({
+
+      next: (response: any) => {
+
+        if (response.success) {
+
+          this.businessProofTypes =
+            response.data.map((item: any) => ({
+
+              businessProofTypeID: item.businessProofTypeId,
+
+              proofName: item.proofName,
+
+              proofCode: item.proofCode,
+
+              description: item.description,
+
+              isActive: item.isActive,
+
+              createdDate: item.createdDate,
+
+              updatedDate: item.updatedDate
+
+            }));
+
+          this.filteredProofTypes = [
+            ...this.businessProofTypes
+          ];
+
+        }
+
+      },
+
+      error: (err: any) => {
+
+        console.error(err);
+
+        this.toastr.error(
+          'Failed to load Business Proof Types.',
+          'Error'
+        );
+
+      }
+
+    });
+
+}
 /* =========================================
    UPDATE PROOF TYPE
 ========================================= */
@@ -626,57 +634,76 @@ closeEditModal(): void {
 updateProofType(): void {
 
   if (
-    !this.editProofType.proofName.trim()
-    ||
-    !this.editProofType.proofCode.trim()
-    ||
+    !this.editProofType.proofName.trim() ||
+    !this.editProofType.proofCode.trim() ||
     !this.editProofType.description.trim()
   ) {
 
-    alert(
-      'Please fill all required fields.'
+    this.toastr.warning(
+      'Please fill all required fields.',
+      'Validation'
     );
 
     return;
 
   }
 
-  const index =
-    this.businessProofTypes.findIndex(
-      (proof) =>
-        proof.businessProofTypeID ===
-        this.editProofType.businessProofTypeID
-    );
+  const payload = {
 
-  if (index !== -1) {
+    businessProofTypeId: this.editProofType.businessProofTypeID,
 
-    this.businessProofTypes[index] = {
+    proofName: this.editProofType.proofName,
 
-      ...this.editProofType,
+    proofCode: this.editProofType.proofCode.toUpperCase(),
 
-      proofCode:
-        this.editProofType.proofCode
-          .toUpperCase(),
+    description: this.editProofType.description,
 
-      updatedDate:
-        new Date().toLocaleDateString(
-          'en-GB',
-          {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-          }
-        )
+    isActive: this.editProofType.isActive
 
-    };
+  };
 
-    this.filteredProofTypes = [
-      ...this.businessProofTypes
-    ];
+  this.businessProofTypeService
+    .updateBusinessProofType(payload)
+    .subscribe({
 
-  }
+      next: (response: any) => {
 
-  this.closeEditModal();
+        if (response.success) {
+
+          this.closeEditModal();
+
+          this.toastr.success(
+            response.message,
+            'Success'
+          );
+
+          this.loadBusinessProofTypes();
+
+        } else {
+
+          this.toastr.error(
+            response.message,
+            'Error'
+          );
+
+        }
+
+      },
+
+      error: (err: any) => {
+
+        const message =
+          err?.error?.message ||
+          'Something went wrong.';
+
+        this.toastr.error(
+          message,
+          'Error'
+        );
+
+      }
+
+    });
 
 }
 
