@@ -145,18 +145,19 @@
           <div class="form-group otp-group">
             <label>Enter OTP <span>*</span></label>
             <div class="otp-inputs" (paste)="onOtpPaste($event)">
+              @for (digit of otpDigits; track $index; let i = $index) {
               <input
-                *ngFor="let digit of otpDigits; let i = index"
                 [id]="'sa-otp-' + i"
                 type="text"
                 class="otp-box"
                 maxlength="1"
                 inputmode="numeric"
-                autocomplete="one-time-code"
+                autocomplete="off"
                 [value]="otpDigits[i]"
                 (input)="onOtpInput($event, i)"
                 (keydown)="onOtpKeydown($event, i)"
                 (paste)="onOtpPaste($event)" />
+              }
             </div>
           </div>
 
