@@ -16,6 +16,7 @@ import { RegisterComponent } from './pages/register/register';
 import { StatusTrackerComponent } from './pages/status-tracker/status-tracker';
 import { OnboardingRejectedComponent } from './pages/onboarding-rejected/onboarding-rejected';
 import { authGuard } from './guards/auth.guard';
+import { adminAuthGuard } from './guards/admin-auth.guard';
 
 import { AdminLayout } from './admin/layout/admin-layout/admin-layout';
 import { Dashboard } from './admin/pages/dashboard/dashboard';
@@ -94,7 +95,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayout,
-    // canActivate: [authGuard],
+    canActivate: [adminAuthGuard],
 
     children: [
 

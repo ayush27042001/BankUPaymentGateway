@@ -129,8 +129,17 @@ export class SuperAdminLoginComponent implements OnDestroy {
               if (response.data.refreshToken) {
                 localStorage.setItem('adminRefreshToken', response.data.refreshToken);
               }
+              if (response.data.expiration) {
+                localStorage.setItem('adminTokenExpiration', response.data.expiration);
+              }
+              if (response.data.refreshTokenExpiration) {
+                localStorage.setItem('adminRefreshTokenExpiration', response.data.refreshTokenExpiration);
+              }
               if (response.data.username) {
                 localStorage.setItem('adminUsername', response.data.username);
+              }
+              if (response.data.role) {
+                localStorage.setItem('adminRole', response.data.role);
               }
             }
             this.clearOtpTimer();
