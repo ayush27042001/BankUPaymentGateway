@@ -37,42 +37,6 @@ export const authInterceptor = (
     );
   }
 
-  // Handle admin API endpoints
-  if (isAdminEndpoint(request.url)) {
-    const adminToken = superAdminAuthService.getAdminToken();
-    let adminRequest = request;
-
-    if (adminToken && !superAdminAuthService.isAdminTokenExpired()) {
-      adminRequest = addTokenHeader(request, adminToken);
-    }
-
-    return next(adminRequest).pipe(
-      tap({
-        next: (event) => {
-          if (event.type === 4) { // HttpEventType.Response
-            const body = (event as any).body;
-            if (body) {
-              handleApiSuccess(body, toastService, adminRequest);
-            }
-          }
-        },
-        error: (error) => {
-          handleApiError(error, toastService, adminRequest);
-        }
-      }),
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          if (superAdminAuthService.getAdminRefreshToken()) {
-            return handle401AdminError(adminRequest, next, superAdminAuthService);
-          }
-          superAdminAuthService.logoutAdmin();
-          return throwError(() => error);
-        }
-        return throwError(() => error);
-      })
-    );
-  }
-
   // Skip token for user auth endpoints
   if (isAuthEndpoint(request.url)) {
     return next(request).pipe(
@@ -92,8 +56,42 @@ export const authInterceptor = (
     );
   }
 
+  // Admin session: attach admin token to all non-auth requests
+  if (superAdminAuthService.isAdminAuthenticated()) {
+    const adminToken = superAdminAuthService.getAdminToken();
+    if (adminToken && !superAdminAuthService.isAdminTokenExpired()) {
+      request = addTokenHeader(request, adminToken);
+    }
+
+    return next(request).pipe(
+      tap({
+        next: (event) => {
+          if (event.type === 4) { // HttpEventType.Response
+            const body = (event as any).body;
+            if (body) {
+              handleApiSuccess(body, toastService, request);
+            }
+          }
+        },
+        error: (error) => {
+          handleApiError(error, toastService, request);
+        }
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          if (superAdminAuthService.getAdminRefreshToken()) {
+            return handle401AdminError(request, next, superAdminAuthService);
+          }
+          superAdminAuthService.logoutAdmin();
+          return throwError(() => error);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // User session: attach user token
   const token = authService.getToken();
-  
 
   if (token && !authService.isTokenExpired()) {
     request = addTokenHeader(request, token);
@@ -149,10 +147,6 @@ function handleApiError(error: any, toastService: ToastService, request: HttpReq
 
   const message = error?.error?.message || error?.message || 'An error occurred';
   toastService.error(message);
-}
-
-function isAdminEndpoint(url: string): boolean {
-  return url.includes('/Admin/');
 }
 
 function isAdminAuthEndpoint(url: string): boolean {

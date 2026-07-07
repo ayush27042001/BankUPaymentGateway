@@ -164,29 +164,5 @@ export class SuperAdminAuthService {
       { headers: this.headers }
     );
   }
-  setAdminAuthData(
-  token: string,
-  refreshToken?: string,
-  tokenExpiration?: string,
-  refreshTokenExpiration?: string
-): void {
-
-  localStorage.setItem('adminToken', token);
-
-  if (refreshToken) {
-    localStorage.setItem('refreshToken', refreshToken);
-  }
-
-  if (tokenExpiration) {
-    localStorage.setItem('tokenExpiration', tokenExpiration);
-  }
-
-  if (refreshTokenExpiration) {
-    localStorage.setItem(
-      'refreshTokenExpiration',
-      refreshTokenExpiration
-    );
-  }
-
-}
+  
 }

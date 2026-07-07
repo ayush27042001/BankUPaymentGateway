@@ -13,7 +13,6 @@ export class AuthService {
   private refreshTokenSubject: any = null;
 
   private readonly TOKEN_KEY = 'authToken';
-   private readonly ADMINTOKEN_KEY = 'adminToken';
   private readonly REFRESH_TOKEN_KEY = 'refreshToken';
   private readonly TOKEN_EXPIRATION_KEY = 'tokenExpiration';
   private readonly REFRESH_TOKEN_EXPIRATION_KEY = 'refreshTokenExpiration';
@@ -83,8 +82,7 @@ export class AuthService {
 
   getToken(): string | null {
     if (!this.isBrowser()) return null;
-    
-    return localStorage.getItem(this.TOKEN_KEY) === null ? localStorage.getItem(this.ADMINTOKEN_KEY) : localStorage.getItem(this.TOKEN_KEY);
+    return localStorage.getItem(this.TOKEN_KEY);
   }
 
   getUserId(): string | null {
@@ -110,7 +108,7 @@ export class AuthService {
 
   getTokenExpiration(): string | null {
     if (!this.isBrowser()) return null;
-    return localStorage.getItem(this.TOKEN_EXPIRATION_KEY) == null ? localStorage.getItem(this.REFRESH_TOKEN_EXPIRATION_KEY) : localStorage.getItem(this.TOKEN_EXPIRATION_KEY);
+    return localStorage.getItem(this.TOKEN_EXPIRATION_KEY);
   }
 
   getRefreshTokenExpiration(): string | null {
