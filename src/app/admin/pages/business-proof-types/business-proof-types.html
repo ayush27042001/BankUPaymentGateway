@@ -99,10 +99,10 @@
 
         <tbody>
 
-          @for (
-            proofType of paginatedProofTypes;
-            track proofType.businessProofTypeID
-          ) {
+        @for (
+  proofType of businessProofTypes;
+  track proofType.businessProofTypeID
+) {
 
             <tr class="table-row">
 
@@ -236,7 +236,7 @@
     <button
       class="pagination-btn"
       (click)="previousPage()"
-      [disabled]="currentPage === 1"
+    [disabled]="!hasPreviousPage"
     >
       Previous
     </button>
@@ -250,7 +250,7 @@
     <button
       class="pagination-btn"
       (click)="nextPage()"
-      [disabled]="currentPage === totalPages"
+      [disabled]="!hasNextPage"
     >
       Next
     </button>

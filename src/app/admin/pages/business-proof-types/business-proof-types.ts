@@ -35,6 +35,13 @@ private cdr = inject(ChangeDetectorRef);
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
+  // totalPages: number = 0;
+
+totalCount: number = 0;
+
+hasPreviousPage: boolean = false;
+
+hasNextPage: boolean = false;
 
   /* =========================================
      SEARCH
@@ -88,11 +95,6 @@ private cdr = inject(ChangeDetectorRef);
      PAGINATED DATA
   ========================================= */
 
-  get paginatedProofTypes() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.filteredProofTypes.slice(startIndex, endIndex);
-  }
 
   /* =========================================
      TOTAL PAGES
@@ -106,81 +108,47 @@ private cdr = inject(ChangeDetectorRef);
      PAGINATION CONTROLS
   ========================================= */
 
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
+ nextPage(): void {
+
+  console.log('Current Page:', this.currentPage);
+  console.log('Has Next Page:', this.hasNextPage);
+
+  this.loadBusinessProofTypes(
+    this.currentPage + 1,
+    this.itemsPerPage,
+    this.searchTerm
+  );
+
+}
+
+ previousPage(): void {
+
+  if (this.hasPreviousPage) {
+
+    this.loadBusinessProofTypes(
+      this.currentPage - 1,
+      this.itemsPerPage,
+      this.searchTerm
+    );
+
   }
 
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
+}
 
   /* =========================================
      FILTER PROOF TYPES
   ========================================= */
+filterProofTypes(): void {
 
-  filterProofTypes(): void {
+  this.currentPage = 1;
 
-    const search =
-      this.searchTerm
-        .toLowerCase()
-        .trim();
+  this.loadBusinessProofTypes(
+    this.currentPage,
+    this.itemsPerPage,
+    this.searchTerm
+  );
 
-    this.currentPage = 1;
-
-    if (!search) {
-
-      this.filteredProofTypes = [
-        ...this.businessProofTypes
-      ];
-
-      return;
-
-    }
-
-    this.filteredProofTypes =
-      this.businessProofTypes.filter((proof) => {
-
-        return (
-
-          proof.businessProofTypeID
-            .toString()
-            .includes(search)
-
-          ||
-
-          proof.proofName
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          proof.proofCode
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          proof.description
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          (
-            proof.isActive
-              ? 'active'
-              : 'inactive'
-          ).includes(search)
-
-        );
-
-      });
-
-  }
+}
 
   /* =========================================
      OPEN VIEW MODAL
@@ -346,7 +314,8 @@ addProofType(): void {
     .subscribe({
 
       next: (response: any) => {
-
+ console.log('Full Response:', response);
+  console.log('Data:', response.data);
         if (response.success) {
 
          
@@ -576,38 +545,46 @@ closeEditModal(): void {
   document.body.style.overflow = 'auto';
 
 }
-loadBusinessProofTypes(): void {
+loadBusinessProofTypes(
+  pageNumber: number = this.currentPage,
+  pageSize: number = this.itemsPerPage,
+  search: string = this.searchTerm,
+  isActive: boolean | null = null
+): void {
 
   this.businessProofTypeService
-    .getBusinessProofTypes()
+    .getBusinessProofTypesList(
+      pageNumber,
+      pageSize,
+      search,
+      isActive
+    )
     .subscribe({
 
       next: (response: any) => {
 
         if (response.success) {
 
-          this.businessProofTypes =
-            response.data.map((item: any) => ({
+         this.businessProofTypes =
+  response.data.items.map((item: any) => ({
 
-              businessProofTypeID: item.businessProofTypeId,
+    businessProofTypeID: item.businessProofTypeId,
+    proofName: item.proofName,
+    proofCode: item.proofCode,
+    description: item.description,
+    isActive: item.isActive,
+    createdDate: item.createdDate,
+    updatedDate: item.updatedDate
 
-              proofName: item.proofName,
+  }));
 
-              proofCode: item.proofCode,
+this.filteredProofTypes = [...this.businessProofTypes];
 
-              description: item.description,
-
-              isActive: item.isActive,
-
-              createdDate: item.createdDate,
-
-              updatedDate: item.updatedDate
-
-            }));
-
-          this.filteredProofTypes = [
-            ...this.businessProofTypes
-          ];
+this.currentPage = response.data.pageNumber;
+this.itemsPerPage = response.data.pageSize;
+this.totalCount = response.data.totalCount;
+this.hasPreviousPage = response.data.hasPreviousPage;
+this.hasNextPage = response.data.hasNextPage;
 
         }
 
