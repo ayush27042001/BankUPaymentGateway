@@ -542,7 +542,19 @@ closeEditModal(): void {
 
   this.showEditModal = false;
 
+  this.editProofType = {
+    businessProofTypeID: 0,
+    proofName: '',
+    proofCode: '',
+    description: '',
+    isActive: true,
+    createdDate: '',
+    updatedDate: ''
+  };
+
   document.body.style.overflow = 'auto';
+
+  this.cdr.detectChanges();
 
 }
 loadBusinessProofTypes(
@@ -647,14 +659,16 @@ updateProofType(): void {
 
         if (response.success) {
 
-          this.closeEditModal();
-
           this.toastr.success(
             response.message,
             'Success'
           );
 
-          this.loadBusinessProofTypes();
+          setTimeout(() => {
+            this.closeEditModal();
+            this.loadBusinessProofTypes();
+            this.cdr.detectChanges();
+          }, 0);
 
         } else {
 

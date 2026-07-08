@@ -19,4 +19,23 @@ describe('BusinessProofTypes', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should close the edit modal and reset edit state', () => {
+    component.showEditModal = true;
+    component.editProofType = {
+      businessProofTypeID: 101,
+      proofName: 'Aadhaar',
+      proofCode: 'AAD',
+      description: 'Identity proof',
+      isActive: true,
+      createdDate: '2024-01-01',
+      updatedDate: ''
+    };
+
+    component.closeEditModal();
+
+    expect(component.showEditModal).toBeFalse();
+    expect(component.editProofType.proofName).toBe('');
+    expect(component.editProofType.proofCode).toBe('');
+  });
 });
