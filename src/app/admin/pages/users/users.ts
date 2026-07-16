@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
+import { ToastrService } from 'ngx-toastr';
+import { UsersService, User, CreateUserRequest } from '../../services/users.service';
 
 @Component({
   selector: 'app-users',
@@ -16,6 +18,10 @@ import { HorizontalTableScrollDirective } from '../../../shared/directives/horiz
 })
 export class Users {
 
+  private usersService = inject(UsersService);
+  private toastr = inject(ToastrService);
+  private cdr = inject(ChangeDetectorRef);
+
   /* =========================================
      SEARCH
   ========================================= */
@@ -28,7 +34,15 @@ export class Users {
 
   currentPage: number = 1;
 
-  itemsPerPage: number = 5;
+  pageSize: number = 5;
+
+  totalCount: number = 0;
+
+  totalPages: number = 0;
+
+  hasNextPage: boolean = false;
+
+  hasPreviousPage: boolean = false;
 
   /* =========================================
      MODALS
@@ -39,191 +53,81 @@ export class Users {
   isAddModalOpen: boolean = false;
 
   /* =========================================
+     USERS DATA
+  ========================================= */
+
+  users: User[] = [];
+
+  /* =========================================
      SELECTED USER
   ========================================= */
 
-  selectedUser: any = null;
+  selectedUser: User | null = null;
 
   /* =========================================
      NEW USER
   ========================================= */
 
-  newUser: any = {
-
+  newUser: CreateUserRequest = {
     email: '',
-
+    password: '',
     mobileNumber: '',
-
-    panNumber: '',
-
-    panName: '',
-
-    businessType: '',
-
-    businessCategory: '',
-
-    gstin: '',
-
-    annualSales: '',
-
-    bankHolderName: '',
-
-    bankAccountNumber: '',
-
-    ifscCode: '',
-
-    bankName: '',
-
-    state: '',
-
-    city: '',
-
-    pincode: '',
-
-    businessAddress: '',
-
   };
 
   /* =========================================
-     USERS DATA
+     ON INIT — LOAD USERS
   ========================================= */
 
-  users = [
-
-    {
-
-      userId: 1,
-
-      email: 'ayushawasthi731@gmail.com',
-
-      mobileNumber: '9935144983',
-
-      panNumber: 'CMHPA4444B',
-
-      panName: 'AYUSH KUMAR AWASTHI',
-
-      panDob: '20 Sep 2001',
-
-      businessType: 'Sole Proprietorship',
-
-      businessCategory: 'Gifts & Novelties',
-
-      gstin: '29ABCDE1234F1Z5',
-
-      annualSales: '₹ 10,00,000',
-
-      bankHolderName: 'AYUSH AWASTHI',
-
-      bankAccountNumber: 'XXXXXX9765',
-
-      ifscCode: 'SBIN0004587',
-
-      bankName: 'State Bank of India',
-
-      state: 'Delhi',
-
-      city: 'New Delhi',
-
-      pincode: '110001',
-
-      businessAddress: 'Karol Bagh, New Delhi',
-
-      isKycVerified: true,
-
-      isActive: true,
-
-      lastLoginDate: '11 May 2026',
-
-      createdDate: '01 May 2026',
-
-      updatedDate: '11 May 2026',
-
-    },
-
-    
-
-  ];
+  ngOnInit(): void {
+    this.loadUsers();
+  }
 
   /* =========================================
-     FILTER USERS
+     LOAD USERS FROM API
   ========================================= */
 
-  filteredUsers() {
+  loadUsers(): void {
 
-    const search =
+    this.usersService.getUserList(
+      this.currentPage,
+      this.pageSize,
       this.searchText
-        .toLowerCase()
-        .trim();
+    ).subscribe({
+      next: (response) => {
 
-    if (!search) {
-      return this.users;
-    }
+        if (response.success) {
+          this.users = response.data.items;
+          this.totalCount = response.data.totalCount;
+          this.totalPages = response.data.totalPages;
+          this.hasNextPage = response.data.hasNextPage;
+          this.hasPreviousPage = response.data.hasPreviousPage;
+        } else {
+          this.toastr.error(
+            response.message || 'Failed to load users',
+            'Error'
+          );
+        }
 
-    return this.users.filter(
-      (user: any) => {
-
-        return (
-
-          user.email
-            ?.toLowerCase()
-            .includes(search)
-
-          ||
-
-          user.mobileNumber
-            ?.toLowerCase()
-            .includes(search)
-
-          ||
-
-          user.userId
-            ?.toString()
-            .includes(search)
-
-          ||
-
-          user.panNumber
-            ?.toLowerCase()
-            .includes(search)
-
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.toastr.error(
+          'Failed to load users',
+          'Error'
         );
-
+        console.error('Load users error:', error);
       }
-    );
+    });
 
   }
 
   /* =========================================
-     PAGINATED USERS
+     FILTER USERS (SERVER-SIDE SEARCH)
   ========================================= */
 
-  paginatedUsers() {
-
-    const startIndex =
-      (this.currentPage - 1)
-      * this.itemsPerPage;
-
-    const endIndex =
-      startIndex + this.itemsPerPage;
-
-    return this.filteredUsers().slice(
-      startIndex,
-      endIndex
-    );
-
-  }
-
-  /* =========================================
-     TOTAL PAGES
-  ========================================= */
-
-  get totalPages(): number {
-
-    return Math.ceil(
-      this.filteredUsers().length
-      / this.itemsPerPage
-    );
-
+  filterUsers(): void {
+    this.currentPage = 1;
+    this.loadUsers();
   }
 
   /* =========================================
@@ -231,16 +135,10 @@ export class Users {
   ========================================= */
 
   nextPage(): void {
-
-    if (
-      this.currentPage
-      < this.totalPages
-    ) {
-
+    if (this.hasNextPage) {
       this.currentPage++;
-
+      this.loadUsers();
     }
-
   }
 
   /* =========================================
@@ -248,27 +146,42 @@ export class Users {
   ========================================= */
 
   previousPage(): void {
-
-    if (this.currentPage > 1) {
-
+    if (this.hasPreviousPage) {
       this.currentPage--;
-
+      this.loadUsers();
     }
-
   }
 
   /* =========================================
      OPEN VIEW MODAL
   ========================================= */
 
-  openViewModal(user: any): void {
+  openViewModal(user: User): void {
 
-    this.selectedUser = user;
+    this.usersService.getUserById(user.userId).subscribe({
+      next: (response) => {
 
-    this.isViewModalOpen = true;
+        if (response.success) {
+          this.selectedUser = response.data;
+          this.isViewModalOpen = true;
+          document.body.style.overflow = 'hidden';
+        } else {
+          this.toastr.error(
+            response.message || 'Failed to load user details',
+            'Error'
+          );
+        }
 
-    document.body.style.overflow =
-      'hidden';
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.toastr.error(
+          'Failed to load user details',
+          'Error'
+        );
+        console.error('Get user error:', error);
+      }
+    });
 
   }
 
@@ -277,14 +190,10 @@ export class Users {
   ========================================= */
 
   closeViewModal(): void {
-
     this.selectedUser = null;
-
     this.isViewModalOpen = false;
-
-    document.body.style.overflow =
-      'auto';
-
+    document.body.style.overflow = 'auto';
+    this.cdr.detectChanges();
   }
 
   /* =========================================
@@ -292,12 +201,8 @@ export class Users {
   ========================================= */
 
   openAddModal(): void {
-
     this.isAddModalOpen = true;
-
-    document.body.style.overflow =
-      'hidden';
-
+    document.body.style.overflow = 'hidden';
   }
 
   /* =========================================
@@ -305,14 +210,10 @@ export class Users {
   ========================================= */
 
   closeAddModal(): void {
-
     this.isAddModalOpen = false;
-
-    document.body.style.overflow =
-      'auto';
-
+    document.body.style.overflow = 'auto';
     this.resetForm();
-
+    this.cdr.detectChanges();
   }
 
   /* =========================================
@@ -320,80 +221,91 @@ export class Users {
   ========================================= */
 
   resetForm(): void {
-
     this.newUser = {
-
       email: '',
-
+      password: '',
       mobileNumber: '',
-
-      panNumber: '',
-
-      panName: '',
-
-      businessType: '',
-
-      businessCategory: '',
-
-      gstin: '',
-
-      annualSales: '',
-
-      bankHolderName: '',
-
-      bankAccountNumber: '',
-
-      ifscCode: '',
-
-      bankName: '',
-
-      state: '',
-
-      city: '',
-
-      pincode: '',
-
-      businessAddress: '',
-
     };
+  }
+
+  /* =========================================
+     ADD USER (API CALL)
+  ========================================= */
+
+  addUser(): void {
+
+    if (
+      !this.newUser.email ||
+      !this.newUser.password ||
+      !this.newUser.mobileNumber
+    ) {
+      this.toastr.warning(
+        'Please fill all required fields',
+        'Validation'
+      );
+      return;
+    }
+
+    this.usersService.createUser(this.newUser).subscribe({
+      next: (response) => {
+
+        if (response.success) {
+          this.toastr.success(
+            response.message || 'User created successfully',
+            'Success'
+          );
+          this.closeAddModal();
+          this.loadUsers();
+        } else {
+          this.toastr.error(
+            response.message || 'Failed to create user',
+            'Error'
+          );
+        }
+
+      },
+      error: (error) => {
+        this.toastr.error(
+          'Failed to create user',
+          'Error'
+        );
+        console.error('Create user error:', error);
+      }
+    });
 
   }
 
-  trackByUserId(_: number, user: any): number {
-    return user.userId;
-  }
+  /* =========================================
+     EXPORT CSV
+  ========================================= */
 
   exportUsers(): void {
     const headers = [
       'User ID',
       'Email',
       'Mobile Number',
-      'PAN Number',
-      'PAN Name',
-      'Business Type',
-      'GSTIN',
-      'Bank Name',
-      'Bank Account',
-      'Business Category',
-      'KYC Status',
-      'Account Status',
+      'Email Verified',
+      'Mobile Verified',
+      'Active',
+      'Locked',
+      'Failed Login Attempts',
       'Last Login',
+      'Created Date',
+      'Updated Date',
     ];
 
-    const rows = this.filteredUsers().map((user: any) => [
+    const rows = this.users.map((user: User) => [
       user.userId,
       user.email,
       user.mobileNumber,
-      user.panNumber,
-      user.panName,
-      user.businessType,
-      user.gstin,
-      user.bankName,
-      user.bankAccountNumber,
-      user.businessCategory,
-      user.isKycVerified ? 'Verified' : 'Pending',
+      user.isEmailVerified ? 'Yes' : 'No',
+      user.isMobileVerified ? 'Yes' : 'No',
       user.isActive ? 'Active' : 'Inactive',
+      user.isLocked ? 'Locked' : 'Unlocked',
+      user.failedLoginAttempts,
       user.lastLoginDate || '—',
+      user.createdDate || '—',
+      user.updatedDate || '—',
     ]);
 
     this.downloadCsv(headers, rows);
@@ -402,10 +314,15 @@ export class Users {
   private downloadCsv(headers: string[], rows: any[][]): void {
     const csvLines = [
       headers.join(','),
-      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')),
+      ...rows.map((row) =>
+        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+      ),
     ];
 
-    const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(
+      [csvLines.join('\n')],
+      { type: 'text/csv;charset=utf-8;' }
+    );
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
 
@@ -415,74 +332,6 @@ export class Users {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  }
-
-  approveUser(): void {
-    if (!this.selectedUser) {
-      return;
-    }
-
-    this.selectedUser.isKycVerified = true;
-    this.selectedUser.isActive = true;
-  }
-
-  rejectUser(): void {
-    if (!this.selectedUser) {
-      return;
-    }
-
-    this.selectedUser.isKycVerified = false;
-  }
-
-  addUser(): void {
-    const nextId = this.users.length
-      ? Math.max(...this.users.map((user: any) => user.userId)) + 1
-      : 1;
-
-    const newUser = {
-      userId: nextId,
-      email: this.newUser.email,
-      mobileNumber: this.newUser.mobileNumber,
-      panNumber: this.newUser.panNumber,
-      panName: this.newUser.panName || '-',
-      panDob: '—',
-      businessType: this.newUser.businessType,
-      businessCategory: this.newUser.businessCategory,
-      gstin: this.newUser.gstin,
-      annualSales: this.newUser.annualSales || '—',
-      bankHolderName: this.newUser.bankHolderName || '-',
-      bankAccountNumber: this.newUser.bankAccountNumber || '-',
-      ifscCode: this.newUser.ifscCode || '-',
-      bankName: this.newUser.bankName || '-',
-      state: this.newUser.state || '-',
-      city: this.newUser.city || '-',
-      pincode: this.newUser.pincode || '-',
-      businessAddress: this.newUser.businessAddress || '-',
-      isKycVerified: false,
-      isActive: true,
-      lastLoginDate: '—',
-      createdDate: new Date().toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      }),
-      updatedDate: new Date().toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      }),
-    };
-
-    this.users.unshift(newUser);
-    this.closeAddModal();
-  }
-
-  private getMaskedValue(value: any): string {
-    if (!value) {
-      return '—';
-    }
-
-    return value.toString().replace(/.(?=.{4})/g, '*');
   }
 
 }

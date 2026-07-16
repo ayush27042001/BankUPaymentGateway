@@ -1,7 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
+import {
+  DocumentTypesService,
+  AddDocumentTypeRequest,
+  UpdateDocumentTypeRequest
+} from '../../services/document-types.service';
 
 @Component({
   selector: 'app-document-types',
@@ -14,7 +20,11 @@ import { HorizontalTableScrollDirective } from '../../../shared/directives/horiz
   templateUrl: './document-types.html',
   styleUrl: './document-types.scss',
 })
-export class DocumentTypes {
+export class DocumentTypes implements OnInit {
+
+  private documentTypesService = inject(DocumentTypesService);
+  private toastr = inject(ToastrService);
+  private cdr = inject(ChangeDetectorRef);
 
   /* =========================================
      SEARCH
@@ -44,6 +54,14 @@ export class DocumentTypes {
 
   itemsPerPage: number = 5;
 
+  totalCount: number = 0;
+
+  totalPages: number = 0;
+
+  hasPreviousPage: boolean = false;
+
+  hasNextPage: boolean = false;
+
   /* =========================================
      NEW DOCUMENT TYPE MODEL
   ========================================= */
@@ -56,7 +74,7 @@ export class DocumentTypes {
 
     allowedExtensions: '',
 
-    maxFileSizeMB: null,
+    maxFileSizeMb: null,
 
     isRequired: true,
 
@@ -68,145 +86,107 @@ export class DocumentTypes {
      DOCUMENT TYPES DATA
   ========================================= */
 
-  documentTypes = [
+  documentTypes: any[] = [];
 
-    {
-      documentTypeID: 1,
-      documentName: 'Aadhaar Card',
-      documentCode: 'AADHAAR',
-      allowedExtensions: 'JPG,PNG,PDF',
-      maxFileSizeMB: 5,
-      isRequired: true,
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      documentTypeID: 2,
-      documentName: 'PAN Card',
-      documentCode: 'PAN',
-      allowedExtensions: 'JPG,PNG,PDF',
-      maxFileSizeMB: 5,
-      isRequired: true,
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      documentTypeID: 3,
-      documentName: 'Photo',
-      documentCode: 'PHOTO',
-      allowedExtensions: 'JPG,PNG,PDF',
-      maxFileSizeMB: 5,
-      isRequired: true,
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      documentTypeID: 4,
-      documentName: 'Business Proof',
-      documentCode: 'BUSINESS_PROOF',
-      allowedExtensions: 'JPG,PNG,PDF',
-      maxFileSizeMB: 5,
-      isRequired: true,
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      documentTypeID: 5,
-      documentName:
-        'Outlet/Shop GeoTag Photo Front',
-      documentCode: 'GEOTAG_FRONT',
-      allowedExtensions: 'JPG,PNG,PDF',
-      maxFileSizeMB: 5,
-      isRequired: true,
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      documentTypeID: 6,
-      documentName:
-        'Outlet/Shop GeoTag Photo Back',
-      documentCode: 'GEOTAG_BACK',
-      allowedExtensions: 'JPG,PNG,PDF',
-      maxFileSizeMB: 5,
-      isRequired: false,
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      documentTypeID: 7,
-      documentName: 'Cancel Cheque',
-      documentCode: 'CANCEL_CHEQUE',
-      allowedExtensions: 'JPG,PNG,PDF',
-      maxFileSizeMB: 5,
-      isRequired: true,
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      documentTypeID: 8,
-      documentName: 'GST Certificate',
-      documentCode: 'GST_CERT',
-      allowedExtensions: 'JPG,PNG,PDF',
-      maxFileSizeMB: 5,
-      isRequired: false,
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    }
-
-  ];
+  paginatedData: any[] = [];
 
   /* =========================================
-     FILTERED DOCUMENT TYPES
+     INIT
   ========================================= */
 
-  filteredDocumentTypes = [
-    ...this.documentTypes
-  ];
+  ngOnInit(): void {
 
-  /* =========================================
-     PAGINATED DATA
-  ========================================= */
-
-  get paginatedData() {
-
-    const startIndex =
-      (this.currentPage - 1)
-      * this.itemsPerPage;
-
-    const endIndex =
-      startIndex + this.itemsPerPage;
-
-    return this.filteredDocumentTypes.slice(
-      startIndex,
-      endIndex
-    );
+    this.loadDocumentTypes();
 
   }
 
   /* =========================================
-     TOTAL PAGES
+     LOAD DOCUMENT TYPES
   ========================================= */
 
-  get totalPages(): number {
+  loadDocumentTypes(
+    pageNumber: number = this.currentPage,
+    pageSize: number = this.itemsPerPage,
+    search: string = this.searchTerm
+  ): void {
 
-    return Math.ceil(
-      this.filteredDocumentTypes.length
-      / this.itemsPerPage
+    this.documentTypesService
+      .getDocumentTypesList(
+        pageNumber,
+        pageSize,
+        search
+      )
+      .subscribe({
+
+        next: (response: any) => {
+
+          if (response.success) {
+
+            this.documentTypes =
+              response.data.items.map((item: any) => ({
+
+                documentTypeId: item.documentTypeId,
+
+                documentName: item.documentName,
+
+                documentCode: item.documentCode,
+
+                allowedExtensions: item.allowedExtensions,
+
+                maxFileSizeMb: item.maxFileSizeMb,
+
+                isRequired: item.isRequired,
+
+                isActive: item.isActive,
+
+                createdDate: item.createdDate,
+
+                updatedDate: item.updatedDate
+
+              }));
+
+            this.paginatedData = [
+              ...this.documentTypes
+            ];
+
+            this.currentPage = response.data.pageNumber;
+            this.itemsPerPage = response.data.pageSize;
+            this.totalCount = response.data.totalCount;
+            this.totalPages = response.data.totalPages;
+            this.hasPreviousPage = response.data.hasPreviousPage;
+            this.hasNextPage = response.data.hasNextPage;
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          this.toastr.error(
+            'Failed to load Document Types.',
+            'Error'
+          );
+
+        }
+
+      });
+
+  }
+
+  /* =========================================
+     FILTER DOCUMENT TYPES
+  ========================================= */
+
+  filterDocumentTypes(): void {
+
+    this.currentPage = 1;
+
+    this.loadDocumentTypes(
+      this.currentPage,
+      this.itemsPerPage,
+      this.searchTerm
     );
 
   }
@@ -217,9 +197,13 @@ export class DocumentTypes {
 
   nextPage(): void {
 
-    if (this.currentPage < this.totalPages) {
+    if (this.hasNextPage) {
 
-      this.currentPage++;
+      this.loadDocumentTypes(
+        this.currentPage + 1,
+        this.itemsPerPage,
+        this.searchTerm
+      );
 
     }
 
@@ -231,73 +215,15 @@ export class DocumentTypes {
 
   previousPage(): void {
 
-    if (this.currentPage > 1) {
+    if (this.hasPreviousPage) {
 
-      this.currentPage--;
-
-    }
-
-  }
-
-  /* =========================================
-     FILTER DOCUMENT TYPES
-  ========================================= */
-
-  filterDocumentTypes(): void {
-
-    const search =
-      this.searchTerm
-        .toLowerCase()
-        .trim();
-
-    if (!search) {
-
-      this.filteredDocumentTypes = [
-        ...this.documentTypes
-      ];
-
-      this.currentPage = 1;
-
-      return;
-
-    }
-
-    this.filteredDocumentTypes =
-      this.documentTypes.filter(
-        (document) => {
-
-          return (
-
-            document.documentTypeID
-              .toString()
-              .includes(search)
-
-            ||
-
-            document.documentName
-              .toLowerCase()
-              .includes(search)
-
-            ||
-
-            document.documentCode
-              .toLowerCase()
-              .includes(search)
-
-            ||
-
-            (
-              document.isActive
-                ? 'active'
-                : 'inactive'
-            ).includes(search)
-
-          );
-
-        }
+      this.loadDocumentTypes(
+        this.currentPage - 1,
+        this.itemsPerPage,
+        this.searchTerm
       );
 
-    this.currentPage = 1;
+    }
 
   }
 
@@ -305,63 +231,90 @@ export class DocumentTypes {
      OPEN VIEW MODAL
   ========================================= */
 
-  openViewModal(
-  doc: any
-): void {
+  openViewModal(doc: any): void {
 
-  this.selectedDocumentType =
-    doc;
+    this.documentTypesService
+      .getDocumentTypeById(doc.documentTypeId)
+      .subscribe({
 
-  this.showViewModal = true;
+        next: (response: any) => {
 
-  window.document.body.style.overflow =
-    'hidden';
+          if (response.success) {
 
-}
+            this.selectedDocumentType = response.data;
+
+            this.showViewModal = true;
+
+            window.document.body.style.overflow = 'hidden';
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          const message =
+            err?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
+
+  }
 
   /* =========================================
      CLOSE VIEW MODAL
   ========================================= */
 
- closeViewModal(): void {
+  closeViewModal(): void {
 
-  this.showViewModal = false;
+    this.showViewModal = false;
 
-  this.selectedDocumentType = null;
+    this.selectedDocumentType = null;
 
-  window.document.body.style.overflow =
-    'auto';
+    window.document.body.style.overflow = 'auto';
 
-}
+  }
 
   /* =========================================
      OPEN ADD MODAL
   ========================================= */
 
- openAddModal(): void {
+  openAddModal(): void {
 
-  this.showAddModal = true;
+    this.showAddModal = true;
 
-  window.document.body.style.overflow =
-    'hidden';
+    window.document.body.style.overflow = 'hidden';
 
-}
+  }
 
   /* =========================================
      CLOSE ADD MODAL
   ========================================= */
 
- closeAddModal(): void {
+  closeAddModal(): void {
 
-  this.showAddModal = false;
+    this.showAddModal = false;
 
-  window.document.body.style.overflow =
-    'auto';
+    window.document.body.style.overflow = 'auto';
 
-  this.resetForm();
+    this.resetForm();
 
-}
+    this.cdr.detectChanges();
 
+  }
 
   /* =========================================
      RESET FORM
@@ -377,7 +330,7 @@ export class DocumentTypes {
 
       allowedExtensions: '',
 
-      maxFileSizeMB: null,
+      maxFileSizeMb: null,
 
       isRequired: true,
 
@@ -394,84 +347,85 @@ export class DocumentTypes {
   addDocumentType(): void {
 
     if (
-      !this.newDocumentType.documentName
-        .trim()
+      !this.newDocumentType.documentName.trim()
 
       ||
 
-      !this.newDocumentType.documentCode
-        .trim()
+      !this.newDocumentType.documentCode.trim()
 
       ||
 
-      !this.newDocumentType.allowedExtensions
-        .trim()
+      !this.newDocumentType.allowedExtensions.trim()
 
       ||
 
-      !this.newDocumentType.maxFileSizeMB
+      !this.newDocumentType.maxFileSizeMb
     ) {
 
-      alert(
-        'Please fill all required fields.'
+      this.toastr.warning(
+        'Please fill all required fields.',
+        'Validation'
       );
 
       return;
 
     }
 
-    const currentDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
+    const request: AddDocumentTypeRequest = {
 
-    const newEntry = {
+      documentName: this.newDocumentType.documentName,
 
-      documentTypeID:
-        this.documentTypes.length + 1,
+      documentCode: this.newDocumentType.documentCode,
 
-      documentName:
-        this.newDocumentType.documentName,
+      allowedExtensions: this.newDocumentType.allowedExtensions,
 
-      documentCode:
-        this.newDocumentType.documentCode,
+      maxFileSizeMb: this.newDocumentType.maxFileSizeMb!,
 
-      allowedExtensions:
-        this.newDocumentType.allowedExtensions,
-
-      maxFileSizeMB:
-        this.newDocumentType.maxFileSizeMB,
-
-      isRequired:
-        this.newDocumentType.isRequired,
-
-      isActive:
-        this.newDocumentType.isActive,
-
-      createdDate:
-        currentDate,
-
-      updatedDate:
-        currentDate,
+      isRequired: this.newDocumentType.isRequired
 
     };
 
-    this.documentTypes.unshift(
-      newEntry
-    );
+    this.documentTypesService
+      .addDocumentType(request)
+      .subscribe({
 
-    this.filteredDocumentTypes = [
-      ...this.documentTypes
-    ];
+        next: (response: any) => {
 
-    this.currentPage = 1;
+          if (response.success) {
 
-    this.closeAddModal();
+            this.toastr.success(
+              response.message,
+              'Success'
+            );
+
+            this.resetForm();
+            this.closeAddModal();
+            this.loadDocumentTypes();
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
+          const message =
+            error?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
 
   }
 
@@ -485,18 +439,9 @@ export class DocumentTypes {
       return;
     }
 
-    this.selectedDocumentType.isActive =
-      true;
+    this.selectedDocumentType.isActive = true;
 
-    this.selectedDocumentType.updatedDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
+    this.loadDocumentTypes();
 
     this.closeViewModal();
 
@@ -512,18 +457,9 @@ export class DocumentTypes {
       return;
     }
 
-    this.selectedDocumentType.isActive =
-      false;
+    this.selectedDocumentType.isActive = false;
 
-    this.selectedDocumentType.updatedDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
+    this.loadDocumentTypes();
 
     this.closeViewModal();
 
@@ -558,10 +494,10 @@ export class DocumentTypes {
     ];
 
     const rows =
-      this.filteredDocumentTypes.map(
+      this.documentTypes.map(
         (document) => [
 
-          document.documentTypeID,
+          document.documentTypeId,
 
           document.documentName,
 
@@ -569,7 +505,7 @@ export class DocumentTypes {
 
           document.allowedExtensions,
 
-          document.maxFileSizeMB + ' MB',
+          document.maxFileSizeMb + ' MB',
 
           document.isRequired
             ? 'Required'
@@ -633,11 +569,11 @@ export class DocumentTypes {
   showEditModal: boolean = false;
 
   editDocumentType: any = {
-    documentTypeID: 0,
+    documentTypeId: 0,
     documentName: '',
     documentCode: '',
     allowedExtensions: '',
-    maxFileSizeMB: null,
+    maxFileSizeMb: null,
     isRequired: true,
     isActive: true,
     createdDate: '',
@@ -650,30 +586,29 @@ export class DocumentTypes {
 
   openEditModal(docType: any): void {
 
-  this.editDocumentType = {
-    ...docType
-  };
+    this.editDocumentType = {
+      ...docType
+    };
 
-  this.showEditModal = true;
+    this.showEditModal = true;
 
-  window.document.body.style.overflow =
-    'hidden';
+    window.document.body.style.overflow = 'hidden';
 
-}
-
+  }
 
   /* =========================================
      CLOSE EDIT MODAL
   ========================================= */
 
- closeEditModal(): void {
+  closeEditModal(): void {
 
-  this.showEditModal = false;
+    this.showEditModal = false;
 
-  window.document.body.style.overflow =
-    'auto';
+    window.document.body.style.overflow = 'auto';
 
-}
+    this.cdr.detectChanges();
+
+  }
 
   /* =========================================
      UPDATE DOCUMENT TYPE
@@ -689,50 +624,73 @@ export class DocumentTypes {
       !this.editDocumentType.allowedExtensions.trim()
     ) {
 
-      alert(
-        'Please fill all required fields.'
+      this.toastr.warning(
+        'Please fill all required fields.',
+        'Validation'
       );
 
       return;
 
     }
 
-    const index =
-      this.documentTypes.findIndex(
-        (doc) =>
-          doc.documentTypeID ===
-          this.editDocumentType.documentTypeID
-      );
+    const request: UpdateDocumentTypeRequest = {
 
-    if (index !== -1) {
+      documentTypeId: this.editDocumentType.documentTypeId,
 
-      this.documentTypes[index] = {
+      documentName: this.editDocumentType.documentName,
 
-        ...this.editDocumentType,
+      documentCode: this.editDocumentType.documentCode,
 
-        documentCode:
-          this.editDocumentType.documentCode
-            .toUpperCase(),
+      allowedExtensions: this.editDocumentType.allowedExtensions,
 
-        updatedDate:
-          new Date().toLocaleDateString(
-            'en-GB',
-            {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric',
-            }
-          )
+      maxFileSizeMb: this.editDocumentType.maxFileSizeMb,
 
-      };
+      isRequired: this.editDocumentType.isRequired,
 
-      this.filteredDocumentTypes = [
-        ...this.documentTypes
-      ];
+      isActive: this.editDocumentType.isActive
 
-    }
+    };
 
-    this.closeEditModal();
+    this.documentTypesService
+      .updateDocumentType(request)
+      .subscribe({
+
+        next: (response: any) => {
+
+          if (response.success) {
+
+            this.toastr.success(
+              response.message,
+              'Success'
+            );
+
+            this.closeEditModal();
+            this.loadDocumentTypes();
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          const message =
+            err?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
 
   }
 

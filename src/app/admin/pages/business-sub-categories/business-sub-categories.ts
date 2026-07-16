@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
+import {
+  BusinessSubCategoryService,
+  AddBusinessSubCategoryRequest
+} from '../../services/business-sub-category.service';
 
 @Component({
   selector: 'app-business-sub-categories',
@@ -14,7 +19,16 @@ import { HorizontalTableScrollDirective } from '../../../shared/directives/horiz
   templateUrl: './business-sub-categories.html',
   styleUrl: './business-sub-categories.scss',
 })
-export class BusinessSubCategories {
+export class BusinessSubCategories implements OnInit {
+
+  private subCategoryService = inject(BusinessSubCategoryService);
+  private toastr = inject(ToastrService);
+  private cdr = inject(ChangeDetectorRef);
+
+  ngOnInit(): void {
+    this.loadBusinessSubCategories();
+    this.loadCategories();
+  }
 
   /* =========================================
      SEARCH
@@ -28,13 +42,15 @@ export class BusinessSubCategories {
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
+  totalCount: number = 0;
+  hasPreviousPage: boolean = false;
+  hasNextPage: boolean = false;
 
   /* =========================================
      VIEW MODAL
   ========================================= */
 
   showViewModal: boolean = false;
-
   selectedSubCategory: any = null;
 
   /* =========================================
@@ -44,196 +60,35 @@ export class BusinessSubCategories {
   showAddModal: boolean = false;
 
   /* =========================================
-     CATEGORY LIST
+     CATEGORY LIST (from API)
   ========================================= */
 
-  categories: string[] = [
-
-    'ARTS, GIFTS & STATIONERY',
-
-    'FASHION & APPAREL',
-
-    'ELECTRONICS',
-
-    'FOOD & BEVERAGES',
-
-    'HEALTH & WELLNESS',
-
-    'HOME & FURNITURE',
-
-    'TRAVEL & TRANSPORT',
-
-    'EDUCATION',
-
-    'ENTERTAINMENT',
-
-    'SERVICES'
-
-  ];
+  categories: any[] = [];
 
   /* =========================================
      NEW SUB CATEGORY MODEL
   ========================================= */
 
   newSubCategory = {
-
+    businessCategoryId: 0,
     categoryName: '',
-
     subCategoryName: '',
-
     subCategoryCode: '',
-
     description: '',
-
     isActive: true,
-
   };
 
   /* =========================================
      SUB CATEGORY DATA
   ========================================= */
 
-  businessSubCategories = [
-
-    {
-      businessSubCategoryID: 1,
-      businessCategoryID: 1,
-      categoryName: 'ARTS, GIFTS & STATIONERY',
-      subCategoryName: 'Art and Craft Supply',
-      subCategoryCode: 'ACS',
-      description: 'Art and craft related products',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessSubCategoryID: 2,
-      businessCategoryID: 1,
-      categoryName: 'ARTS, GIFTS & STATIONERY',
-      subCategoryName: 'Florists',
-      subCategoryCode: 'FLOR',
-      description: 'Flower and florist services',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessSubCategoryID: 3,
-      businessCategoryID: 1,
-      categoryName: 'ARTS, GIFTS & STATIONERY',
-      subCategoryName: 'Gifts and Novelties',
-      subCategoryCode: 'GIFT',
-      description: 'Gift and novelty items',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessSubCategoryID: 4,
-      businessCategoryID: 1,
-      categoryName: 'ARTS, GIFTS & STATIONERY',
-      subCategoryName: 'Stationery',
-      subCategoryCode: 'STAT',
-      description: 'Stationery and office items',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessSubCategoryID: 5,
-      businessCategoryID: 2,
-      categoryName: 'FASHION & APPAREL',
-      subCategoryName: 'Clothing and Apparel',
-      subCategoryCode: 'CLTH',
-      description: 'Fashion clothing products',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessSubCategoryID: 6,
-      businessCategoryID: 2,
-      categoryName: 'FASHION & APPAREL',
-      subCategoryName: 'Footwear',
-      subCategoryCode: 'FOOT',
-      description: 'Shoes and footwear products',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessSubCategoryID: 7,
-      businessCategoryID: 2,
-      categoryName: 'FASHION & APPAREL',
-      subCategoryName: 'Accessories',
-      subCategoryCode: 'ACCS',
-      description: 'Fashion accessories',
-      isActive: false,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessSubCategoryID: 8,
-      businessCategoryID: 3,
-      categoryName: 'ELECTRONICS',
-      subCategoryName: 'Mobile Phones',
-      subCategoryCode: 'MOBL',
-      description: 'Mobile and smartphone products',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessSubCategoryID: 9,
-      businessCategoryID: 3,
-      categoryName: 'ELECTRONICS',
-      subCategoryName: 'Computers and Laptops',
-      subCategoryCode: 'COMP',
-      description: 'Computers and laptops',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessSubCategoryID: 10,
-      businessCategoryID: 3,
-      categoryName: 'ELECTRONICS',
-      subCategoryName: 'Consumer Electronics',
-      subCategoryCode: 'CELEC',
-      description: 'Electronic consumer products',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    }
-
-  ];
+  businessSubCategories: any[] = [];
 
   /* =========================================
      FILTERED DATA
   ========================================= */
 
-  filteredSubCategories = [
-    ...this.businessSubCategories
-  ];
-
-  /* =========================================
-     PAGINATED DATA
-  ========================================= */
-
-  get paginatedSubCategories() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.filteredSubCategories.slice(startIndex, endIndex);
-  }
+  filteredSubCategories: any[] = [];
 
   /* =========================================
      TOTAL PAGES
@@ -244,19 +99,114 @@ export class BusinessSubCategories {
   }
 
   /* =========================================
-     PAGINATION CONTROLS
+     NEXT PAGE
   ========================================= */
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
+    if (this.hasNextPage) {
+      this.loadBusinessSubCategories(
+        this.currentPage + 1,
+        this.itemsPerPage,
+        this.searchTerm
+      );
     }
   }
 
+  /* =========================================
+     PREVIOUS PAGE
+  ========================================= */
+
   previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
+    if (this.hasPreviousPage) {
+      this.loadBusinessSubCategories(
+        this.currentPage - 1,
+        this.itemsPerPage,
+        this.searchTerm
+      );
     }
+  }
+
+  /* =========================================
+     LOAD CATEGORIES (for dropdown)
+  ========================================= */
+
+  loadCategories(): void {
+    this.subCategoryService
+      .getCategoriesList()
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.categories = response.data.items.map((item: any) => ({
+              businessCategoryId: item.businessCategoryId,
+              categoryName: item.categoryName
+            }));
+          }
+        },
+        error: (err: any) => {
+          console.error(err);
+        }
+      });
+  }
+
+  /* =========================================
+     LOAD BUSINESS SUB CATEGORIES
+  ========================================= */
+
+  loadBusinessSubCategories(
+    pageNumber: number = this.currentPage,
+    pageSize: number = this.itemsPerPage,
+    search: string = this.searchTerm,
+    isActive: boolean | null = null,
+    businessCategoryId: number | null = null
+  ): void {
+    this.subCategoryService
+      .getBusinessSubCategoriesList(
+        pageNumber,
+        pageSize,
+        search,
+        isActive,
+        businessCategoryId
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.businessSubCategories =
+              response.data.items.map((item: any) => ({
+                businessSubCategoryID: item.businessSubCategoryId,
+                businessCategoryID: item.businessCategoryId,
+                categoryName: item.categoryName,
+                subCategoryName: item.subCategoryName,
+                subCategoryCode: item.subCategoryCode,
+                description: item.description,
+                isActive: item.isActive,
+                createdDate: item.createdDate,
+                updatedDate: item.updatedDate
+              }));
+            this.filteredSubCategories = [...this.businessSubCategories];
+            this.currentPage = response.data.pageNumber;
+            this.itemsPerPage = response.data.pageSize;
+            this.totalCount = response.data.totalCount;
+            this.hasPreviousPage = response.data.hasPreviousPage;
+            this.hasNextPage = response.data.hasNextPage;
+          }
+        },
+        error: (err: any) => {
+          console.error(err);
+          this.toastr.error(
+            'Failed to load Business Sub Categories.',
+            'Error'
+          );
+        }
+      });
+  }
+
+  /* =========================================
+     GET CATEGORY NAME BY ID
+  ========================================= */
+
+  getCategoryNameById(id: number): string {
+    const cat = this.categories.find(c => c.businessCategoryId === id);
+    return cat ? cat.categoryName : 'N/A';
   }
 
   /* =========================================
@@ -264,69 +214,12 @@ export class BusinessSubCategories {
   ========================================= */
 
   filterSubCategories(): void {
-
-    const search =
-      this.searchTerm
-        .toLowerCase()
-        .trim();
-
     this.currentPage = 1;
-
-    if (!search) {
-
-      this.filteredSubCategories = [
-        ...this.businessSubCategories
-      ];
-
-      return;
-
-    }
-
-    this.filteredSubCategories =
-      this.businessSubCategories.filter((subCategory) => {
-
-        return (
-
-          subCategory.businessSubCategoryID
-            .toString()
-            .includes(search)
-
-          ||
-
-          subCategory.categoryName
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          subCategory.subCategoryName
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          subCategory.subCategoryCode
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          subCategory.description
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          (
-            subCategory.isActive
-              ? 'active'
-              : 'inactive'
-          ).includes(search)
-
-        );
-
-      });
-
+    this.loadBusinessSubCategories(
+      this.currentPage,
+      this.itemsPerPage,
+      this.searchTerm
+    );
   }
 
   /* =========================================
@@ -334,13 +227,34 @@ export class BusinessSubCategories {
   ========================================= */
 
   openViewModal(subCategory: any): void {
-
-    this.selectedSubCategory = subCategory;
-
-    this.showViewModal = true;
-
-    document.body.style.overflow = 'hidden';
-
+    this.subCategoryService
+      .getBusinessSubCategoryById(subCategory.businessSubCategoryID)
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.selectedSubCategory = {
+              businessSubCategoryID: response.data.businessSubCategoryId,
+              businessCategoryID: response.data.businessCategoryId,
+              categoryName: response.data.categoryName,
+              subCategoryName: response.data.subCategoryName,
+              subCategoryCode: response.data.subCategoryCode,
+              description: response.data.description,
+              isActive: response.data.isActive,
+              createdDate: response.data.createdDate,
+              updatedDate: response.data.updatedDate
+            };
+            this.showViewModal = true;
+            document.body.style.overflow = 'hidden';
+          } else {
+            this.toastr.error(response.message, 'Error');
+          }
+        },
+        error: (err: any) => {
+          console.error(err);
+          const message = err?.error?.message || 'Something went wrong.';
+          this.toastr.error(message, 'Error');
+        }
+      });
   }
 
   /* =========================================
@@ -348,13 +262,9 @@ export class BusinessSubCategories {
   ========================================= */
 
   closeViewModal(): void {
-
     this.showViewModal = false;
-
     this.selectedSubCategory = null;
-
     document.body.style.overflow = 'auto';
-
   }
 
   /* =========================================
@@ -362,11 +272,8 @@ export class BusinessSubCategories {
   ========================================= */
 
   openAddModal(): void {
-
     this.showAddModal = true;
-
     document.body.style.overflow = 'hidden';
-
   }
 
   /* =========================================
@@ -374,13 +281,10 @@ export class BusinessSubCategories {
   ========================================= */
 
   closeAddModal(): void {
-
     this.showAddModal = false;
-
     document.body.style.overflow = 'auto';
-
     this.resetForm();
-
+    this.cdr.detectChanges();
   }
 
   /* =========================================
@@ -388,21 +292,14 @@ export class BusinessSubCategories {
   ========================================= */
 
   resetForm(): void {
-
     this.newSubCategory = {
-
+      businessCategoryId: 0,
       categoryName: '',
-
       subCategoryName: '',
-
       subCategoryCode: '',
-
       description: '',
-
       isActive: true,
-
     };
-
   }
 
   /* =========================================
@@ -410,74 +307,45 @@ export class BusinessSubCategories {
   ========================================= */
 
   addSubCategory(): void {
-
     if (
-      !this.newSubCategory.categoryName.trim()
-      ||
-      !this.newSubCategory.subCategoryName.trim()
-      ||
+      this.newSubCategory.businessCategoryId === 0 ||
+      !this.newSubCategory.subCategoryName.trim() ||
       !this.newSubCategory.subCategoryCode.trim()
     ) {
-
-      alert(
-        'Please fill all required fields.'
+      this.toastr.warning(
+        'Please fill all required fields.',
+        'Validation'
       );
-
       return;
-
     }
 
-    const currentDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
-
-    const newEntry = {
-
-      businessSubCategoryID:
-        this.businessSubCategories.length + 1,
-
-      businessCategoryID: 0,
-
-      categoryName:
-        this.newSubCategory.categoryName,
-
-      subCategoryName:
-        this.newSubCategory.subCategoryName,
-
-      subCategoryCode:
-        this.newSubCategory.subCategoryCode
-          .toUpperCase(),
-
-      description:
-        this.newSubCategory.description,
-
-      isActive:
-        this.newSubCategory.isActive,
-
-      createdDate:
-        currentDate,
-
-      updatedDate:
-        currentDate,
-
+    const request: AddBusinessSubCategoryRequest = {
+      businessCategoryId: this.newSubCategory.businessCategoryId,
+      subCategoryName: this.newSubCategory.subCategoryName,
+      subCategoryCode: this.newSubCategory.subCategoryCode.toUpperCase(),
+      description: this.newSubCategory.description,
+      isActive: this.newSubCategory.isActive
     };
 
-    this.businessSubCategories.unshift(
-      newEntry
-    );
-
-    this.filteredSubCategories = [
-      ...this.businessSubCategories
-    ];
-
-    this.closeAddModal();
-
+    this.subCategoryService
+      .addBusinessSubCategory(request)
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.toastr.success(response.message, 'Success');
+            this.resetForm();
+            this.closeAddModal();
+            this.loadBusinessSubCategories();
+          } else {
+            this.toastr.error(response.message, 'Error');
+          }
+        },
+        error: (error: any) => {
+          console.error(error);
+          const message = error?.error?.message || 'Something went wrong.';
+          this.toastr.error(message, 'Error');
+        }
+      });
   }
 
   /* =========================================
@@ -485,25 +353,36 @@ export class BusinessSubCategories {
   ========================================= */
 
   approveSubCategory(): void {
-
     if (!this.selectedSubCategory) {
       return;
     }
 
-    this.selectedSubCategory.isActive = true;
+    const payload = {
+      businessSubCategoryId: this.selectedSubCategory.businessSubCategoryID,
+      businessCategoryId: this.selectedSubCategory.businessCategoryID,
+      subCategoryName: this.selectedSubCategory.subCategoryName,
+      subCategoryCode: this.selectedSubCategory.subCategoryCode,
+      description: this.selectedSubCategory.description,
+      isActive: true
+    };
 
-    this.selectedSubCategory.updatedDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
+    this.subCategoryService
+      .updateBusinessSubCategory(payload)
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.toastr.success(response.message, 'Success');
+            this.closeViewModal();
+            this.loadBusinessSubCategories();
+          } else {
+            this.toastr.error(response.message, 'Error');
+          }
+        },
+        error: (err: any) => {
+          const message = err?.error?.message || 'Something went wrong.';
+          this.toastr.error(message, 'Error');
         }
-      );
-
-    this.closeViewModal();
-
+      });
   }
 
   /* =========================================
@@ -511,25 +390,36 @@ export class BusinessSubCategories {
   ========================================= */
 
   rejectSubCategory(): void {
-
     if (!this.selectedSubCategory) {
       return;
     }
 
-    this.selectedSubCategory.isActive = false;
+    const payload = {
+      businessSubCategoryId: this.selectedSubCategory.businessSubCategoryID,
+      businessCategoryId: this.selectedSubCategory.businessCategoryID,
+      subCategoryName: this.selectedSubCategory.subCategoryName,
+      subCategoryCode: this.selectedSubCategory.subCategoryCode,
+      description: this.selectedSubCategory.description,
+      isActive: false
+    };
 
-    this.selectedSubCategory.updatedDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
+    this.subCategoryService
+      .updateBusinessSubCategory(payload)
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.toastr.success(response.message, 'Success');
+            this.closeViewModal();
+            this.loadBusinessSubCategories();
+          } else {
+            this.toastr.error(response.message, 'Error');
+          }
+        },
+        error: (err: any) => {
+          const message = err?.error?.message || 'Something went wrong.';
+          this.toastr.error(message, 'Error');
         }
-      );
-
-    this.closeViewModal();
-
+      });
   }
 
   /* =========================================
@@ -537,90 +427,48 @@ export class BusinessSubCategories {
   ========================================= */
 
   exportCSV(): void {
-
     const headers = [
-
       'ID',
-
       'Category Name',
-
       'Sub Category Name',
-
       'Sub Category Code',
-
       'Description',
-
       'Status',
-
       'Created Date',
-
       'Updated Date'
-
     ];
 
     const rows =
       this.filteredSubCategories.map(
         (subCategory) => [
-
           subCategory.businessSubCategoryID,
-
           subCategory.categoryName,
-
           subCategory.subCategoryName,
-
           subCategory.subCategoryCode,
-
           subCategory.description,
-
-          subCategory.isActive
-            ? 'Active'
-            : 'Inactive',
-
+          subCategory.isActive ? 'Active' : 'Inactive',
           subCategory.createdDate,
-
           subCategory.updatedDate
-
         ]
       );
 
     const csvContent = [
-
       headers.join(','),
-
-      ...rows.map((row) =>
-        row.join(',')
-      )
-
+      ...rows.map((row) => row.join(','))
     ].join('\n');
 
-    const blob = new Blob(
-      [csvContent],
-      {
-        type: 'text/csv;charset=utf-8;',
-      }
-    );
+    const blob = new Blob([csvContent], {
+      type: 'text/csv;charset=utf-8;',
+    });
 
-    const link =
-      document.createElement('a');
-
-    const url =
-      URL.createObjectURL(blob);
-
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-
-    link.setAttribute(
-      'download',
-      'business-sub-categories.csv'
-    );
-
+    link.setAttribute('download', 'business-sub-categories.csv');
     link.style.visibility = 'hidden';
-
     document.body.appendChild(link);
-
     link.click();
-
     document.body.removeChild(link);
-
   }
 
   /* =========================================
@@ -646,15 +494,9 @@ export class BusinessSubCategories {
   ========================================= */
 
   openEditModal(subCategory: any): void {
-
-    this.editSubCategory = {
-      ...subCategory
-    };
-
+    this.editSubCategory = { ...subCategory };
     this.showEditModal = true;
-
     document.body.style.overflow = 'hidden';
-
   }
 
   /* =========================================
@@ -662,11 +504,9 @@ export class BusinessSubCategories {
   ========================================= */
 
   closeEditModal(): void {
-
     this.showEditModal = false;
-
     document.body.style.overflow = 'auto';
-
+    this.cdr.detectChanges();
   }
 
   /* =========================================
@@ -674,60 +514,44 @@ export class BusinessSubCategories {
   ========================================= */
 
   updateSubCategory(): void {
-
     if (
-      !this.editSubCategory.subCategoryName.trim()
-      ||
-      !this.editSubCategory.subCategoryCode.trim()
-      ||
+      !this.editSubCategory.subCategoryName.trim() ||
+      !this.editSubCategory.subCategoryCode.trim() ||
       !this.editSubCategory.description.trim()
     ) {
-
-      alert(
-        'Please fill all required fields.'
+      this.toastr.warning(
+        'Please fill all required fields.',
+        'Validation'
       );
-
       return;
-
     }
 
-    const index =
-      this.businessSubCategories.findIndex(
-        (subCat) =>
-          subCat.businessSubCategoryID ===
-          this.editSubCategory.businessSubCategoryID
-      );
+    const payload = {
+      businessSubCategoryId: this.editSubCategory.businessSubCategoryID,
+      businessCategoryId: this.editSubCategory.businessCategoryID,
+      subCategoryName: this.editSubCategory.subCategoryName,
+      subCategoryCode: this.editSubCategory.subCategoryCode.toUpperCase(),
+      description: this.editSubCategory.description,
+      isActive: this.editSubCategory.isActive
+    };
 
-    if (index !== -1) {
-
-      this.businessSubCategories[index] = {
-
-        ...this.editSubCategory,
-
-        subCategoryCode:
-          this.editSubCategory.subCategoryCode
-            .toUpperCase(),
-
-        updatedDate:
-          new Date().toLocaleDateString(
-            'en-GB',
-            {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric',
-            }
-          )
-
-      };
-
-      this.filteredSubCategories = [
-        ...this.businessSubCategories
-      ];
-
-    }
-
-    this.closeEditModal();
-
+    this.subCategoryService
+      .updateBusinessSubCategory(payload)
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.toastr.success(response.message, 'Success');
+            this.closeEditModal();
+            this.loadBusinessSubCategories();
+          } else {
+            this.toastr.error(response.message, 'Error');
+          }
+        },
+        error: (err: any) => {
+          const message = err?.error?.message || 'Something went wrong.';
+          this.toastr.error(message, 'Error');
+        }
+      });
   }
 
 }

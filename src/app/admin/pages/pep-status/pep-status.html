@@ -88,7 +88,7 @@
       </div>
 
       <div class="table-count">
-        Total Records : {{ filteredPepStatus.length }}
+        Total Records : {{ totalCount }}
       </div>
 
     </div>
@@ -125,7 +125,7 @@
 
           @for (
             pep of paginatedData;
-            track pep.pepStatusID
+            track pep.pepstatusId
           ) {
 
             <tr class="table-row">
@@ -135,7 +135,7 @@
               <td>
 
                 <div class="id-badge">
-                  #{{ pep.pepStatusID }}
+                  #{{ pep.pepstatusId }}
                 </div>
 
               </td>
@@ -246,7 +246,7 @@
     <button
       class="pagination-btn"
       (click)="previousPage()"
-      [disabled]="currentPage === 1"
+      [disabled]="!hasPreviousPage"
     >
       Previous
     </button>
@@ -262,7 +262,7 @@
     <button
       class="pagination-btn"
       (click)="nextPage()"
-      [disabled]="currentPage === totalPages"
+      [disabled]="!hasNextPage"
     >
       Next
     </button>
@@ -317,7 +317,7 @@
               </label>
 
               <h4>
-                #{{ selectedPepStatus.pepStatusID }}
+                #{{ selectedPepStatus.pepstatusId }}
               </h4>
 
             </div>

@@ -89,4 +89,26 @@ updateBusinessProofType(data: any): Observable<any> {
   );
 
 }
+getBusinessProofTypesList(
+  pageNumber: number,
+  pageSize: number,
+  search: string = '',
+  isActive?: boolean | null
+): Observable<any> {
+
+  let url =
+    `${this.apiUrl}/BusinessProofTypeMaster/list?PageNumber=${pageNumber}&PageSize=${pageSize}&Search=${search}`;
+
+  if (isActive !== null && isActive !== undefined) {
+    url += `&IsActive=${isActive}`;
+  }
+
+  return this.http.get<any>(
+    url,
+    {
+      headers: this.headers
+    }
+  );
+
+}
 }
