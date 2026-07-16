@@ -1,8 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
-
+import {
+  BusinessCategoryService,
+  AddBusinessCategoryRequest
+} from '../../services/business-category.service';
 @Component({
   selector: 'app-business-categories',
   standalone: true,
@@ -14,8 +18,15 @@ import { HorizontalTableScrollDirective } from '../../../shared/directives/horiz
   templateUrl: './business-categories.html',
   styleUrl: './business-categories.scss',
 })
-export class BusinessCategories {
+export class BusinessCategories implements OnInit {
 
+  private businessCategoryService = inject(BusinessCategoryService);
+  private toastr = inject(ToastrService);
+  private cdr = inject(ChangeDetectorRef);
+
+  ngOnInit(): void {
+    this.loadBusinessCategories();
+  }
   /* =========================================
      SEARCH
   ========================================= */
@@ -29,6 +40,12 @@ export class BusinessCategories {
   currentPage: number = 1;
 
   itemsPerPage: number = 5;
+
+  totalCount: number = 0;
+
+  hasPreviousPage: boolean = false;
+
+  hasNextPage: boolean = false;
 
   /* =========================================
      VIEW MODAL
@@ -59,115 +76,13 @@ export class BusinessCategories {
      BUSINESS CATEGORY DATA
   ========================================= */
 
-  businessCategories = [
-
-    {
-      businessCategoryID: 1,
-      categoryName: 'ARTS, GIFTS & STATIONERY',
-      categoryCode: 'AGS',
-      description: 'Arts, Gifts and Stationery items',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessCategoryID: 2,
-      categoryName: 'FASHION & APPAREL',
-      categoryCode: 'FA',
-      description: 'Fashion and Apparel',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessCategoryID: 3,
-      categoryName: 'ELECTRONICS',
-      categoryCode: 'ELEC',
-      description: 'Electronics and Gadgets',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessCategoryID: 4,
-      categoryName: 'FOOD & BEVERAGES',
-      categoryCode: 'FB',
-      description: 'Food and Beverages',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessCategoryID: 5,
-      categoryName: 'HEALTH & WELLNESS',
-      categoryCode: 'HW',
-      description: 'Health and Wellness products',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessCategoryID: 6,
-      categoryName: 'HOME & FURNITURE',
-      categoryCode: 'HF',
-      description: 'Home and Furniture',
-      isActive: false,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessCategoryID: 7,
-      categoryName: 'TRAVEL & TRANSPORT',
-      categoryCode: 'TT',
-      description: 'Travel and Transportation',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessCategoryID: 8,
-      categoryName: 'EDUCATION',
-      categoryCode: 'EDU',
-      description: 'Educational Services',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessCategoryID: 9,
-      categoryName: 'ENTERTAINMENT',
-      categoryCode: 'ENT',
-      description: 'Entertainment and Media',
-      isActive: false,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      businessCategoryID: 10,
-      categoryName: 'SERVICES',
-      categoryCode: 'SERV',
-      description: 'Professional Services',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    }
-
-  ];
+  businessCategories: any[] = [];
 
   /* =========================================
      FILTERED DATA
   ========================================= */
 
-  filteredCategories = [...this.businessCategories];
+  filteredCategories: any[] = [];
 
   /* =========================================
      FILTER CATEGORY
@@ -175,77 +90,85 @@ export class BusinessCategories {
 
   filterCategories(): void {
 
-    const search = this.searchTerm
-      .toLowerCase()
-      .trim();
+    this.currentPage = 1;
 
-    if (!search) {
-
-      this.filteredCategories = [
-        ...this.businessCategories
-      ];
-
-      return;
-
-    }
-
-    this.filteredCategories =
-      this.businessCategories.filter((category) => {
-
-        return (
-
-          category.businessCategoryID
-            .toString()
-            .includes(search)
-
-          ||
-
-          category.categoryName
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          category.categoryCode
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          category.description
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          (category.isActive
-            ? 'active'
-            : 'inactive'
-          ).includes(search)
-
-        );
-
-      });
+    this.loadBusinessCategories(
+      this.currentPage,
+      this.itemsPerPage,
+      this.searchTerm
+    );
 
   }
 
   /* =========================================
-     PAGINATED DATA
+     LOAD BUSINESS CATEGORIES
   ========================================= */
 
-  paginatedData() {
+  loadBusinessCategories(
+    pageNumber: number = this.currentPage,
+    pageSize: number = this.itemsPerPage,
+    search: string = this.searchTerm,
+    isActive: boolean | null = null
+  ): void {
 
-    const startIndex =
-      (this.currentPage - 1)
-      * this.itemsPerPage;
+    this.businessCategoryService
+      .getBusinessCategoriesList(
+        pageNumber,
+        pageSize,
+        search,
+        isActive
+      )
+      .subscribe({
 
-    const endIndex =
-      startIndex + this.itemsPerPage;
+        next: (response: any) => {
 
-    return this.filteredCategories.slice(
-      startIndex,
-      endIndex
-    );
+          if (response.success) {
+
+            this.businessCategories =
+              response.data.items.map((item: any) => ({
+
+                businessCategoryID: item.businessCategoryId,
+
+                categoryName: item.categoryName,
+
+                categoryCode: item.categoryCode,
+
+                description: item.description,
+
+                isActive: item.isActive,
+
+                createdDate: item.createdDate,
+
+                updatedDate: item.updatedDate
+
+              }));
+
+            this.filteredCategories = [
+              ...this.businessCategories
+            ];
+
+            this.currentPage = response.data.pageNumber;
+            this.itemsPerPage = response.data.pageSize;
+            this.totalCount = response.data.totalCount;
+            this.hasPreviousPage = response.data.hasPreviousPage;
+            this.hasNextPage = response.data.hasNextPage;
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          this.toastr.error(
+            'Failed to load Business Categories.',
+            'Error'
+          );
+
+        }
+
+      });
 
   }
 
@@ -268,12 +191,13 @@ export class BusinessCategories {
 
   nextPage(): void {
 
-    if (
-      this.currentPage
-      < this.totalPages
-    ) {
+    if (this.hasNextPage) {
 
-      this.currentPage++;
+      this.loadBusinessCategories(
+        this.currentPage + 1,
+        this.itemsPerPage,
+        this.searchTerm
+      );
 
     }
 
@@ -285,9 +209,13 @@ export class BusinessCategories {
 
   previousPage(): void {
 
-    if (this.currentPage > 1) {
+    if (this.hasPreviousPage) {
 
-      this.currentPage--;
+      this.loadBusinessCategories(
+        this.currentPage - 1,
+        this.itemsPerPage,
+        this.searchTerm
+      );
 
     }
 
@@ -299,11 +227,60 @@ export class BusinessCategories {
 
   openViewModal(category: any): void {
 
-    this.selectedCategory = category;
+    this.businessCategoryService
+      .getBusinessCategoryById(category.businessCategoryID)
+      .subscribe({
 
-    this.showViewModal = true;
+        next: (response: any) => {
 
-    document.body.style.overflow = 'hidden';
+          if (response.success) {
+
+            this.selectedCategory = {
+
+              businessCategoryID: response.data.businessCategoryId,
+
+              categoryName: response.data.categoryName,
+
+              categoryCode: response.data.categoryCode,
+
+              description: response.data.description,
+
+              isActive: response.data.isActive,
+
+              createdDate: response.data.createdDate,
+
+              updatedDate: response.data.updatedDate
+
+            };
+
+            this.showViewModal = true;
+
+            document.body.style.overflow = 'hidden';
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          const message =
+            err?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
 
   }
 
@@ -345,6 +322,8 @@ export class BusinessCategories {
 
     this.resetNewCategory();
 
+    this.cdr.detectChanges();
+
   }
 
   /* =========================================
@@ -366,67 +345,74 @@ export class BusinessCategories {
      ADD CATEGORY
   ========================================= */
 
-  addCategory(): void {
+addCategory(): void {
 
-    if (
-      !this.newCategory.categoryName.trim()
-      ||
-      !this.newCategory.categoryCode.trim()
-      ||
-      !this.newCategory.description.trim()
-    ) {
+  if (
+    !this.newCategory.categoryName.trim() ||
+    !this.newCategory.categoryCode.trim() ||
+    !this.newCategory.description.trim()
+  ) {
 
-      alert('Please fill all required fields.');
-
-      return;
-
-    }
-
-    const currentDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
-
-    const newEntry = {
-
-      businessCategoryID:
-        this.businessCategories.length + 1,
-
-      categoryName:
-        this.newCategory.categoryName,
-
-      categoryCode:
-        this.newCategory.categoryCode
-          .toUpperCase(),
-
-      description:
-        this.newCategory.description,
-
-      isActive:
-        this.newCategory.isActive,
-
-      createdDate:
-        currentDate,
-
-      updatedDate:
-        currentDate,
-
-    };
-
-    this.businessCategories.unshift(newEntry);
-
-    this.filteredCategories = [
-      ...this.businessCategories
-    ];
-
-    this.closeAddModal();
+    this.toastr.warning(
+      'Please fill all required fields.',
+      'Validation'
+    );
+    return;
 
   }
+
+  const request: AddBusinessCategoryRequest = {
+
+    categoryName: this.newCategory.categoryName,
+    categoryCode: this.newCategory.categoryCode.toUpperCase(),
+    description: this.newCategory.description,
+    isActive: this.newCategory.isActive
+
+  };
+
+  this.businessCategoryService
+    .addBusinessCategory(request)
+    .subscribe({
+
+      next: (response: any) => {
+
+        if (response.success) {
+
+          this.toastr.success(
+            response.message,
+            'Success'
+          );
+
+          this.resetNewCategory();
+          this.closeAddModal();
+          this.loadBusinessCategories();
+
+        } else {
+
+          this.toastr.error(
+            response.message,
+            'Error'
+          );
+
+        }
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        const message =
+          error?.error?.message ||
+          'Something went wrong.';
+
+        this.toastr.error(message, 'Error');
+
+      }
+
+    });
+
+}
 
   /* =========================================
      APPROVE CATEGORY
@@ -597,6 +583,8 @@ export class BusinessCategories {
 
     document.body.style.overflow = 'auto';
 
+    this.cdr.detectChanges();
+
   }
 
   /* =========================================
@@ -613,50 +601,67 @@ export class BusinessCategories {
       !this.editCategory.description.trim()
     ) {
 
-      alert(
-        'Please fill all required fields.'
+      this.toastr.warning(
+        'Please fill all required fields.',
+        'Validation'
       );
 
       return;
 
     }
 
-    const index =
-      this.businessCategories.findIndex(
-        (cat) =>
-          cat.businessCategoryID ===
-          this.editCategory.businessCategoryID
-      );
+    const payload = {
 
-    if (index !== -1) {
+      businessCategoryId: this.editCategory.businessCategoryID,
 
-      this.businessCategories[index] = {
+      categoryName: this.editCategory.categoryName,
 
-        ...this.editCategory,
+      categoryCode: this.editCategory.categoryCode.toUpperCase(),
 
-        categoryCode:
-          this.editCategory.categoryCode
-            .toUpperCase(),
+      description: this.editCategory.description,
 
-        updatedDate:
-          new Date().toLocaleDateString(
-            'en-GB',
-            {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric',
-            }
-          )
+      isActive: this.editCategory.isActive
 
-      };
+    };
 
-      this.filteredCategories = [
-        ...this.businessCategories
-      ];
+    this.businessCategoryService
+      .updateBusinessCategory(payload)
+      .subscribe({
 
-    }
+        next: (response: any) => {
 
-    this.closeEditModal();
+          if (response.success) {
+
+            this.toastr.success(
+              response.message,
+              'Success'
+            );
+
+            this.closeEditModal();
+            this.loadBusinessCategories();
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          const message =
+            err?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
 
   }
 

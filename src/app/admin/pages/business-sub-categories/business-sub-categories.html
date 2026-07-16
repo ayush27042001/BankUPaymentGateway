@@ -89,7 +89,7 @@
       </div>
 
       <div class="table-count">
-        Total Records : {{ filteredSubCategories.length }}
+        Total Records : {{ totalCount }}
       </div>
 
     </div>
@@ -129,7 +129,7 @@
         <tbody>
 
           @for (
-            subCategory of paginatedSubCategories;
+            subCategory of filteredSubCategories;
             track subCategory.businessSubCategoryID
           ) {
 
@@ -150,7 +150,7 @@
               <td>
 
                 <div class="table-pill">
-                  {{ subCategory.categoryName }}
+                  {{ getCategoryNameById(subCategory.businessCategoryID) }}
                 </div>
 
               </td>
@@ -271,7 +271,7 @@
     <button
       class="pagination-btn"
       (click)="previousPage()"
-      [disabled]="currentPage === 1"
+      [disabled]="!hasPreviousPage"
     >
       Previous
     </button>
@@ -285,7 +285,7 @@
     <button
       class="pagination-btn"
       (click)="nextPage()"
-      [disabled]="currentPage === totalPages"
+      [disabled]="!hasNextPage"
     >
       Next
     </button>
@@ -540,20 +540,20 @@
               </label>
 
               <select
-                [(ngModel)]="newSubCategory.categoryName"
+                [(ngModel)]="newSubCategory.businessCategoryId"
               >
 
-                <option value="">
+                <option [ngValue]="0">
                   Select Category
                 </option>
 
                 @for (
                   category of categories;
-                  track category
+                  track category.businessCategoryId
                 ) {
 
-                  <option [value]="category">
-                    {{ category }}
+                  <option [ngValue]="category.businessCategoryId">
+                    {{ category.categoryName }}
                   </option>
 
                 }
@@ -703,11 +703,11 @@
 
               <label>Category</label>
 
-              <select [(ngModel)]="editSubCategory.categoryName">
+              <select [(ngModel)]="editSubCategory.businessCategoryID">
 
-                @for (cat of categories; track $index) {
-                  <option [value]="cat">
-                    {{ cat }}
+                @for (cat of categories; track cat.businessCategoryId) {
+                  <option [ngValue]="cat.businessCategoryId">
+                    {{ cat.categoryName }}
                   </option>
                 }
 

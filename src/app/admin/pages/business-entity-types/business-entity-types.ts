@@ -1,7 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
+import {
+  BusinessEntityTypesService,
+  AddBusinessEntityTypeRequest,
+  UpdateBusinessEntityTypeRequest
+} from '../../services/business-entity-types.service';
 
 @Component({
   selector: 'app-business-entity-types',
@@ -16,6 +22,10 @@ import { HorizontalTableScrollDirective } from '../../../shared/directives/horiz
   styleUrl: './business-entity-types.scss'
 })
 export class BusinessEntityTypes implements OnInit {
+
+  private businessEntityTypesService = inject(BusinessEntityTypesService);
+  private toastr = inject(ToastrService);
+  private cdr = inject(ChangeDetectorRef);
 
   /* =========================================
   SEARCH
@@ -41,11 +51,15 @@ export class BusinessEntityTypes implements OnInit {
 
   itemsPerPage = 5;
 
-  totalPages = 1;
+  totalCount = 0;
+
+  totalPages = 0;
+
+  hasPreviousPage = false;
+
+  hasNextPage = false;
 
   paginatedEntities: any[] = [];
-
-  filteredEntities: any[] = [];
 
   /* =========================================
   ADD ENTITY FORM
@@ -61,72 +75,7 @@ export class BusinessEntityTypes implements OnInit {
   TABLE DATA
   ========================================= */
 
-  businessEntityTypes = [
-
-    {
-      businessEntityTypeID: 1,
-      entityName: 'Individual',
-      description: 'Individual/Sole Proprietor',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026'
-    },
-
-    {
-      businessEntityTypeID: 2,
-      entityName: 'Sole Proprietorship',
-      description: 'Sole Proprietorship Firm',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026'
-    },
-
-    {
-      businessEntityTypeID: 3,
-      entityName: 'Partnership',
-      description: 'Partnership Firm',
-      isActive: false,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026'
-    },
-
-    {
-      businessEntityTypeID: 4,
-      entityName: 'Limited Liability Partnership',
-      description: 'LLP',
-      isActive: false,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026'
-    },
-
-    {
-      businessEntityTypeID: 5,
-      entityName: 'Private Limited Company',
-      description: 'Pvt Ltd Company',
-      isActive: false,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026'
-    },
-
-    {
-      businessEntityTypeID: 6,
-      entityName: 'Public Limited Company',
-      description: 'Public Ltd Company',
-      isActive: false,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026'
-    },
-
-    {
-      businessEntityTypeID: 7,
-      entityName: 'One Person Company',
-      description: 'OPC',
-      isActive: false,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026'
-    }
-
-  ];
+  businessEntityTypes: any[] = [];
 
   /* =========================================
   INIT
@@ -134,9 +83,76 @@ export class BusinessEntityTypes implements OnInit {
 
   ngOnInit(): void {
 
-    this.filteredEntities = [...this.businessEntityTypes];
+    this.loadBusinessEntityTypes();
 
-    this.updatePagination();
+  }
+
+  /* =========================================
+  LOAD BUSINESS ENTITY TYPES
+  ========================================= */
+
+  loadBusinessEntityTypes(
+    pageNumber: number = this.currentPage,
+    pageSize: number = this.itemsPerPage,
+    search: string = this.searchText
+  ): void {
+
+    this.businessEntityTypesService
+      .getBusinessEntityTypesList(
+        pageNumber,
+        pageSize,
+        search
+      )
+      .subscribe({
+
+        next: (response: any) => {
+
+          if (response.success) {
+
+            this.businessEntityTypes =
+              response.data.items.map((item: any) => ({
+
+                businessEntityTypeId: item.businessEntityTypeId,
+
+                entityName: item.entityName,
+
+                description: item.description,
+
+                isActive: item.isActive,
+
+                createdDate: item.createdDate,
+
+                updatedDate: item.updatedDate
+
+              }));
+
+            this.paginatedEntities = [
+              ...this.businessEntityTypes
+            ];
+
+            this.currentPage = response.data.pageNumber;
+            this.itemsPerPage = response.data.pageSize;
+            this.totalCount = response.data.totalCount;
+            this.totalPages = response.data.totalPages;
+            this.hasPreviousPage = response.data.hasPreviousPage;
+            this.hasNextPage = response.data.hasNextPage;
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          this.toastr.error(
+            'Failed to load Business Entity Types.',
+            'Error'
+          );
+
+        }
+
+      });
 
   }
 
@@ -146,47 +162,13 @@ export class BusinessEntityTypes implements OnInit {
 
   filterEntities(): void {
 
-    const search = this.searchText
-      .toLowerCase()
-      .trim();
-
-    this.filteredEntities =
-      this.businessEntityTypes.filter(entity => {
-
-        return (
-
-          entity.businessEntityTypeID
-            .toString()
-            .includes(search)
-
-          ||
-
-          entity.entityName
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          entity.description
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          (
-            entity.isActive
-              ? 'active'
-              : 'inactive'
-          )
-            .includes(search)
-
-        );
-
-      });
-
     this.currentPage = 1;
 
-    this.updatePagination();
+    this.loadBusinessEntityTypes(
+      this.currentPage,
+      this.itemsPerPage,
+      this.searchText
+    );
 
   }
 
@@ -194,35 +176,15 @@ export class BusinessEntityTypes implements OnInit {
   PAGINATION
   ========================================= */
 
-  updatePagination(): void {
-
-    this.totalPages = Math.ceil(
-      this.filteredEntities.length /
-      this.itemsPerPage
-    );
-
-    const startIndex =
-      (this.currentPage - 1)
-      * this.itemsPerPage;
-
-    const endIndex =
-      startIndex + this.itemsPerPage;
-
-    this.paginatedEntities =
-      this.filteredEntities.slice(
-        startIndex,
-        endIndex
-      );
-
-  }
-
   nextPage(): void {
 
-    if (this.currentPage < this.totalPages) {
+    if (this.hasNextPage) {
 
-      this.currentPage++;
-
-      this.updatePagination();
+      this.loadBusinessEntityTypes(
+        this.currentPage + 1,
+        this.itemsPerPage,
+        this.searchText
+      );
 
     }
 
@@ -230,11 +192,13 @@ export class BusinessEntityTypes implements OnInit {
 
   previousPage(): void {
 
-    if (this.currentPage > 1) {
+    if (this.hasPreviousPage) {
 
-      this.currentPage--;
-
-      this.updatePagination();
+      this.loadBusinessEntityTypes(
+        this.currentPage - 1,
+        this.itemsPerPage,
+        this.searchText
+      );
 
     }
 
@@ -246,11 +210,44 @@ export class BusinessEntityTypes implements OnInit {
 
   openDetails(entity: any): void {
 
-    this.selectedEntity = entity;
+    this.businessEntityTypesService
+      .getBusinessEntityTypeById(entity.businessEntityTypeId)
+      .subscribe({
 
-    this.showModal = true;
+        next: (response: any) => {
 
-    document.body.style.overflow = 'hidden';
+          if (response.success) {
+
+            this.selectedEntity = response.data;
+
+            this.showModal = true;
+
+            document.body.style.overflow = 'hidden';
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          const message =
+            err?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
 
   }
 
@@ -284,6 +281,8 @@ export class BusinessEntityTypes implements OnInit {
 
     this.resetForm();
 
+    this.cdr.detectChanges();
+
   }
 
   /* =========================================
@@ -298,45 +297,64 @@ export class BusinessEntityTypes implements OnInit {
       !this.newEntity.description.trim()
     ) {
 
-      alert(
-        'Please fill all required fields'
+      this.toastr.warning(
+        'Please fill all required fields.',
+        'Validation'
       );
 
       return;
 
     }
 
-    const newId =
-      this.businessEntityTypes.length + 1;
+    const request: AddBusinessEntityTypeRequest = {
 
-    const entity = {
+      entityName: this.newEntity.entityName,
 
-      businessEntityTypeID: newId,
-
-      entityName:
-        this.newEntity.entityName,
-
-      description:
-        this.newEntity.description,
-
-      isActive:
-        this.newEntity.isActive,
-
-      createdDate: '11 May 2026',
-
-      updatedDate: '11 May 2026'
+      description: this.newEntity.description
 
     };
 
-    this.businessEntityTypes.unshift(entity);
+    this.businessEntityTypesService
+      .addBusinessEntityType(request)
+      .subscribe({
 
-    this.filterEntities();
+        next: (response: any) => {
 
-    this.closeAddModal();
+          if (response.success) {
 
-    alert(
-      'Entity Added Successfully'
-    );
+            this.toastr.success(
+              response.message,
+              'Success'
+            );
+
+            this.resetForm();
+            this.closeAddModal();
+            this.loadBusinessEntityTypes();
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
+          const message =
+            error?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
 
   }
 
@@ -368,12 +386,7 @@ export class BusinessEntityTypes implements OnInit {
 
       this.selectedEntity.isActive = true;
 
-      this.filterEntities();
-
-      alert(
-        `${this.selectedEntity.entityName}
-        Approved Successfully`
-      );
+      this.loadBusinessEntityTypes();
 
     }
 
@@ -391,12 +404,7 @@ export class BusinessEntityTypes implements OnInit {
 
       this.selectedEntity.isActive = false;
 
-      this.filterEntities();
-
-      alert(
-        `${this.selectedEntity.entityName}
-        Rejected Successfully`
-      );
+      this.loadBusinessEntityTypes();
 
     }
 
@@ -422,9 +430,9 @@ export class BusinessEntityTypes implements OnInit {
     ];
 
     const rows =
-      this.filteredEntities.map(entity => [
+      this.businessEntityTypes.map(entity => [
 
-        entity.businessEntityTypeID,
+        entity.businessEntityTypeId,
 
         entity.entityName,
 
@@ -481,7 +489,7 @@ export class BusinessEntityTypes implements OnInit {
   showEditModal: boolean = false;
 
   editEntity: any = {
-    businessEntityTypeID: 0,
+    businessEntityTypeId: 0,
     entityName: '',
     description: '',
     isActive: true,
@@ -515,6 +523,8 @@ export class BusinessEntityTypes implements OnInit {
 
     document.body.style.overflow = 'auto';
 
+    this.cdr.detectChanges();
+
   }
 
   /* =========================================
@@ -529,46 +539,67 @@ export class BusinessEntityTypes implements OnInit {
       !this.editEntity.description.trim()
     ) {
 
-      alert(
-        'Please fill all required fields.'
+      this.toastr.warning(
+        'Please fill all required fields.',
+        'Validation'
       );
 
       return;
 
     }
 
-    const index =
-      this.businessEntityTypes.findIndex(
-        (entity) =>
-          entity.businessEntityTypeID ===
-          this.editEntity.businessEntityTypeID
-      );
+    const request: UpdateBusinessEntityTypeRequest = {
 
-    if (index !== -1) {
+      businessEntityTypeId: this.editEntity.businessEntityTypeId,
 
-      this.businessEntityTypes[index] = {
+      entityName: this.editEntity.entityName,
 
-        ...this.editEntity,
+      description: this.editEntity.description,
 
-        updatedDate:
-          new Date().toLocaleDateString(
-            'en-GB',
-            {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric',
-            }
-          )
+      isActive: this.editEntity.isActive
 
-      };
+    };
 
-      this.filteredEntities = [
-        ...this.businessEntityTypes
-      ];
+    this.businessEntityTypesService
+      .updateBusinessEntityType(request)
+      .subscribe({
 
-    }
+        next: (response: any) => {
 
-    this.closeEditModal();
+          if (response.success) {
+
+            this.toastr.success(
+              response.message,
+              'Success'
+            );
+
+            this.closeEditModal();
+            this.loadBusinessEntityTypes();
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          const message =
+            err?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
 
   }
 

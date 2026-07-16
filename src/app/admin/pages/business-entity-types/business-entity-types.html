@@ -114,7 +114,7 @@
       <div class="table-records">
 
         Total Records :
-        <strong>{{ filteredEntities.length }}</strong>
+        <strong>{{ totalCount }}</strong>
 
       </div>
 
@@ -153,7 +153,7 @@
 
           @for (
             entity of paginatedEntities;
-            track entity.businessEntityTypeID
+            track entity.businessEntityTypeId
           ) {
 
           <tr>
@@ -163,7 +163,7 @@
 
               <div class="td-box id-box">
 
-                #{{ entity.businessEntityTypeID }}
+                #{{ entity.businessEntityTypeId }}
 
               </div>
 
@@ -286,7 +286,7 @@
 
       <button
         class="btn pagination-btn"
-        [disabled]="currentPage === 1"
+        [disabled]="!hasPreviousPage"
         (click)="previousPage()"
       >
         Previous
@@ -302,7 +302,7 @@
 
       <button
         class="btn pagination-btn"
-        [disabled]="currentPage === totalPages"
+        [disabled]="!hasNextPage"
         (click)="nextPage()"
       >
         Next
@@ -364,7 +364,7 @@ VIEW DETAILS MODAL
 
           <div class="detail-value">
 
-            #{{ selectedEntity?.businessEntityTypeID }}
+            #{{ selectedEntity?.businessEntityTypeId }}
 
           </div>
 

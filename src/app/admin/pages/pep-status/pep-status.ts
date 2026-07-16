@@ -1,7 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { HorizontalTableScrollDirective } from '../../../shared/directives/horizontal-table-scroll.directive';
+import {
+  PepStatusService,
+  AddPepStatusRequest,
+  UpdatePepStatusRequest
+} from '../../services/pep-status.service';
 
 @Component({
   selector: 'app-pep-status',
@@ -14,7 +20,11 @@ import { HorizontalTableScrollDirective } from '../../../shared/directives/horiz
   templateUrl: './pep-status.html',
   styleUrl: './pep-status.scss',
 })
-export class PepStatus {
+export class PepStatus implements OnInit {
+
+  private pepStatusService = inject(PepStatusService);
+  private toastr = inject(ToastrService);
+  private cdr = inject(ChangeDetectorRef);
 
   /* =========================================
      SEARCH
@@ -44,6 +54,14 @@ export class PepStatus {
 
   itemsPerPage: number = 5;
 
+  totalCount: number = 0;
+
+  totalPages: number = 0;
+
+  hasPreviousPage: boolean = false;
+
+  hasNextPage: boolean = false;
+
   /* =========================================
      NEW PEP STATUS MODEL
   ========================================= */
@@ -62,77 +80,101 @@ export class PepStatus {
      PEP STATUS DATA
   ========================================= */
 
-  pepStatusList = [
+  pepStatusList: any[] = [];
 
-    {
-      pepStatusID: 1,
-      statusName: 'Not Applicable',
-      description:
-        'Not a Politically Exposed Person',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      pepStatusID: 2,
-      statusName: 'I am a PEP',
-      description:
-        'I am a Politically Exposed Person',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    },
-
-    {
-      pepStatusID: 3,
-      statusName: 'I am related to a PEP',
-      description:
-        'I am related to a Politically Exposed Person',
-      isActive: true,
-      createdDate: '11 May 2026',
-      updatedDate: '11 May 2026',
-    }
-
-  ];
+  paginatedData: any[] = [];
 
   /* =========================================
-     FILTERED DATA
+     INIT
   ========================================= */
 
-  filteredPepStatus = [
-    ...this.pepStatusList
-  ];
+  ngOnInit(): void {
 
-  /* =========================================
-     PAGINATED DATA
-  ========================================= */
-
-  get paginatedData() {
-
-    const startIndex =
-      (this.currentPage - 1)
-      * this.itemsPerPage;
-
-    const endIndex =
-      startIndex + this.itemsPerPage;
-
-    return this.filteredPepStatus.slice(
-      startIndex,
-      endIndex
-    );
+    this.loadPepStatusList();
 
   }
 
   /* =========================================
-     TOTAL PAGES
+     LOAD PEP STATUS LIST
   ========================================= */
 
-  get totalPages(): number {
+  loadPepStatusList(
+    pageNumber: number = this.currentPage,
+    pageSize: number = this.itemsPerPage,
+    search: string = this.searchTerm
+  ): void {
 
-    return Math.ceil(
-      this.filteredPepStatus.length
-      / this.itemsPerPage
+    this.pepStatusService
+      .getPepStatusList(
+        pageNumber,
+        pageSize,
+        search
+      )
+      .subscribe({
+
+        next: (response: any) => {
+
+          if (response.success) {
+
+            this.pepStatusList =
+              response.data.items.map((item: any) => ({
+
+                pepstatusId: item.pepstatusId,
+
+                statusName: item.statusName,
+
+                description: item.description,
+
+                isActive: item.isActive,
+
+                createdDate: item.createdDate,
+
+                updatedDate: item.updatedDate
+
+              }));
+
+            this.paginatedData = [
+              ...this.pepStatusList
+            ];
+
+            this.currentPage = response.data.pageNumber;
+            this.itemsPerPage = response.data.pageSize;
+            this.totalCount = response.data.totalCount;
+            this.totalPages = response.data.totalPages;
+            this.hasPreviousPage = response.data.hasPreviousPage;
+            this.hasNextPage = response.data.hasNextPage;
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          this.toastr.error(
+            'Failed to load PEP Status.',
+            'Error'
+          );
+
+        }
+
+      });
+
+  }
+
+  /* =========================================
+     FILTER PEP STATUS
+  ========================================= */
+
+  filterPepStatus(): void {
+
+    this.currentPage = 1;
+
+    this.loadPepStatusList(
+      this.currentPage,
+      this.itemsPerPage,
+      this.searchTerm
     );
 
   }
@@ -143,9 +185,13 @@ export class PepStatus {
 
   nextPage(): void {
 
-    if (this.currentPage < this.totalPages) {
+    if (this.hasNextPage) {
 
-      this.currentPage++;
+      this.loadPepStatusList(
+        this.currentPage + 1,
+        this.itemsPerPage,
+        this.searchTerm
+      );
 
     }
 
@@ -157,71 +203,15 @@ export class PepStatus {
 
   previousPage(): void {
 
-    if (this.currentPage > 1) {
+    if (this.hasPreviousPage) {
 
-      this.currentPage--;
-
-    }
-
-  }
-
-  /* =========================================
-     FILTER PEP STATUS
-  ========================================= */
-
-  filterPepStatus(): void {
-
-    const search =
-      this.searchTerm
-        .toLowerCase()
-        .trim();
-
-    if (!search) {
-
-      this.filteredPepStatus = [
-        ...this.pepStatusList
-      ];
-
-      this.currentPage = 1;
-
-      return;
+      this.loadPepStatusList(
+        this.currentPage - 1,
+        this.itemsPerPage,
+        this.searchTerm
+      );
 
     }
-
-    this.filteredPepStatus =
-      this.pepStatusList.filter((pep) => {
-
-        return (
-
-          pep.pepStatusID
-            .toString()
-            .includes(search)
-
-          ||
-
-          pep.statusName
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          pep.description
-            .toLowerCase()
-            .includes(search)
-
-          ||
-
-          (
-            pep.isActive
-              ? 'active'
-              : 'inactive'
-          ).includes(search)
-
-        );
-
-      });
-
-    this.currentPage = 1;
 
   }
 
@@ -231,11 +221,44 @@ export class PepStatus {
 
   openViewModal(pep: any): void {
 
-    this.selectedPepStatus = pep;
+    this.pepStatusService
+      .getPepStatusById(pep.pepstatusId)
+      .subscribe({
 
-    this.showViewModal = true;
+        next: (response: any) => {
 
-    document.body.style.overflow = 'hidden';
+          if (response.success) {
+
+            this.selectedPepStatus = response.data;
+
+            this.showViewModal = true;
+
+            document.body.style.overflow = 'hidden';
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          const message =
+            err?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
 
   }
 
@@ -277,6 +300,8 @@ export class PepStatus {
 
     this.resetForm();
 
+    this.cdr.detectChanges();
+
   }
 
   /* =========================================
@@ -309,57 +334,64 @@ export class PepStatus {
       !this.newPepStatus.description.trim()
     ) {
 
-      alert(
-        'Please fill all required fields.'
+      this.toastr.warning(
+        'Please fill all required fields.',
+        'Validation'
       );
 
       return;
 
     }
 
-    const currentDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
+    const request: AddPepStatusRequest = {
 
-    const newEntry = {
+      statusName: this.newPepStatus.statusName,
 
-      pepStatusID:
-        this.pepStatusList.length + 1,
-
-      statusName:
-        this.newPepStatus.statusName,
-
-      description:
-        this.newPepStatus.description,
-
-      isActive:
-        this.newPepStatus.isActive,
-
-      createdDate:
-        currentDate,
-
-      updatedDate:
-        currentDate,
+      description: this.newPepStatus.description
 
     };
 
-    this.pepStatusList.unshift(
-      newEntry
-    );
+    this.pepStatusService
+      .addPepStatus(request)
+      .subscribe({
 
-    this.filteredPepStatus = [
-      ...this.pepStatusList
-    ];
+        next: (response: any) => {
 
-    this.currentPage = 1;
+          if (response.success) {
 
-    this.closeAddModal();
+            this.toastr.success(
+              response.message,
+              'Success'
+            );
+
+            this.resetForm();
+            this.closeAddModal();
+            this.loadPepStatusList();
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
+          const message =
+            error?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
 
   }
 
@@ -375,15 +407,7 @@ export class PepStatus {
 
     this.selectedPepStatus.isActive = true;
 
-    this.selectedPepStatus.updatedDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
+    this.loadPepStatusList();
 
     this.closeViewModal();
 
@@ -401,15 +425,7 @@ export class PepStatus {
 
     this.selectedPepStatus.isActive = false;
 
-    this.selectedPepStatus.updatedDate =
-      new Date().toLocaleDateString(
-        'en-GB',
-        {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }
-      );
+    this.loadPepStatusList();
 
     this.closeViewModal();
 
@@ -438,10 +454,10 @@ export class PepStatus {
     ];
 
     const rows =
-      this.filteredPepStatus.map(
+      this.pepStatusList.map(
         (pep) => [
 
-          pep.pepStatusID,
+          pep.pepstatusId,
 
           pep.statusName,
 
@@ -505,7 +521,7 @@ export class PepStatus {
   showEditModal: boolean = false;
 
   editPepStatus: any = {
-    pepStatusID: 0,
+    pepstatusId: 0,
     statusName: '',
     description: '',
     isActive: true,
@@ -539,6 +555,8 @@ export class PepStatus {
 
     document.body.style.overflow = 'auto';
 
+    this.cdr.detectChanges();
+
   }
 
   /* =========================================
@@ -553,46 +571,67 @@ export class PepStatus {
       !this.editPepStatus.description.trim()
     ) {
 
-      alert(
-        'Please fill all required fields.'
+      this.toastr.warning(
+        'Please fill all required fields.',
+        'Validation'
       );
 
       return;
 
     }
 
-    const index =
-      this.pepStatusList.findIndex(
-        (status) =>
-          status.pepStatusID ===
-          this.editPepStatus.pepStatusID
-      );
+    const request: UpdatePepStatusRequest = {
 
-    if (index !== -1) {
+      pepstatusId: this.editPepStatus.pepstatusId,
 
-      this.pepStatusList[index] = {
+      statusName: this.editPepStatus.statusName,
 
-        ...this.editPepStatus,
+      description: this.editPepStatus.description,
 
-        updatedDate:
-          new Date().toLocaleDateString(
-            'en-GB',
-            {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric',
-            }
-          )
+      isActive: this.editPepStatus.isActive
 
-      };
+    };
 
-      this.filteredPepStatus = [
-        ...this.pepStatusList
-      ];
+    this.pepStatusService
+      .updatePepStatus(request)
+      .subscribe({
 
-    }
+        next: (response: any) => {
 
-    this.closeEditModal();
+          if (response.success) {
+
+            this.toastr.success(
+              response.message,
+              'Success'
+            );
+
+            this.closeEditModal();
+            this.loadPepStatusList();
+
+          } else {
+
+            this.toastr.error(
+              response.message,
+              'Error'
+            );
+
+          }
+
+        },
+
+        error: (err: any) => {
+
+          console.error(err);
+
+          const message =
+            err?.error?.message ||
+            'Something went wrong.';
+
+          this.toastr.error(message, 'Error');
+
+        }
+
+      });
 
   }
 

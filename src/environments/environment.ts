@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://apipg.banku.co.in/api'
+  apiUrl: 'http://localhost:5256/api'
+  // apiUrl: 'https://apipg.banku.co.in/api'
 };

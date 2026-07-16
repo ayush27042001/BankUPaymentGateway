@@ -79,7 +79,7 @@
       </div>
 
       <div class="table-count">
-        Total Records : {{ filteredCategories.length }}
+        Total Records : {{ totalCount }}
       </div>
 
     </div>
@@ -116,7 +116,7 @@
 
         <tbody>
 
-          @for (category of paginatedData(); track category.businessCategoryID) {
+          @for (category of filteredCategories; track category.businessCategoryID) {
 
             <tr class="table-row">
 
@@ -238,7 +238,7 @@
     <button
       class="pagination-btn"
       (click)="previousPage()"
-      [disabled]="currentPage === 1"
+      [disabled]="!hasPreviousPage"
     >
       Previous
     </button>
@@ -254,7 +254,7 @@
     <button
       class="pagination-btn"
       (click)="nextPage()"
-      [disabled]="currentPage === totalPages"
+      [disabled]="!hasNextPage"
     >
       Next
     </button>
@@ -536,12 +536,9 @@
             Cancel
           </button>
 
-          <button
-            class="approve-btn"
-            (click)="addCategory()"
-          >
-            Add Category
-          </button>
+          <button (click)="addCategory()">
+  Save
+</button>
 
         </div>
 
