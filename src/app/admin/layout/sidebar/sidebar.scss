@@ -257,9 +257,14 @@ $breakpoint-xl: 1200px;
   flex-direction: column;
   gap: 8px;
 
-  // Tablet: Hidden
+  &[hidden] {
+    display: none !important;
+  }
+
+  // Tablet: Visible
   @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
-    display: none;
+    margin-left: 20px;
+    padding-left: 12px;
   }
 
   // Mobile: Visible
@@ -295,11 +300,11 @@ $breakpoint-xl: 1200px;
   }
 }
 
-// .active-submenu {
-//   background: rgba(105, 1, 105, 0.1);
-//   color: #690169 !important;
-//   font-weight: 600;
-// }
+.active-submenu {
+  background: rgba(105, 1, 105, 0.1);
+  color: #690169 !important;
+  font-weight: 600;
+}
 
 /* =========================================
    FOOTER / PROFILE SECTION

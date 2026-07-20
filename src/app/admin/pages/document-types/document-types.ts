@@ -158,6 +158,8 @@ export class DocumentTypes implements OnInit {
 
           }
 
+          this.cdr.markForCheck();
+
         },
 
         error: (err: any) => {

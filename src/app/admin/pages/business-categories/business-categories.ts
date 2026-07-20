@@ -155,6 +155,8 @@ export class BusinessCategories implements OnInit {
 
           }
 
+          this.cdr.markForCheck();
+
         },
 
         error: (err: any) => {

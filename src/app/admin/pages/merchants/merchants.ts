@@ -169,6 +169,8 @@ export class Merchants implements OnInit {
 
           }
 
+          this.cdr.markForCheck();
+
         },
 
         error: (err: any) => {

@@ -146,6 +146,8 @@ export class PepStatus implements OnInit {
 
           }
 
+          this.cdr.markForCheck();
+
         },
 
         error: (err: any) => {

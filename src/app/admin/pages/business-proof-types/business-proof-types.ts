@@ -600,6 +600,8 @@ this.hasNextPage = response.data.hasNextPage;
 
         }
 
+        this.cdr.markForCheck();
+
       },
 
       error: (err: any) => {
