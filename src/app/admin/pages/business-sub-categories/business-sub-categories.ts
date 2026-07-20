@@ -189,6 +189,9 @@ export class BusinessSubCategories implements OnInit {
             this.hasPreviousPage = response.data.hasPreviousPage;
             this.hasNextPage = response.data.hasNextPage;
           }
+
+          this.cdr.markForCheck();
+
         },
         error: (err: any) => {
           console.error(err);

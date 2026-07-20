@@ -44,15 +44,13 @@
 
         <i
           class="bi"
-          [class.bi-chevron-down]="mastersExpanded"
-          [class.bi-chevron-right]="!mastersExpanded"
+        [class.bi-chevron-down]="mastersExpanded()"
+           [class.bi-chevron-right]="!mastersExpanded()"
         ></i>
 
       </div>
 
-      @if (mastersExpanded) {
-
-        <div class="submenu">
+       <div class="submenu" [hidden]="!mastersExpanded()">
 
           <!-- <a
             class="submenu-item"
@@ -109,9 +107,7 @@
   PEP Status
 </a>
 
-        </div>
-
-      }
+       </div>
 
     </div>
 
@@ -130,15 +126,13 @@
 
         <i
           class="bi"
-          [class.bi-chevron-down]="merchantExpanded"
-          [class.bi-chevron-right]="!merchantExpanded"
+        [class.bi-chevron-down]="merchantExpanded()"
+           [class.bi-chevron-right]="!merchantExpanded()"
         ></i>
 
       </div>
 
-      @if (merchantExpanded) {
-
-        <div class="submenu">
+       <div class="submenu" [hidden]="!merchantExpanded()">
 
         <a
   class="submenu-item"
@@ -152,9 +146,7 @@
             Test Two
           </a> -->
 
-        </div>
-
-      }
+       </div>
 
     </div>
     <!-- Merchant Onboarding -->
@@ -272,15 +264,13 @@
 
     <i
       class="bi"
-      [class.bi-chevron-down]="userExpanded"
-      [class.bi-chevron-right]="!userExpanded"
+        [class.bi-chevron-down]="userExpanded()"
+           [class.bi-chevron-right]="!userExpanded()"
     ></i>
 
   </div>
 
-  @if (userExpanded) {
-
-    <div class="submenu">
+  <div class="submenu" [hidden]="!userExpanded()">
 
       <a
         class="submenu-item"
@@ -290,9 +280,7 @@
         All Users 
       </a>
 
-    </div>
-
-  }
+  </div>
 
 </div>
     <!-- Reports -->
@@ -310,15 +298,13 @@
 
         <i
           class="bi"
-          [class.bi-chevron-down]="reportExpanded"
-          [class.bi-chevron-right]="!reportExpanded"
+        [class.bi-chevron-down]="reportExpanded()"
+           [class.bi-chevron-right]="!reportExpanded()"
         ></i>
 
       </div>
 
-      @if (reportExpanded) {
-
-        <div class="submenu">
+       <div class="submenu" [hidden]="!reportExpanded()">
 
           <a class="submenu-item">
             All Reports
@@ -328,9 +314,7 @@
             Test Two
           </a> -->
 
-        </div>
-
-      }
+       </div>
 
     </div>
 
@@ -353,15 +337,13 @@
 
     <i
       class="bi"
-      [class.bi-chevron-down]="settingsExpanded"
-      [class.bi-chevron-right]="!settingsExpanded"
+        [class.bi-chevron-down]="settingsExpanded()"
+           [class.bi-chevron-right]="!settingsExpanded()"
     ></i>
 
   </div>
 
-  @if (settingsExpanded) {
-
-    <div class="submenu">
+  <div class="submenu" [hidden]="!settingsExpanded()">
 
       <!-- SUPPORT -->
 
@@ -389,9 +371,7 @@
 
       </a>
 
-    </div>
-
-  }
+  </div>
 
 </div>
 

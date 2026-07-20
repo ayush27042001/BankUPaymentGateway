@@ -1,6 +1,7 @@
-import { Component, Input, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, Input, signal, ChangeDetectorRef } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { SuperAdminAuthService } from '../../services/superadmin-auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,21 +18,27 @@ export class Sidebar {
 
   @Input() isMobileSidebarOpen = signal(false);
 
+  constructor(
+    private router: Router,
+    private superAdminAuthService: SuperAdminAuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
   /* =========================================
      MENU STATES
   ========================================= */
 
-  mastersExpanded = true;
+  mastersExpanded = signal(false);
 
-  merchantExpanded = false;
+  merchantExpanded = signal(false);
 
-  reportExpanded = false;
+  reportExpanded = signal(false);
 
-  settingsExpanded = false;
+  settingsExpanded = signal(false);
 
-  userExpanded = false;
+  userExpanded = signal(false);
 
-  onboardingExpanded = false;
+  onboardingExpanded = signal(false);
 
   /* =========================================
      CLOSE ALL MENUS
@@ -39,17 +46,17 @@ export class Sidebar {
 
   closeAllMenus(): void {
 
-    this.mastersExpanded = false;
+    this.mastersExpanded.set(false);
 
-    this.merchantExpanded = false;
+    this.merchantExpanded.set(false);
 
-    this.reportExpanded = false;
+    this.reportExpanded.set(false);
 
-    this.settingsExpanded = false;
+    this.settingsExpanded.set(false);
 
-    this.userExpanded = false;
+    this.userExpanded.set(false);
 
-    this.onboardingExpanded = false;
+    this.onboardingExpanded.set(false);
 
   }
 
@@ -59,11 +66,13 @@ export class Sidebar {
 
   toggleMasters(): void {
 
-    const isOpen = this.mastersExpanded;
+    const isOpen = this.mastersExpanded();
 
     this.closeAllMenus();
 
-    this.mastersExpanded = !isOpen;
+    this.mastersExpanded.set(!isOpen);
+
+    this.cdr.detectChanges();
 
   }
 
@@ -73,11 +82,13 @@ export class Sidebar {
 
   toggleMerchant(): void {
 
-    const isOpen = this.merchantExpanded;
+    const isOpen = this.merchantExpanded();
 
     this.closeAllMenus();
 
-    this.merchantExpanded = !isOpen;
+    this.merchantExpanded.set(!isOpen);
+
+    this.cdr.detectChanges();
 
   }
 
@@ -87,11 +98,13 @@ export class Sidebar {
 
   toggleOnboarding(): void {
 
-    const isOpen = this.onboardingExpanded;
+    const isOpen = this.onboardingExpanded();
 
     this.closeAllMenus();
 
-    this.onboardingExpanded = !isOpen;
+    this.onboardingExpanded.set(!isOpen);
+
+    this.cdr.detectChanges();
 
   }
 
@@ -101,11 +114,13 @@ export class Sidebar {
 
   toggleUsers(): void {
 
-    const isOpen = this.userExpanded;
+    const isOpen = this.userExpanded();
 
     this.closeAllMenus();
 
-    this.userExpanded = !isOpen;
+    this.userExpanded.set(!isOpen);
+
+    this.cdr.detectChanges();
 
   }
 
@@ -115,11 +130,13 @@ export class Sidebar {
 
   toggleReport(): void {
 
-    const isOpen = this.reportExpanded;
+    const isOpen = this.reportExpanded();
 
     this.closeAllMenus();
 
-    this.reportExpanded = !isOpen;
+    this.reportExpanded.set(!isOpen);
+
+    this.cdr.detectChanges();
 
   }
 
@@ -129,11 +146,13 @@ export class Sidebar {
 
   toggleSettings(): void {
 
-    const isOpen = this.settingsExpanded;
+    const isOpen = this.settingsExpanded();
 
     this.closeAllMenus();
 
-    this.settingsExpanded = !isOpen;
+    this.settingsExpanded.set(!isOpen);
+
+    this.cdr.detectChanges();
 
   }
 
@@ -155,11 +174,7 @@ export class Sidebar {
 
   logout(): void {
 
-    localStorage.clear();
-
-    sessionStorage.clear();
-
-    window.location.href = '/login';
+    this.superAdminAuthService.logoutAdmin();
 
   }
 

@@ -139,6 +139,8 @@ export class BusinessEntityTypes implements OnInit {
 
           }
 
+          this.cdr.markForCheck();
+
         },
 
         error: (err: any) => {
